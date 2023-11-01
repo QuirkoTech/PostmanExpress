@@ -30,11 +30,11 @@ jobs:
         working-directory: ${{ matrix.app }}
 
       - name: Run Express API
-        run: npm run api
+        run: npm run prod-api
         working-directory: ${{ matrix.app }}
 
       - name: Install Dependencies and Run Root API
         if: matrix.app == 'driver_app' # Run this step only for the last app to avoid repetition
         run: |
           npm install
-          npm run api
+          npm run prod-api
