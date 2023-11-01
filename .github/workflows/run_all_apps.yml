@@ -1,0 +1,40 @@
+name: Postman.Express applications runner
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+        app: [consumer_app, lockers_app, driver_app]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+
+      - name: Install Dependencies and Build React App
+        run: |
+          npm install
+          npm run build
+        working-directory: ${{ matrix.app }}
+
+      - name: Run Express API
+        run: npm run api
+        working-directory: ${{ matrix.app }}
+
+      - name: Install Dependencies and Run Root API
+        if: matrix.app == 'driver_app' # Run this step only for the last app to avoid repetition
+        run: |
+          npm install
+          npm run api
