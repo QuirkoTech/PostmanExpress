@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         node-version: [20.x]
-        app: [consumer_app, lockers_app, driver_app]
+        app: [consumer_app, lockers_app, driver_app, organization_api]
 
     steps:
       - name: Checkout Repository
@@ -23,7 +23,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
 
-      - name: Install Dependencies and Build React App
+      - name: Install Dependencies for all the apps and Build React App
         run: |
           npm install
           npm run build
@@ -33,8 +33,3 @@ jobs:
         run: npm run prod-api
         working-directory: ${{ matrix.app }}
 
-      - name: Install Dependencies and Run Root API
-        if: matrix.app == 'driver_app' # Run this step only for the last app to avoid repetition
-        run: |
-          npm install
-          npm run prod-api
