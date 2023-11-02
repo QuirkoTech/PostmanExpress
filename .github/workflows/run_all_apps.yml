@@ -5,32 +5,48 @@ on:
     branches: ["main"]
 
 jobs:
-  build:
+  build-frontend:
     runs-on: self-hosted
-
     strategy:
       matrix:
         node-version: [20.x]
-        frontend-apps: [consumer_app, locker_app, driver_app]
-        backend-apps: [consumer_app, locker_app, driver_app, organization_api]
-
+        app: [consumer_app, locker_app, driver_app]
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
+      - uses: actions/checkout@v3
+    
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "npm"
-
-      - name: Install Dependencies for all the apps and Build React App
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+    
+      - name: Install Dependencies and Build Frontend App
         run: |
           npm install
-          npm run build
-        working-directory: ${{ matrix.frontend-apps }}
+              npm run build
+        working-directory: ${{ matrix.app }}
 
-      - name: Run Express API
-        run: npm run prod-api
-        working-directory: ${{ matrix.backend-apps }}
+
+  build-backend:
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        node-version: [20.x]
+        app: [consumer_app, locker_app, driver_app, organization_api]
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+      
+      - name: Install Dependencies and Run Express API
+        run: |
+          npm install
+          npm run prod-api
+        working-directory: ${{ matrix.app }}
 
