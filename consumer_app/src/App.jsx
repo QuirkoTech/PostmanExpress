@@ -1,9 +1,8 @@
-
 function App() {
     return (
-        <div className='underline'>
-            Hello hh
-        </div>
+        <>
+            <h1 className="text-8xl text-blue-400">Customer App</h1>
+        </>
     );
 }
 
