@@ -9,7 +9,7 @@
         "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
         "preview": "vite preview",
         "dev-api": "nodemon server/server.js",
-        "prod-api": "pm2 start consumer_app"
+        "prod-api": "pm2 start consumer_app_api"
     },
     "dependencies": {
         "@hookform/resolvers": "^3.3.2",
