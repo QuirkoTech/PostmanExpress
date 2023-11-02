@@ -12,41 +12,26 @@
         "prod-api": "pm2 start consumer_app_api"
     },
     "dependencies": {
-        "@hookform/resolvers": "^3.3.2",
-        "@testing-library/jest-dom": "^6.1.4",
-        "@testing-library/react": "^14.0.0",
-        "@testing-library/user-event": "^14.5.1",
-        "@tinymce/tinymce-react": "^4.3.0",
-        "axios": "^1.6.0",
         "cors": "^2.8.5",
         "dotenv": "^16.3.1",
         "express": "^4.18.2",
         "fs": "^0.0.1-security",
-        
         "morgan": "^1.10.0",
-        
-        
-        "prop-types": "^15.8.1",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "react-error-boundary": "^4.0.11",
-        "react-hook-form": "^7.47.0",
-        "react-router-dom": "^6.18.0",
-        "react-toastify": "^9.1.3",
-        "sass": "^1.69.5",
-        "slugify": "^1.6.6",
-        "uuid": "^9.0.1",
-        "yup": "^1.3.2"
+        "react-router-dom": "^6.18.0"
     },
     "devDependencies": {
         "@types/react": "^18.2.15",
         "@types/react-dom": "^18.2.7",
         "@vitejs/plugin-react": "^4.0.3",
+        "autoprefixer": "^10.4.16",
         "eslint": "^8.45.0",
         "eslint-plugin-react": "^7.32.2",
         "eslint-plugin-react-hooks": "^4.6.0",
         "eslint-plugin-react-refresh": "^0.4.3",
         "nodemon": "^3.0.1",
+        "postcss": "^8.4.31",
         "tailwindcss": "^3.3.5",
         "vite": "^4.4.5"
     }
