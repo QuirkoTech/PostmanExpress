@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         node-version: [20.x]
-        app: [consumer_app, lockers_app, driver_app, organization_api]
+        app: [consumer_app, locker_app, driver_app, organization_api]
 
     steps:
       - name: Checkout Repository
