@@ -1,0 +1,37 @@
+name: Postman.Express applications runner
+
+on:
+  push:
+    branches: ["actions"]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+    
+      - name: Deploy to PVM
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.PVM_HOST }}
+          username: ${{ secrets.PVM_USERNAME }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            cd ~/Projects/Postman.Express
+            git pull origin main
+            cd ~/Projects/Postman.Express/consumer_app
+            npm i
+            npm run build
+            npm run prod-api
+            cd ~/Projects/Postman.Express/driver_app
+            npm i
+            npm run build
+            npm run prod-api
+            cd ~/Projects/Postman.Express/locker_app
+            npm i
+            npm run build
+            npm run prod-api
+            cd ~/Projects/Postman.Express/organization_api
+            npm i
+            npm run prod-api
