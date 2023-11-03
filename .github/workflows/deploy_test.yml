@@ -27,9 +27,13 @@ jobs:
 
     - name: Execute deployment commands
       env:
-        HOST: ${{ secrets.PVM_HOST }}
-        USERNAME: ${{ secrets.PVM_USERNAME }}
+          HOST: ${{ secrets.PVM_HOST }}
+          USERNAME: ${{ secrets.PVM_USERNAME }}
       run: |
+        if [ -z "$USERNAME" ]; then
+          echo "Error: USERNAME is not set."
+          exit 1
+        fi
         ssh $USERNAME@$HOST << 'ENDSSH'
           cd ~/Projects/Postman.Express
           git pull origin main
