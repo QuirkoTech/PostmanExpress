@@ -18,9 +18,12 @@ jobs:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       run: |
         mkdir -p ~/.ssh
-        echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-keyscan ${{ secrets.PVM_HOST }} >> ~/.ssh/known_hosts
-        echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+        echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
+        eval "$(ssh-agent -s)"
+        ssh-add ~/.ssh/id_rsa
+        ssh-keyscan ${{ secrets.PVM_HOST }} >> ~/.ssh/known_hosts
+
 
     - name: Execute deployment commands
       env:
