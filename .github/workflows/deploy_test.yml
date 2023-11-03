@@ -12,12 +12,15 @@ jobs:
         uses: actions/checkout@v3
     
       - name: Deploy to PVM
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.PVM_HOST }}
-          username: ${{ secrets.PVM_USERNAME }}
-          key: ${{ secrets.DEPLOY_KEY }}
-          script: |
+        env:
+          PVM_HOST: ${{ secrets.PVM_HOST }}
+          PVM_USERNAME: ${{ secrets.PVM_USERNAME }}
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+        run: |
+          ssh-keyscan -H "$PVM_HOST" >> ~/.ssh/known_hosts
+          echo "$DEPLOY_KEY" > deploy_key.pem
+          chmod 600 deploy_key.pem
+          ssh -i deploy_key.pem $PVM_USERNAME@$PVM_HOST << 'ENDSSH'
             cd ~/Projects/Postman.Express
             git pull origin main
             cd ~/Projects/Postman.Express/consumer_app
@@ -35,3 +38,4 @@ jobs:
             cd ~/Projects/Postman.Express/organization_api
             npm i
             npm run prod-api
+          ENDSSH
