@@ -3,13 +3,13 @@
 @tailwind utilities;
 
 :root {
-    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+font-family: 'Epilogue', sans-serif;
     line-height: 1.5;
     font-weight: 400;
   
-    color-scheme: light dark;
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #242424;
+    
+    color: #01497B;
+    background-color: #181718;
   
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -28,12 +28,14 @@
   }
   
   body {
-    margin: 0;
-    display: flex;
-    place-items: center;
-    min-width: 320px;
-    min-height: 100vh;
+    line-height: 1.5;
+        
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        font-family: 'Epilogue', sans-serif;
+        font-size: 16px;
+        color: #232323;
   }
+  
   
   h1 {
     font-size: 3.2em;
@@ -70,4 +72,11 @@
     button {
       background-color: #f9f9f9;
     }
+  }
+
+  .container {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 20px;
   }
