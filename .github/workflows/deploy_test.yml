@@ -17,7 +17,8 @@ jobs:
           PVM_USERNAME: ${{ secrets.PVM_USERNAME }}
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
         run: |
-          ssh -i ~/.ssh/Postman.Express.pub $PVM_USERNAME@$PVM_HOST "bash -s" << 'ENDSSH'
+          ssh-keyscan -H "$PVM_HOST" >> ~/.ssh/known_hosts
+          ssh -i ~/.ssh/Postman.Express $PVM_USERNAME@$PVM_HOST "bash -s" << 'ENDSSH'
             cd ~/Projects/Postman.Express
             git pull origin main
             cd consumer_app
