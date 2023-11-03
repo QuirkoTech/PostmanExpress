@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -18,24 +18,22 @@ jobs:
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
         run: |
           ssh-keyscan -H "$PVM_HOST" >> ~/.ssh/known_hosts
-          echo "$DEPLOY_KEY" > deploy_key.pem
-          chmod 600 deploy_key.pem
-          ssh -i deploy_key.pem $PVM_USERNAME@$PVM_HOST << 'ENDSSH'
+          ssh -i ~/.ssh/Postman.Express.pub $PVM_USERNAME@$PVM_HOST "bash -s" << 'ENDSSH'
             cd ~/Projects/Postman.Express
             git pull origin main
-            cd ~/Projects/Postman.Express/consumer_app
+            cd consumer_app
             npm i
             npm run build
             npm run prod-api
-            cd ~/Projects/Postman.Express/driver_app
+            cd ../driver_app
             npm i
             npm run build
             npm run prod-api
-            cd ~/Projects/Postman.Express/locker_app
+            cd ../locker_app
             npm i
             npm run build
             npm run prod-api
-            cd ~/Projects/Postman.Express/organization_api
+            cd ../organization_api
             npm i
             npm run prod-api
           ENDSSH
