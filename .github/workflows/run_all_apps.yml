@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-frontend:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         node-version: [20.x]
@@ -30,7 +30,7 @@ jobs:
 
 
   build-backend:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         node-version: [20.x]
