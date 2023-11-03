@@ -1,39 +1,48 @@
-name: Postman.Express applications runner
+name: Deploy to Server
 
 on:
   push:
-    branches: ["actions"]
+    branches:
+      - actions  
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-    
-      - name: Deploy to PVM
-        env:
-          PVM_HOST: ${{ secrets.PVM_HOST }}
-          PVM_USERNAME: ${{ secrets.PVM_USERNAME }}
-          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-        run: |
-          ssh-keyscan -H "$PVM_HOST" >> ~/.ssh/known_hosts
-          ssh -i ~/.ssh/Postman.Express $PVM_USERNAME@$PVM_HOST "bash -s" << 'ENDSSH'
-            cd ~/Projects/Postman.Express
-            git pull origin main
-            cd consumer_app
-            npm i
-            npm run build
-            npm run prod-api
-            cd ../driver_app
-            npm i
-            npm run build
-            npm run prod-api
-            cd ../locker_app
-            npm i
-            npm run build
-            npm run prod-api
-            cd ../organization_api
-            npm i
-            npm run prod-api
-          ENDSSH
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up SSH
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      run: |
+        mkdir -p ~/.ssh
+        echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-keyscan ${{ secrets.PVM_HOST }} >> ~/.ssh/known_hosts
+        echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+        chmod 600 ~/.ssh/id_rsa
+
+    - name: Execute deployment commands
+      env:
+        HOST: ${{ secrets.PVM_HOST }}
+        USERNAME: ${{ secrets.PVM_USERNAME }}
+      run: |
+        ssh $USERNAME@$HOST << 'ENDSSH'
+          cd ~/Projects/Postman.Express
+          git pull origin main
+          cd consumer_app
+          npm i
+          npm run build
+          npm run prod-api
+          cd ../driver_app
+          npm i
+          npm run build
+          npm run prod-api
+          cd ../locker_app
+          npm i
+          npm run build
+          npm run prod-api
+          cd ../organization_api
+          npm i
+          npm run prod-api
+        ENDSSH
