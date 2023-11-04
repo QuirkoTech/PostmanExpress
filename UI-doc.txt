@@ -1,0 +1,60 @@
+Font name: Barlow
+
+Main background: #181718
+Secondary background: #222124
+
+Main text: #CDCDCD
+Heading, attention or hovered text: #ffffff
+
+
+Parcel status colors:
+  Delivered: #00FF47
+  Ready for pick up: #000AFF
+  En route: #FF9900
+  At warehouse: #ffffff
+  Prepared for delivery: #EBFF00
+  Awaiting drop-off: #9A9A9A
+
+Main action button: #376F40
+Interacted action button: #34844A
+
+Main error: #C55B5B
+Hovered or active error: #C55B5B
+
+Section separation: #494844
+
+
+
+Border:
+  Radius:
+    Max: 20px
+    Mid: 12px
+    Low: 8px
+  
+  Thickness: 2px
+
+  Default color: #374D6F
+
+
+
+UI navigation:
+  Consumer app:
+    / => User active parcels page
+    /new => New parcel page
+    /parcels/:parcel_id => Parcel info page
+    /history => User parcel history page
+    /login => User log in page
+    /signup => Usesr sign up page
+    /UNKNOWN => 404 page
+
+  Driver app: 
+    / => Accepted parcels page
+    /pending => Available parcels page
+    /parsels/:parcel_id => Parcel info page
+    /login => Driver log in page
+
+
+Deployed URLs:
+  https://consumer-pe.salute-sir.com
+  https://driver-pe.salute-sir.com
+  https://locker-pe.salute-sir.com
