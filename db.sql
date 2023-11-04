@@ -2,25 +2,23 @@ DROP DATABASE IF EXISTS postman_express_db;
 
 CREATE DATABASE postman_express_db;
 
-USE postman_express_db;
+DROP TABLE IF EXISTS users;
 
-DROP TABLE users;
+DROP TABLE IF EXISTS parcels;
 
-DROP TABLE parcels;
+DROP TABLE IF EXISTS cabinets;
 
-DROP TABLE cabinets;
+DROP TABLE IF EXISTS user_parcels;
 
-DROP TABLE user_parcels;
+DROP TABLE IF EXISTS drivers;
 
-DROP TABLE drivers;
+DROP TABLE IF EXISTS driver_parcels;
 
-DROP TABLE driver_parcels;
+DROP TYPE IF EXISTS PARCELSTATUS;
 
-DROP TYPE PARCELSTATUS;
+DROP TYPE IF EXISTS CABINETSTATUS;
 
-DROP TYPE CABINETSTATUS;
-
-DROP TYPE LOCATION;
+DROP TYPE IF EXISTS LOCATION;
 
 DROP EXTENSION IF EXISTS "uuid-ossp";
 
@@ -37,19 +35,19 @@ CREATE TYPE LOCATION AS ENUM (
 CREATE TYPE CABINETSTATUS AS ENUM (
   'empty', -- Nothing inside
   'reserved', -- Waiting from a parcel from customer or driver
-  'occupied', -- A parcel is inside ready for pickup from driver or customer
+  'occupied' -- A parcel is inside ready for pickup from driver or customer
 );
 
 
-CREATE TYPE PARCELSTATUS AS ENUM {
+CREATE TYPE PARCELSTATUS AS ENUM (
   'awaiting drop-off', -- After creating a new parcel & timestamp also used for when order is created
   'Prepared for Delivery', -- Inside a cabinet, waiting for a driver
   'en route to the warehouse', -- Driver accepted delivery, not yet in the final destination
   'at warehouse', -- Parcel is at warehouse waiting for a driver to accept
   'en route to the pickup location', -- Parcel is accepted and on the way to the final destination
   'ready for pickup', -- In the final destination cabinet, waiting for the customer
-  'delivered', -- Customer picked up the parcel from the cabinet
-}
+  'delivered' -- Customer picked up the parcel from the cabinet
+);
 
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -112,6 +110,6 @@ CREATE TABLE driver_parcels (
   driver_id UUID REFERENCES drivers(driver_id),
   parcel_id UUID REFERENCES parcels(parcel_id),
   notify BOOLEAN DEFAULT TRUE
-)
+);
 
 
