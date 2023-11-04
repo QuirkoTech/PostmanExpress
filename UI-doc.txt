@@ -52,3 +52,9 @@ UI navigation:
     /pending => Available parcels page
     /parsels/:parcel_id => Parcel info page
     /login => Driver log in page
+
+
+Deployed URLs:
+  https://consumer-pe.salute-sir.com
+  https://driver-pe.salute-sir.com
+  https://locker-pe.salute-sir.com
