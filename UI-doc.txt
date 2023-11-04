@@ -52,6 +52,7 @@ UI navigation:
     /pending => Available parcels page
     /parsels/:parcel_id => Parcel info page
     /login => Driver log in page
+    /UNKNOWN => 404 page
 
 
 Deployed URLs:
