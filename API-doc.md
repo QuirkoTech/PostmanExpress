@@ -8,11 +8,11 @@
 - [Consumer Application API](#consumer-application-api)
   + [Signup endpoint](#post-signup--sign-up-the-user)
   + [Login endpoint](#post-login--log-in-the-user)
-  + [Consumer application load function](#get-me--application-load-function)
+  + [Consumer application load function](#get-me--consumer-application-load-function)
 
 - [Driver Application API](#driver-application-api)
   + [Login endpoint](#post-login--log-in-the-driver)
-  + [Driver application load function](#get-me--application-load-function)
+  + [Driver application load function](#get-me--driver-application-load-function)
 
 - [Locker application API](#locker-application-api)
   + [Enter cabinet pin](#post-pin--enter-pin-for-a-cabinet)
@@ -22,6 +22,7 @@
   + [Consumer login endpoint](#post-consumerlogin--log-in-the-user)
   + [Cabinet delivery pin entry](#post-cabinetdelivery--try-to-deliver-a-parcel)
   + [Cabinet pick up pin entry](#post-cabinetpickup--try-to-pick-up-a-parcel)
+  + [Any application load function](#get-me--applications-load-function)
 
 ## Things worth to mention:
 
@@ -112,7 +113,7 @@ Response object:
 4. Function sets access_token cookie to a user
 
 
-### GET /me => Application load function
+### GET /me => Consumer application load function
 
 Response object:
  ```
@@ -160,6 +161,22 @@ Response object:
 5. Function sets access_token cookie to a driver
 
 
+### GET /me => Driver application load function
+
+Response object:
+ ```
+{
+  "status": "success",
+  "username": "<username>"
+}
+```
+
+1. This route is [protected](#protect-function-in-any-application-api)
+2. Function passes the access_token from a cookie to a request [Authorization header](#authorization-header) for calling [/me]() route in Organization API
+3. Function checks if Organization API response successful
+4. Function responds with the response of Organization API response
+
+
 ## Locker application API:
 
 ### POST /pin => Enter pin for a cabinet
@@ -183,21 +200,6 @@ Response object:
 2. Dependingly on request type (delivery, pickup) function calls Organization API endpoint [/cabinet/delivery](#post-cabinetdelivery--try-to-deliver-a-parcel) (for type delivery) or [/cabinet/pickup](#post-cabinetpickup--try-to-pick-up-a-parcel) (for type pickup)
 3. Function checks if Organization API response successful
 4. Function sends Organization API message
-
-### GET /me => Application load function
-
-Response object:
- ```
-{
-  "status": "success",
-  "username": "<username>"
-}
-```
-
-1. This route is [protected](#protect-function-in-any-application-api)
-2. Function passes the access_token from a cookie to a request [Authorization header](#authorization-header) for calling [/me]() route in Organization API
-3. Function checks if Organization API response successful
-4. Function responds with the response of Organization API response
 
 
 ## Organization API:
@@ -317,7 +319,7 @@ Response object:
 9. Function responds with message of the operation
 
 
-### GET /me => Application load function
+### GET /me => Applications load function
 Request headers: 
 ```
 {
