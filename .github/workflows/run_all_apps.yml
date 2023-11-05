@@ -52,7 +52,7 @@ jobs:
   deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [build-frontend, build-backend]
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
       
     steps:
     - name: Checkout code
