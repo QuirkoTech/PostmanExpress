@@ -1,8 +1,8 @@
 function App() {
     return (
-        <>
-            <h1 className="text-8xl text-blue-400">Customer App</h1>
-        </>
+        <main className="h-screen bg-dark-main" >
+            <h1 className="text-8xl text-white ">Customer App</h1>
+        </main>
     );
 }
 
