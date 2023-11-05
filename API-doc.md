@@ -42,7 +42,7 @@
 ```
 {
   "user_type": "driver",
-  "id": "consumer_id"
+  "id": "<consumer_id>"
 }
 ```
 3. Function returns access_token and refresh_token
@@ -70,9 +70,10 @@ Response object:
 ```
 
 1. Function checks if all the required fields (user_email, password, password_confirm, username, location) are present in request body
-2. Function calls Organization API endpoint [/consumer/signup](#consumersignup--sign-up-the-user)
-3. Function checks if Organization API response successful 
-4. Function sets access_token cookie to a user
+2. Function compares password and password_confirm
+3. Function calls Organization API endpoint [/consumer/signup](#post-consumersignup--sign-up-the-user)
+4. Function checks if Organization API response successful 
+5. Function sets access_token cookie to a user
 
 
 ### POST /login => Log in the user
@@ -95,7 +96,7 @@ Response object:
 ```
 
 1. Function checks if all the required fields (user_email, password) are present in request body
-2. Function calls Organization API endpoint [/consumer/login](#consumerlogin--log-in-the-user)
+2. Function calls Organization API endpoint [/consumer/login](#post-consumerlogin--log-in-the-user)
 3. Function checks if Organization API response successful 
 4. Function sets access_token cookie to a user
 
