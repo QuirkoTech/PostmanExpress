@@ -8,9 +8,11 @@
 - [Consumer Application API](#consumer-application-api)
   + [Signup endpoint](#post-signup--sign-up-the-user)
   + [Login endpoint](#post-login--log-in-the-user)
+  + [Consumer application load function](#get-me--application-load-function)
 
 - [Driver Application API](#driver-application-api)
   + [Login endpoint](#post-login--log-in-the-driver)
+  + [Driver application load function](#get-me--application-load-function)
 
 - [Locker application API](#locker-application-api)
   + [Enter cabinet pin](#post-pin--enter-pin-for-a-cabinet)
@@ -21,6 +23,15 @@
   + [Cabinet delivery pin entry](#post-cabinetdelivery--try-to-deliver-a-parcel)
   + [Cabinet pick up pin entry](#post-cabinetpickup--try-to-pick-up-a-parcel)
 
+## Things worth to mention:
+
+### Authorization header:
+
+This type of header passes to the [Organization API](#organization-api) protected routes, header looks like this:
+```
+"Authorization": "Bearer access_token_value"
+```
+
 
 ##  API helper functions:
 
@@ -30,7 +41,7 @@
 
 ### Protect function in Organization API
 1. It is a middleware function used to protect API endpoints from unauthorized access
-2. Function checks Authorization header existence ("Authorization": "Bearer access_token_value")
+2. Function checks [Authorization header](#authorization-header) existence
 3. Function decodes access_token
 4. Function checks user existence from access_token payload
 5. Function verifies refresh_token from DB
@@ -97,8 +108,31 @@ Response object:
 
 1. Function checks if all the required fields (user_email, password) are present in request body
 2. Function calls Organization API endpoint [/consumer/login](#post-consumerlogin--log-in-the-user)
-3. Function checks if Organization API response successful 
+3. Function checks if Organization API response successful
 4. Function sets access_token cookie to a user
+
+
+### GET /me => Application load function
+
+Response object:
+ ```
+{
+  "status": "success",
+  "username": "<username>",
+  "notifications": [
+    {
+      "parcel_id": "<parcel_id>",
+      "title": "<notification_title>",
+      "message": "<notification_message>"
+    },...
+  ]
+}
+```
+
+1. This route is [protected](#protect-function-in-any-application-api)
+2. Function passes the access_token from a cookie to a request [Authorization header](#authorization-header) for calling [/me]() route in Organization API
+3. Function checks if Organization API response successful
+4. Function responds with the response of Organization API response
 
 
 ## Driver application API:
@@ -121,7 +155,7 @@ Response object:
 
 1. Function checks for driver existence
 2. Function compares hashed passwords from a DB and from driver input
-3. Function signs access_token and refresh_token
+3. Function [signs](#sign-tokens) access_token and refresh_token
 4. Function updates user refresh_token in DB
 5. Function sets access_token cookie to a driver
 
@@ -150,6 +184,21 @@ Response object:
 3. Function checks if Organization API response successful
 4. Function sends Organization API message
 
+### GET /me => Application load function
+
+Response object:
+ ```
+{
+  "status": "success",
+  "username": "<username>"
+}
+```
+
+1. This route is [protected](#protect-function-in-any-application-api)
+2. Function passes the access_token from a cookie to a request [Authorization header](#authorization-header) for calling [/me]() route in Organization API
+3. Function checks if Organization API response successful
+4. Function responds with the response of Organization API response
+
 
 ## Organization API:
 
@@ -174,7 +223,7 @@ Response object:
 
 1. Function checks if user with the same email already exists
 2. Function encrypts user password
-3. Function signs access_token and refresh_token
+3. Function [signs](#sign-tokens) access_token and refresh_token
 4. Function creates a new user in "users" table including refresh_token
 5. Function returns access_token in response object
 
@@ -199,7 +248,7 @@ Response object:
 
 1. Function checks for user existence
 2. Function compares hashed passwords from a DB and from user input
-3. Function signs access_token and refresh_token
+3. Function [signs](#sign-tokens) access_token and refresh_token
 4. Function updates user refresh_token in DB
 5. Function returns access_token in response object
 
@@ -266,3 +315,23 @@ Response object:
 6. Function populates parcel status_timestamps array with new timestamp object
 7. Function sets cabinet status to "free" and sets cabinet parcel_id field to null
 9. Function responds with message of the operation
+
+
+### GET /me => Application load function
+Request headers: 
+```
+{
+  "Authorization": "Bearer <access_token_value>"
+}
+```
+
+Response object:
+```
+{
+  "status": "success"
+}
+```
+
+1. This route is [protected](#protect-function-in-organization-api)
+2. Function gets "user_type" and "id" of a user requesting this route in req.user object
+3. Function checks if "user_type" is consumer, then 
