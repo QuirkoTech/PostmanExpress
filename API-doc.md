@@ -3,6 +3,7 @@
 - [Helper functions](#api-helper-functions)
   + [Protect in Application APIs](#protect-function-in-any-application-api)
   + [Protect in Organization API](#protect-function-in-organization-api)
+  + [Sign tokens](#sign-tokens)
 
 - [Consumer Application API](#consumer-application-api)
   + [Signup endpoint](#post-signup--sign-up-the-user)
@@ -17,8 +18,8 @@
 - [Organization API](#organization-api)
   + [Consumer signup endpoint](#post-consumersignup--sign-up-the-user)
   + [Consumer login endpoint](#post-consumerlogin--log-in-the-user)
-  + [cabinet delivery pin entry](#post-cabinetdelivery--try-to-deliver-a-parcel)
-  + [cabinet pick up pin entry](#post-cabinetpickup--try-to-pick-up-a-parcel)
+  + [Cabinet delivery pin entry](#post-cabinetdelivery--try-to-deliver-a-parcel)
+  + [Cabinet pick up pin entry](#post-cabinetpickup--try-to-pick-up-a-parcel)
 
 
 ##  API helper functions:
