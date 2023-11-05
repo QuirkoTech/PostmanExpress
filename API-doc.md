@@ -42,7 +42,7 @@
 ```
 {
   "user_type": "driver",
-  "id": "<consumer_id>"
+  "id": "<driver_id>"
 }
 ```
 3. Function returns access_token and refresh_token
