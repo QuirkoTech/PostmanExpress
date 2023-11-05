@@ -123,7 +123,7 @@ Response object:
     {
       "parcel_id": "<parcel_id>",
       "title": "<notification_title>",
-      "message": "<notification_message>"
+      "status": "<parcel_status>"
     },...
   ]
 }
@@ -325,13 +325,30 @@ Request headers:
 }
 ```
 
-Response object:
-```
+Response object (user_type = consumer):
+ ```
 {
-  "status": "success"
+  "status": "success",
+  "username": "<username>",
+  "notifications": [
+    {
+      "parcel_id": "<parcel_id>",
+      "title": "<notification_title>",
+      "status": "<parcel_status>"
+    },...
+  ]
+}
+```
+Response object (user_type = driver):
+ ```
+{
+  "status": "success",
+  "username": "<username>"
 }
 ```
 
 1. This route is [protected](#protect-function-in-organization-api)
 2. Function gets "user_type" and "id" of a user requesting this route in req.user object
-3. Function checks if "user_type" is consumer, then 
+3. Function checks if "user_type" is consumer, then it gets the actual username as well as user parcels where "notify" field is set to "true" from a DB
+4. Function checks if "use_type" is driver, then it gets the actual username from a DB
+5. Function returns username in both scenarios, but it also returns notifications if "user_type" is consumer
