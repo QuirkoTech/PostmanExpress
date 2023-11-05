@@ -1,8 +1,12 @@
 function App() {
     return (
-        <>
-            <h1 className="text-red-400">Hello Driver app</h1>
-        </>
+        <main className="bg-dark-main relative h-screen">
+            {/* </ nav> */}
+            <section className="padding">
+                {/* < someComponent /> */}
+            </section>
+            <section className=""></section>
+        </main>
     );
 }
 

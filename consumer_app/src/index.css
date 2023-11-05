@@ -16,3 +16,16 @@
         font-family: "Barlow";
     }
 }
+
+@layer components {
+    .max-container {
+        max-width: 1440px;
+        margin: 0 auto;
+    }
+}
+
+@layer utilities {
+    .padding {
+        @apply px-8 py-12 sm:px-20 sm:py-24;
+    }
+}
