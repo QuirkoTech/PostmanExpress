@@ -11,11 +11,5 @@ const filePath = `${__dirname}/../.env`;
 if (fs.existsSync(filePath)) {
   dotenv.config({ path: `${__dirname}/../.env` });
 } else {
-  const cutPoint = __dirname.indexOf("postman.express-runner");
-  dotenv.config({
-    path: `${__dirname.substring(
-      0,
-      cutPoint
-    )}/env/postman.express-locker_app.env`,
-  });
+  console.log('Enviroment file not found!');
 }
