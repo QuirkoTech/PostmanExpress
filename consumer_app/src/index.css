@@ -1,7 +1,10 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+<<<<<<< HEAD
 :root {
 font-family: 'Epilogue', sans-serif;
     line-height: 1.5;
@@ -65,13 +68,33 @@ font-family: 'Epilogue', sans-serif;
     :root {
       color: #213547;
       background-color: #ffffff;
+=======
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+@layer base {
+    html {
+        font-family: "Barlow";
+>>>>>>> 9ce20b68ad6f1e26490aa5344ee57a33eb3cbc82
     }
-    a:hover {
-      color: #747bff;
+}
+
+@layer components {
+    .max-container {
+        max-width: 1440px;
+        margin: 0 auto;
     }
-    button {
-      background-color: #f9f9f9;
+}
+
+@layer utilities {
+    .padding {
+        @apply px-8 py-12 sm:px-20 sm:py-24;
     }
+<<<<<<< HEAD
   }
 
   .container {
@@ -80,3 +103,6 @@ font-family: 'Epilogue', sans-serif;
     margin: 0 auto;
     padding: 0 20px;
   }
+=======
+}
+>>>>>>> 9ce20b68ad6f1e26490aa5344ee57a33eb3cbc82

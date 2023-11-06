@@ -3,38 +3,72 @@ name: Postman.Express applications runner
 on:
   push:
     branches: ["main"]
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branches: ["main"]
 
 jobs:
-  build:
+  check-frontend-build:
     runs-on: self-hosted
-
     strategy:
       matrix:
         node-version: [20.x]
-        app: [consumer_app, lockers_app, driver_app]
-
+        app: [consumer_app, locker_app, driver_app]
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-
+      - uses: actions/checkout@v3
+    
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "npm"
-
-      - name: Install Dependencies and Build React App
+    
+      - name: Install Dependencies and Build Frontend App
         run: |
           npm install
           npm run build
         working-directory: ${{ matrix.app }}
 
-      - name: Run Express API
-        run: npm run prod-api
-        working-directory: ${{ matrix.app }}
-
-      - name: Install Dependencies and Run Root API
-        if: matrix.app == 'driver_app' # Run this step only for the last app to avoid repetition
-        run: |
-          npm install
-          npm run prod-api
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [check-frontend-build]
+    runs-on: ubuntu-latest
+      
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      
+    - name: Set up SSH
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      run: |
+        mkdir -p ~/.ssh
+        echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        eval "$(ssh-agent -s)"
+        ssh-add ~/.ssh/id_rsa
+        ssh-keyscan ${{ secrets.PVM_HOST }} >> ~/.ssh/known_hosts
+      
+    - name: Execute deployment commands
+      env:
+          HOST: ${{ secrets.PVM_HOST }}
+          USERNAME: ${{ secrets.PVM_USERNAME }}
+      run: |
+        ssh $USERNAME@$HOST << 'ENDSSH'
+          cd ~/Projects/Postman.Express
+          git pull origin main
+          cd consumer_app
+          npm i
+          npm run build
+          pm2 restart consumer_app_api
+          cd ../driver_app
+          npm i
+          npm run build
+          pm2 restart driver_app_api
+          cd ../locker_app
+          npm i
+          npm run build
+          pm2 restart locker_app_api
+          cd ../organization_api
+          npm i
+          pm2 restart organization_api
+        ENDSSH

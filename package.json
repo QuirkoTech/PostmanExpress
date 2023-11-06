@@ -1,13 +1,6 @@
 {
-  "name": "locker_app",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev-api": "nodemon server/server.js",
-    "prod-api": "pm2 start organization_api"
-  },
   "dependencies": {
+<<<<<<< HEAD
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/react-fontawesome": "^0.2.0",
@@ -19,6 +12,8 @@
     "nodemon": "^3.0.1"
   },
   "devDependencies": {
+=======
+>>>>>>> 9ce20b68ad6f1e26490aa5344ee57a33eb3cbc82
     "prettier": "^3.0.3",
     "prettier-plugin-tailwindcss": "^0.5.6"
   }
