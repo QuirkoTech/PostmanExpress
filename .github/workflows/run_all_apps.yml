@@ -59,16 +59,16 @@ jobs:
           cd consumer_app
           npm i
           npm run build
-          npm run prod-api
+          pm2 restart consumer_app_api
           cd ../driver_app
           npm i
           npm run build
-          npm run prod-api
+          pm2 restart driver_app_api
           cd ../locker_app
           npm i
           npm run build
-          npm run prod-api
+          pm2 restart locker_app_api
           cd ../organization_api
           npm i
-          npm run prod-api
+          pm2 restart organization_api
         ENDSSH

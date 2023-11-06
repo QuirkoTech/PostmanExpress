@@ -4,8 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev-api": "nodemon server/server.js",
-    "prod-api": "pm2 start organization_api"
+    "dev-api": "nodemon server/server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
