@@ -9,7 +9,9 @@ export default {
                     main: '#181718',
                     secondary: '#222124',
                 },
+
                 danger: '#C55B5B',
+
                 status: {
                     // For status colours
                     green: '#00FF47',
@@ -23,6 +25,7 @@ export default {
                     main: '#376F40',
                     active: '#34844A',
                 },
+
                 slate: {
                     gray: '#CDCDCD', // For main text colour
                     blue: '#374D6F', // For borders

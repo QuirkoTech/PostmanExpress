@@ -1,9 +1,9 @@
-import { Routes, Route } from 'react-router-dom';
 import { SignUp } from './pages';
 
 import HomePage from './pages/HomePage';
 
 import NotFoundPage from './pages/NotFoundPage';
+import { Routes, Route } from 'react-router-dom';
 
 function App() {
     return (
