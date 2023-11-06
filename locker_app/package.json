@@ -8,8 +8,7 @@
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "dev-api": "nodemon server/server.js",
-    "prod-api": "pm2 start driver_app_api"
+    "dev-api": "nodemon server/server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

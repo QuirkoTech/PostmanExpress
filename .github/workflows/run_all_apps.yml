@@ -8,7 +8,7 @@ on:
     branches: ["main"]
 
 jobs:
-  build-frontend:
+  check-frontend-build:
     runs-on: self-hosted
     strategy:
       matrix:
@@ -28,30 +28,9 @@ jobs:
           npm run build
         working-directory: ${{ matrix.app }}
 
-
-  build-backend:
-    runs-on: self-hosted
-    strategy:
-      matrix:
-        node-version: [20.x]
-        app: [consumer_app, locker_app, driver_app, organization_api]
-    steps:
-      - uses: actions/checkout@v3
-      
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-      
-      - name: Install Dependencies and Run Express API
-        run: |
-          npm install
-          npm run prod-api
-        working-directory: ${{ matrix.app }}
-
   deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [build-frontend, build-backend]
+    needs: [check-frontend-build]
     runs-on: ubuntu-latest
       
     steps:
@@ -80,16 +59,16 @@ jobs:
           cd consumer_app
           npm i
           npm run build
-          npm run prod-api
+          pm2 restart consumer_app_api
           cd ../driver_app
           npm i
           npm run build
-          npm run prod-api
+          pm2 restart driver_app_api
           cd ../locker_app
           npm i
           npm run build
-          npm run prod-api
+          pm2 restart locker_app_api
           cd ../organization_api
           npm i
-          npm run prod-api
+          pm2 restart organization_api
         ENDSSH
