@@ -47,11 +47,11 @@ const Header = () => {
                     </button>
                     {isModalOpen && (
                         <div
-                            className="fixed top-0 left-0 w-full h-full bg-black/50 flex justify-center items-center z-999"
+                            className="fixed top-0 left-0 w-full h-full bg-black/60 flex justify-center items-center z-50"
                             onClick={handleModalClick}
                         >
                             <div
-                                className="ml-auto w-1/6 h-full bg-primary border-l-2 border-l-white/5   border-solid p-6 rounded-r-lg shadow-lg"
+                                className="ml-auto w-1/6 h-full bg-dark-secondary border-l-2 border-l-white/5   border-solid p-6 rounded-r-lg shadow-lg"
                                 ref={modalRef}
                             >
                                 <Modal
