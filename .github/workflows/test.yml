@@ -31,6 +31,8 @@ jobs:
                   ssh-add ~/.ssh/id_rsa
                   if [[ $? -ne 0 ]]; then echo "ssh-add failed" && exit 1; fi
 
+                  echo ${{ secrets.PVM_HOST }}
+
                   keyscan_output=$(ssh-keyscan -H ${{ secrets.PVM_HOST }} 2>&1)
                   ret_code=$?
                   echo "$keyscan_output"
