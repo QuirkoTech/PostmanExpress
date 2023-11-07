@@ -29,7 +29,7 @@ jobs:
               working-directory: ${{ matrix.app }}
 
     deploy:
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         needs: [check-frontend-build]
         runs-on: ubuntu-latest
 
