@@ -46,7 +46,7 @@ jobs:
                   chmod 600 ~/.ssh/PostmanExpressDeploy
                   eval "$(ssh-agent -s)"
                   ssh-add ~/.ssh/PostmanExpressDeploy
-                  ssh-keyscan -H ${{ secrets.PVM_HOST }} >> ~/.ssh/known_hosts
+                  ssh-keyscan ${{ secrets.PVM_HOST }} >> ~/.ssh/known_hosts
 
             - name: Execute deployment commands
               env:
