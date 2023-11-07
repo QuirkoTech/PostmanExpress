@@ -2,7 +2,7 @@ name: Postman.Express applications runner
 
 on:
     push:
-        branches: ["main"]
+        branches: ["actions-test"]
     pull_request:
         types: [opened, reopened, synchronize]
         branches: ["main"]
