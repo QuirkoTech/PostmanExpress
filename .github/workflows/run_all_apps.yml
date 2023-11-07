@@ -31,7 +31,7 @@ jobs:
     deploy:
         # if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         needs: [check-frontend-build]
-        runs-on: ubuntu-latest
+        runs-on: self-hosted
 
         steps:
             - name: Checkout code
@@ -52,26 +52,22 @@ jobs:
                   HOST: ${{ secrets.PVM_HOST }}
                   USERNAME: ${{ secrets.PVM_USERNAME }}
               run: |
-                  ssh -T -o "StrictHostKeyChecking=no" -vvv $USERNAME@$HOST || {
-                    echo "SSH connection failed with exit code $?"
-                    exit 1
-                    } 
-
-                    cd ~/Projects/PostmanExpress || exit 1
-                    git pull origin main || exit 1
-                    cd consumer_app || exit 1
-                    npm i || exit 1
-                    npm run build || exit 1
-                    pm2 restart consumer_app_api || exit 1
-                    cd ../driver_app || exit 1
-                    npm i || exit 1
-                    npm run build || exit 1
-                    pm2 restart driver_app_api || exit 1
-                    cd ../locker_app || exit 1
-                    npm i || exit 1
-                    npm run build || exit 1
-                    pm2 restart locker_app_api || exit 1
-                    cd ../organization_api || exit 1
-                    npm i || exit 1
-                    pm2 restart organization_api || exit 1
-                    ENDSSH
+                  ssh $USERNAME@$HOST << 'ENDSSH' 
+                    cd ~/Projects/PostmanExpress
+                    git pull origin main
+                    cd consumer_app
+                    npm i
+                    npm run build
+                    pm2 restart consumer_app_api
+                    cd ../driver_app
+                    npm i
+                    npm run build
+                    pm2 restart driver_app_api
+                    cd ../locker_app
+                    npm i
+                    npm run build
+                    pm2 restart locker_app_api
+                    cd ../organization_api
+                    npm i
+                    pm2 restart organization_api
+                  ENDSSH
