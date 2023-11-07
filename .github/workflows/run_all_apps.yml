@@ -42,10 +42,10 @@ jobs:
                   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
               run: |
                   mkdir -p ~/.ssh
-                  echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/PostmanExpressDeploy
-                  chmod 600 ~/.ssh/PostmanExpressDeploy
+                  echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_ed25519
+                  chmod 600 ~/.ssh/id_ed25519
                   eval "$(ssh-agent -s)"
-                  ssh-add ~/.ssh/PostmanExpressDeploy
+                  ssh-add ~/.ssh/id_ed25519
                   ssh-keyscan ${{ secrets.PVM_HOST }} >> ~/.ssh/known_hosts
 
             - name: Execute deployment commands
@@ -72,3 +72,5 @@ jobs:
                     npm i
                     pm2 restart organization_api
                   ENDSSH
+
+# some
