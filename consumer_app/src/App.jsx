@@ -3,7 +3,7 @@ import { SignUp, Login, HomePage, NotFoundPage } from "./pages";
 
 function App() {
     return (
-        <main className="bg-dark-main text-slate-gray relative min-h-screen">
+        <main className="bg-dark-main relative min-h-screen text-slate-gray">
             <Routes>
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/login" element={<Login />} />

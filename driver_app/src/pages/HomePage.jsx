@@ -1,6 +1,6 @@
-import Layout from '../components/layout/Layout';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import Layout from '../components/layout/Layout';
 
 
 const HomePage = () => {
@@ -8,7 +8,7 @@ const HomePage = () => {
         <div className="relative min-h-screen flex flex-col">
             <Layout>
                 <div className='container '>
-                    <div className='my-10'>Hello, place parcel there - Consumer App</div>
+                    <div className='my-10'>Hello, place parcel there - Driver App</div>
                 </div>
             </Layout>
                 
