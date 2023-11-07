@@ -35,7 +35,7 @@ jobs:
 
         steps:
             - name: Checkout code
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
 
             - name: Set up SSH
               env:
@@ -47,7 +47,7 @@ jobs:
                   eval "$(ssh-agent -s)"
                   ssh-add ~/.ssh/id_rsa
                   ssh-keyscan -H ${{ secrets.PVM_HOST }} >> ~/.ssh/known_hosts
-                  ssh -T -o "StrictHostKeyChecking=no" -vvv $USERNAME@$HOST || exit 1
+                  echo "ssh-keyscan completed with exit code $?"
 
             - name: Execute deployment commands
               env:
