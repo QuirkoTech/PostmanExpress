@@ -10,7 +10,10 @@ export default {
                     secondary: '#222124',
                 },
 
-                danger: '#C55B5B',
+                danger: {
+                    main: '#C55B5B',
+                    secondary: '#E92E2E',
+                },
 
                 status: {
                     // For status colours
