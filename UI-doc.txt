@@ -19,7 +19,7 @@ Main action button: #376F40
 Interacted action button: #34844A
 
 Main error: #C55B5B
-Hovered or active error: #C55B5B
+Hovered or active error: #E92E2E
 
 Section separation: #494844
 
