@@ -46,29 +46,32 @@ jobs:
                   chmod 600 ~/.ssh/id_rsa
                   eval "$(ssh-agent -s)"
                   ssh-add ~/.ssh/id_rsa
-                  ssh-keyscan ${{ secrets.PVM_HOST }} >> ~/.ssh/known_hosts
+                  ssh-keyscan -H ${{ secrets.PVM_HOST }} >> ~/.ssh/known_hosts
+                  ssh -T -o "StrictHostKeyChecking=no" -vvv $USERNAME@$HOST || exit 1
 
             - name: Execute deployment commands
               env:
                   HOST: ${{ secrets.PVM_HOST }}
                   USERNAME: ${{ secrets.PVM_USERNAME }}
               run: |
-                  ssh $USERNAME@$HOST << 'ENDSSH'
-                    cd ~/Projects/PostmanExpress
-                    git pull origin main
-                    cd consumer_app
-                    npm i
-                    npm run build
-                    pm2 restart consumer_app_api
-                    cd ../driver_app
-                    npm i
-                    npm run build
-                    pm2 restart driver_app_api
-                    cd ../locker_app
-                    npm i
-                    npm run build
-                    pm2 restart locker_app_api
-                    cd ../organization_api
-                    npm i
-                    pm2 restart organization_api
+                  set -e # Ensure that the script exits on first command failure
+                  ssh $USERNAME@$HOST -vvv << 'ENDSSH'
+                  set -e # Ensure that the script exits on first command failure
+                  cd ~/Projects/PostmanExpress || exit 1
+                  git pull origin main || exit 1
+                  cd consumer_app || exit 1
+                  npm i || exit 1
+                  npm run build || exit 1
+                  pm2 restart consumer_app_api || exit 1
+                  cd ../driver_app || exit 1
+                  npm i || exit 1
+                  npm run build || exit 1
+                  pm2 restart driver_app_api || exit 1
+                  cd ../locker_app || exit 1
+                  npm i || exit 1
+                  npm run build || exit 1
+                  pm2 restart locker_app_api || exit 1
+                  cd ../organization_api || exit 1
+                  npm i || exit 1
+                  pm2 restart organization_api || exit 1
                   ENDSSH
