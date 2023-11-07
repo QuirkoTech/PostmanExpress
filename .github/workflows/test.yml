@@ -25,5 +25,3 @@ jobs:
 
                   ssh-add ~/.ssh/runner
                   if [[ $? -ne 0 ]]; then echo "ssh-add failed" && exit 1; fi
-
-# just one more test

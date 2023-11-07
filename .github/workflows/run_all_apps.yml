@@ -2,7 +2,7 @@ name: Postman.Express applications runner
 
 on:
     push:
-        branches: ["main"]
+        branches: ["actions-test"]
     pull_request:
         types: [opened, reopened, synchronize]
         branches: ["main"]
@@ -41,25 +41,11 @@ jobs:
               env:
                   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
               run: |
-                  mkdir -p ~/.ssh
-                  echo "mkdir completed with exit code $?"
-
-                  echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-                  echo "write key completed with exit code $?"
-
-                  chmod 600 ~/.ssh/id_rsa
-                  echo "chmod completed with exit code $?"
-
+                  echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/PostmanExpressDeploy
+                  chmod 600 ~/.ssh/PostmanExpressDeploy
                   eval "$(ssh-agent -s)"
-                  echo "ssh-agent started with exit code $?"
-
-                  ssh-add ~/.ssh/id_rsa
-                  echo "ssh-add completed with exit code $?"
-
-                  keyscan_output=$(ssh-keyscan -H ${{ secrets.PVM_HOST }} 2>&1)
-                  echo "$keyscan_output"
-                  echo "$keyscan_output" >> ~/.ssh/known_hosts
-                  echo "ssh-keyscan completed with exit code $?"
+                  ssh-add ~/.ssh/PostmanExpressDeploy
+                  ssh-keyscan -H ${{ secrets.PVM_HOST }} >> ~/.ssh/known_hosts
 
             - name: Execute deployment commands
               env:
