@@ -1,23 +1,14 @@
 import { Routes, Route } from "react-router-dom";
-import { SignUp, Login } from "./pages";
-
-import HomePage from './pages/HomePage';
-
-import NotFoundPage from './pages/NotFoundPage';
-import { Routes, Route } from 'react-router-dom';
-
+import { SignUp, Login, HomePage, NotFoundPage } from "./pages";
 
 function App() {
     return (
-        <main className="bg-dark-main relative min-h-screen text-slate-gray">
+        <main className="bg-dark-main text-slate-gray relative min-h-screen">
             <Routes>
                 <Route path="/signup" element={<SignUp />} />
-
                 <Route path="/login" element={<Login />} />
-
-                <Route path="/" element={<HomePage></HomePage>}></Route>
-                <Route path="*" element={<NotFoundPage></NotFoundPage>}></Route>
-
+                <Route path="/" element={<HomePage />}></Route>
+                <Route path="*" element={<NotFoundPage />}></Route>
             </Routes>
         </main>
     );
