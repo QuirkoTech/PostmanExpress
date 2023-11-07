@@ -1,0 +1,39 @@
+name: Postman.Express applications runner
+
+on:
+    push:
+        branches: ["actions-test"]
+
+jobs:
+    setup-ssh:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+            - name: Set up SSH
+              env:
+                  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+              run: |
+                  set +e  # Disable exit on error
+                  mkdir -p ~/.ssh
+                  if [[ $? -ne 0 ]]; then echo "mkdir failed" && exit 1; fi
+
+                  echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+                  if [[ $? -ne 0 ]]; then echo "write key failed" && exit 1; fi
+
+                  chmod 600 ~/.ssh/id_rsa
+                  if [[ $? -ne 0 ]]; then echo "chmod failed" && exit 1; fi
+
+                  eval "$(ssh-agent -s)"
+                  if [[ $? -ne 0 ]]; then echo "ssh-agent failed" && exit 1; fi
+
+                  ssh-add ~/.ssh/id_rsa
+                  if [[ $? -ne 0 ]]; then echo "ssh-add failed" && exit 1; fi
+
+                  keyscan_output=$(ssh-keyscan -H *** 2>&1)
+                  ret_code=$?
+                  echo "$keyscan_output"
+                  if [[ $ret_code -ne 0 ]]; then echo "ssh-keyscan failed with exit code $ret_code" && exit 1; fi
+                  echo "$keyscan_output" >> ~/.ssh/known_hosts
+                  set -e  # Re-enable exit on error
