@@ -37,15 +37,15 @@ jobs:
             - name: Checkout code
               uses: actions/checkout@v3
 
-            - name: Set up SSH
-              env:
-                  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-              run: |
-                  echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/PostmanExpressDeploy
-                  chmod 600 ~/.ssh/PostmanExpressDeploy
-                  eval "$(ssh-agent -s)"
-                  ssh-add ~/.ssh/PostmanExpressDeploy
-                  ssh-keyscan -H ${{ secrets.PVM_HOST }} >> ~/.ssh/known_hosts
+            # - name: Set up SSH
+            #   env:
+            #       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+            #   run: |
+            #       echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/PostmanExpressDeploy
+            #       chmod 600 ~/.ssh/PostmanExpressDeploy
+            #       eval "$(ssh-agent -s)"
+            #       ssh-add ~/.ssh/PostmanExpressDeploy
+            #       ssh-keyscan -H ${{ secrets.PVM_HOST }} >> ~/.ssh/known_hosts
 
             - name: Execute deployment commands
               env:
