@@ -42,11 +42,23 @@ jobs:
                   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
               run: |
                   mkdir -p ~/.ssh
+                  echo "mkdir completed with exit code $?"
+
                   echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+                  echo "write key completed with exit code $?"
+
                   chmod 600 ~/.ssh/id_rsa
+                  echo "chmod completed with exit code $?"
+
                   eval "$(ssh-agent -s)"
+                  echo "ssh-agent started with exit code $?"
+
                   ssh-add ~/.ssh/id_rsa
-                  ssh-keyscan -H ${{ secrets.PVM_HOST }} >> ~/.ssh/known_hosts
+                  echo "ssh-add completed with exit code $?"
+
+                  keyscan_output=$(ssh-keyscan -H ${{ secrets.PVM_HOST }} 2>&1)
+                  echo "$keyscan_output"
+                  echo "$keyscan_output" >> ~/.ssh/known_hosts
                   echo "ssh-keyscan completed with exit code $?"
 
             - name: Execute deployment commands
@@ -54,24 +66,26 @@ jobs:
                   HOST: ${{ secrets.PVM_HOST }}
                   USERNAME: ${{ secrets.PVM_USERNAME }}
               run: |
-                  set -e # Ensure that the script exits on first command failure
-                  ssh $USERNAME@$HOST -vvv << 'ENDSSH'
-                  set -e # Ensure that the script exits on first command failure
-                  cd ~/Projects/PostmanExpress || exit 1
-                  git pull origin main || exit 1
-                  cd consumer_app || exit 1
-                  npm i || exit 1
-                  npm run build || exit 1
-                  pm2 restart consumer_app_api || exit 1
-                  cd ../driver_app || exit 1
-                  npm i || exit 1
-                  npm run build || exit 1
-                  pm2 restart driver_app_api || exit 1
-                  cd ../locker_app || exit 1
-                  npm i || exit 1
-                  npm run build || exit 1
-                  pm2 restart locker_app_api || exit 1
-                  cd ../organization_api || exit 1
-                  npm i || exit 1
-                  pm2 restart organization_api || exit 1
-                  ENDSSH
+                  ssh -T -o "StrictHostKeyChecking=no" -vvv $USERNAME@$HOST || {
+                    echo "SSH connection failed with exit code $?"
+                    exit 1
+                    } 
+
+                    cd ~/Projects/PostmanExpress || exit 1
+                    git pull origin main || exit 1
+                    cd consumer_app || exit 1
+                    npm i || exit 1
+                    npm run build || exit 1
+                    pm2 restart consumer_app_api || exit 1
+                    cd ../driver_app || exit 1
+                    npm i || exit 1
+                    npm run build || exit 1
+                    pm2 restart driver_app_api || exit 1
+                    cd ../locker_app || exit 1
+                    npm i || exit 1
+                    npm run build || exit 1
+                    pm2 restart locker_app_api || exit 1
+                    cd ../organization_api || exit 1
+                    npm i || exit 1
+                    pm2 restart organization_api || exit 1
+                    ENDSSH
