@@ -15,23 +15,13 @@ jobs:
               env:
                   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
               run: |
-                  mkdir -p ~/.ssh
-                  if [[ $? -ne 0 ]]; then echo "mkdir failed" && exit 1; fi
+                  echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/runner
 
-                  echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
-                  if [[ $? -ne 0 ]]; then echo "write key failed" && exit 1; fi
-
-                  chmod 600 ~/.ssh/id_rsa
+                  chmod 600 ~/.ssh/runner
                   if [[ $? -ne 0 ]]; then echo "chmod failed" && exit 1; fi
 
                   eval "$(ssh-agent -s)"
                   if [[ $? -ne 0 ]]; then echo "ssh-agent failed" && exit 1; fi
 
-                  ssh-add ~/.ssh/id_rsa
+                  ssh-add ~/.ssh/runner
                   if [[ $? -ne 0 ]]; then echo "ssh-add failed" && exit 1; fi
-
-                  keyscan_output=$(ssh-keyscan -H salute-sir.com 2>&1)
-                  ret_code=$?
-                  echo "$keyscan_output"
-                  if [[ $ret_code -ne 0 ]]; then echo "ssh-keyscan failed with exit code $ret_code" && exit 1; fi
-                  echo "$keyscan_output" >> ~/.ssh/known_hosts
