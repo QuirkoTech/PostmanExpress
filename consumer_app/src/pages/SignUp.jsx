@@ -31,6 +31,7 @@ const SignUp = () => {
         register,
         handleSubmit,
         control,
+        setError,
         formState: { errors, isSubmitSuccessful },
         isValidating,
         watch,
@@ -54,8 +55,37 @@ const SignUp = () => {
     renderCount++;
     console.log(isSubmitSuccessful);
 
-    const submitHandler = (data) => {
-        console.log(data);
+    const checkEmailExists = async (email) => {
+        try {
+            const response = await fetch(
+                `https://jsonplaceholder.typicode.com/users?email=${email}`,
+            );
+            const data = await response.json();
+            if (data.length > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    
+
+    const submitHandler = async (data) => {
+        try {
+            const emailExists = await checkEmailExists(data.email);
+            if (emailExists) {
+                setError("email", {
+                    type: "manual",
+                    message: "Email already exists",
+                });
+            } else {
+                console.log(data, "Data submitted");
+            }
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     useEffect(() => {
