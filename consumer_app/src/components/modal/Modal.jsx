@@ -22,7 +22,7 @@ function Modal({ isOpen, closeModal, name, menuLinks, className }) {
                     </li>
                     {menuLinks.map((link, index) => (
                         <li key={index} className="text-white text-lg font-normal my-5">
-                            <a className="text-red" href={link.url}>
+                            <a className="text-white" href={link.url}>
                                 {link.title}
                             </a>
                         </li>
