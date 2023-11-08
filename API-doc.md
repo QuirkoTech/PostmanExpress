@@ -93,10 +93,10 @@ Response object:
 ```
 
 1. Function compares password and password_confirm
-2. Function sets "user_type" to consumer (set in env)
-3. Function calls Organization API endpoint [/consumer/signup](#post-consumersignup--sign-up-the-user)
-4. Function checks if Organization API response successful
-5. Function sets access_token cookie to a user
+ <!-- 2. Function sets "user_type" to consumer (set in env) -->
+2. Function calls Organization API endpoint [/consumer/signup](#post-consumersignup--sign-up-the-user)
+3. Function checks if Organization API response successful
+4. Function sets access_token cookie to a user
 
 ### POST /login => Log in the user
 

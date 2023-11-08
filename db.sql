@@ -60,6 +60,7 @@ CREATE TYPE PARCELSTATUS AS ENUM (
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 
+-- **************************************************************************** POSTMAN EXPRESS DB  ****************************************************************************
 
 CREATE TABLE users (
   user_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -103,6 +104,8 @@ CREATE TABLE user_parcels (
   notify BOOLEAN DEFAULT TRUE
 );
 
+
+-- **************************************************************************** DRIVER DB  ****************************************************************************
 
 CREATE TABLE drivers (
   driver_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
