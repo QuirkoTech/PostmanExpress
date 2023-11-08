@@ -4,10 +4,29 @@ import { DevTool } from "@hookform/devtools";
 import { ChevronsUpDown } from "lucide-react";
 import { useEffect } from "react";
 import Input from "../components/Input";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 let renderCount = 0;
 
 const SignUp = () => {
+    // Yup validation schema for form validation
+    const schema = yup.object({
+        name: yup.string().required("This field is required"),
+        email: yup
+            .string()
+            .email("Email format is not valid")
+            .required("This field is required"),
+        password: yup
+            .string()
+            .required("This field is required")
+            .min(7, "Password must be at least 7 characters"),
+        confirmPassword: yup
+            .string()
+            .oneOf([yup.ref("password"), null], "Passwords must match"),
+        location: yup.string().required("This field is required"),
+    });
+
     const {
         register,
         handleSubmit,
@@ -17,10 +36,13 @@ const SignUp = () => {
         watch,
         setFocus,
         reset,
-    } = useForm({ mode: "onTouched", defaultValues: { location: "" } });
+    } = useForm({
+        mode: "onTouched",
+        defaultValues: { location: "" },
+        resolver: yupResolver(schema),
+    });
 
     const navigate = useNavigate();
-    const password = watch("password");
 
     useEffect(() => {
         if (isSubmitSuccessful) {
@@ -61,12 +83,7 @@ const SignUp = () => {
                             type="text"
                             placeHolder="Full Name"
                             register={{
-                                ...register("name", {
-                                    required: {
-                                        value: true,
-                                        message: "This field is required",
-                                    },
-                                }),
+                                ...register("name"),
                             }}
                             errorMessage={errors.name?.message}
                         />
@@ -74,27 +91,7 @@ const SignUp = () => {
                             type="email"
                             placeHolder="Email"
                             register={{
-                                ...register("email", {
-                                    pattern: {
-                                        value: /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]{2,}$/,
-                                        message: "Invalid email format",
-                                    },
-                                    required: {
-                                        value: true,
-                                        message: "This field is required",
-                                    },
-                                    // custom validation need to replace with our own api
-                                    validate: async (value) => {
-                                        const reponse = await fetch(
-                                            `https://jsonplaceholder.typicode.com/users?email=${value}`,
-                                        );
-                                        const data = await reponse.json();
-                                        return (
-                                            data.length == 0 ||
-                                            "This email is already registered"
-                                        );
-                                    },
-                                }),
+                                ...register("email"),
                             }}
                             errorMessage={errors.email?.message}
                         />
@@ -103,17 +100,7 @@ const SignUp = () => {
                             type="password"
                             placeHolder="Password"
                             register={{
-                                ...register("password", {
-                                    required: {
-                                        value: true,
-                                        message: "This field is required",
-                                    },
-                                    minLength: {
-                                        value: 7,
-                                        message:
-                                            "Password must be at least 7 characters",
-                                    },
-                                }),
+                                ...register("password"),
                             }}
                             errorMessage={errors.password?.message}
                         />
@@ -122,25 +109,14 @@ const SignUp = () => {
                             type="password"
                             placeHolder="Confirm Password"
                             register={{
-                                ...register("confirmPassword", {
-                                    required: {
-                                        value: true,
-                                        message: "This field is required",
-                                    },
-                                }),
+                                ...register("confirmPassword"),
                             }}
                             errorMessage={errors.confirmPassword?.message}
                         />
 
                         <div className="relative w-full">
                             <select
-                                {...register("location", {
-                                    required: {
-                                        value: true,
-                                        message: "This field is required",
-                                    },
-                                })}
-                                id=""
+                                {...register("location")}
                                 className={`custom-select ${
                                     locationValue === "" ? "opacity-70" : ""
                                 }`}
