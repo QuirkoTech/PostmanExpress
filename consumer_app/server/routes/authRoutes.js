@@ -1,11 +1,9 @@
-import { Router } from 'express';
-
-import protect from '../helpers/protect.js';
-import { signUp } from '../controllers/authControllers.js';
+import { Router } from "express";
+import { signUp } from "../controllers/authControllers.js";
 
 const router = Router();
 
-router.route('/login').post();
-router.route('/signup').post(signUp);
+router.route("/signup").post(signUp);
+router.route("/login").post();
 
 export default router;
