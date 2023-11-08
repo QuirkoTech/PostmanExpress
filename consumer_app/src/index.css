@@ -9,7 +9,9 @@
     padding: 0;
     box-sizing: border-box;
     scroll-behavior: smooth;
+    
 }
+
 
 @media (prefers-color-scheme: light) {
     :root {
@@ -24,12 +26,7 @@
     }
 }
 
-.container {
-    width: 100%;
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
+
 
 @layer base {
     html {

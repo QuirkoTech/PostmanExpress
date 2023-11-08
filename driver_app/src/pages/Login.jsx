@@ -15,7 +15,7 @@ const Login = () => {
                         className="flex flex-col items-center text-lg"
                     >
                         <h2 className=" pb-5 pt-20 text-lg text-white ">
-                            Customer Log In
+                            Driver Log In
                         </h2>
                         <input
                             type="email"
@@ -30,7 +30,7 @@ const Login = () => {
                             name="password"
                         />
 
-                    <Button></Button>
+                        <Button></Button>
                     </form>
                     <p className="mt-9 whitespace-nowrap text-lg">
                         Don't have an account yet?{" "}

@@ -5,16 +5,12 @@ import { NavLink } from 'react-router-dom';
 const menuLinks = [
     {
         url: '/',
-        title: 'My Parcels',
+        title: 'Accepted Parcels',
     },
     {
-        url: '/new',
-        title: 'New Parcels',
+        url: '/pending',
+        title: 'Available Parcel',
     },
-    {
-        url: '/history',
-        title: "Parcel History"
-    }
     
 ];
 

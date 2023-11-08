@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+<<<<<<< HEAD
 import { Link, useNavigate } from "react-router-dom";
 import { DevTool } from "@hookform/devtools";
 import { ChevronsUpDown } from "lucide-react";
@@ -8,6 +9,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
 let renderCount = 0;
+=======
+import { Link } from "react-router-dom";
+import { Button } from "../components/button";
+>>>>>>> main
 
 const SignUp = () => {
     // Yup validation schema for form validation
@@ -172,8 +177,18 @@ const SignUp = () => {
                             className="rounded-low bg-green-main self-end px-7 py-1"
                             disabled={isValidating}
                         >
+<<<<<<< HEAD
                             Apply
                         </button>
+=======
+                            <option value="oulu">Oulu</option>
+                            <option value="helsinki">Helsinki</option>
+                            <option value="turku">Turku</option>
+                            <option value="tampere">Tampere</option>
+                            <option value="espoo">Espoo</option>
+                        </select>
+                        <Button></Button>
+>>>>>>> main
                     </form>
                     <DevTool control={control} />
                     <p className="mt-9 text-lg">
