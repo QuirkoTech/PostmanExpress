@@ -8,7 +8,10 @@ const Input = ({ type, placeHolder, register, errorMessage }) => {
                 placeholder={placeHolder}
                 {...register}
             />
-            <span role="alert" className="text-danger-main mb-6 self-start text-sm">
+            <span
+                role="alert"
+                className="text-danger-main mb-6 self-start text-sm"
+            >
                 {errorMessage}
             </span>
         </>

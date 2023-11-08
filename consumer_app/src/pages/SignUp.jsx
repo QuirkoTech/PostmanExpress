@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-<<<<<<< HEAD
 import { Link, useNavigate } from "react-router-dom";
 import { DevTool } from "@hookform/devtools";
 import { ChevronsUpDown } from "lucide-react";
@@ -7,12 +6,8 @@ import { useEffect } from "react";
 import Input from "../components/Input";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-
 let renderCount = 0;
-=======
-import { Link } from "react-router-dom";
 import { Button } from "../components/button";
->>>>>>> main
 
 const SignUp = () => {
     // Yup validation schema for form validation
@@ -37,8 +32,7 @@ const SignUp = () => {
         handleSubmit,
         control,
         setError,
-        formState: { errors, isSubmitSuccessful },
-        isValidating,
+        formState: { errors, isSubmitSuccessful, isSubmitting },
         watch,
         setFocus,
         reset,
@@ -58,7 +52,7 @@ const SignUp = () => {
     }, [isSubmitSuccessful, reset, navigate]);
 
     renderCount++;
-    console.log(isSubmitSuccessful);
+    console.log(isSubmitting);
 
     const checkEmailExists = async (email) => {
         try {
@@ -75,7 +69,6 @@ const SignUp = () => {
             console.log(error);
         }
     };
-    
 
     const submitHandler = async (data) => {
         try {
@@ -130,7 +123,6 @@ const SignUp = () => {
                             }}
                             errorMessage={errors.email?.message}
                         />
-
                         <Input
                             type="password"
                             placeHolder="Password"
@@ -139,7 +131,6 @@ const SignUp = () => {
                             }}
                             errorMessage={errors.password?.message}
                         />
-
                         <Input
                             type="password"
                             placeHolder="Confirm Password"
@@ -148,7 +139,6 @@ const SignUp = () => {
                             }}
                             errorMessage={errors.confirmPassword?.message}
                         />
-
                         <div className="relative w-full">
                             <select
                                 {...register("location")}
@@ -171,24 +161,14 @@ const SignUp = () => {
                                 {errors.location?.message}
                             </p>
                         </div>
-
                         <button
                             type="submit"
                             className="rounded-low bg-green-main self-end px-7 py-1"
-                            disabled={isValidating}
+                            disabled={isSubmitting}
                         >
-<<<<<<< HEAD
                             Apply
                         </button>
-=======
-                            <option value="oulu">Oulu</option>
-                            <option value="helsinki">Helsinki</option>
-                            <option value="turku">Turku</option>
-                            <option value="tampere">Tampere</option>
-                            <option value="espoo">Espoo</option>
-                        </select>
-                        <Button></Button>
->>>>>>> main
+                        {/* < Button type="submit" disabled={isValidating} /> */}
                     </form>
                     <DevTool control={control} />
                     <p className="mt-9 text-lg">
