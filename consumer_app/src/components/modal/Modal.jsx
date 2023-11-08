@@ -22,25 +22,23 @@ function Modal({ isOpen, closeModal, name, menuLinks, className }) {
                     </li>
                     {menuLinks.map((link, index) => (
                         <li key={index} className="text-white text-lg font-normal my-5">
-                            <a className="text-white" href={link.url}>
+                            <a className="text-red" href={link.url}>
                                 {link.title}
                             </a>
                         </li>
                     ))}
                 </ul>
-                <div className='flex flex-col'>
+                <div className='flex flex-col justify-between '>
                     <button
                         // onClick={handleSignOut}
                         className="mr-auto p-0 my-5 bg-transparent transition-all text-[#C55B5B] text-lg font-medium border-none cursor-pointer focus:outline-none hover:border-none"
                     >
                         Log Out
+        
                     </button>
-                <button
-                    // onClick={handleDeleteAccount}
-                    className="mr-auto p-0 mt-[480px] bg-transparent transition-all text-[#C55B5B] text-lg font-medium border-none cursor-pointer focus:outline-none hover:border-none"
-                >
-                    Delete Account
-                </button>
+
+                
+
                 </div>
             </div>
         </div>

@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { Button } from "../components/button";
 
 const SignUp = () => {
     return (
@@ -50,9 +51,7 @@ const SignUp = () => {
                             <option value="tampere">Tampere</option>
                             <option value="espoo">Espoo</option>
                         </select>
-                        <button className="rounded-low bg-green-main self-end px-7 py-1">
-                            Apply
-                        </button>
+                        <Button></Button>
                     </form>
                     <p>
                         Already have an account?{" "}

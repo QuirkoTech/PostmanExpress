@@ -4,17 +4,14 @@ import { NavLink } from 'react-router-dom';
 
 const menuLinks = [
     {
-        url: '/my-parcels',
-        title: 'My Parcels',
+        url: '/',
+        title: 'Accepted Parcels',
     },
     {
-        url: '/new-parcels',
-        title: 'New Parcel',
+        url: '/pending',
+        title: 'Available Parcel',
     },
-    {
-        url: '/parcel-history',
-        title: 'Parcel history',
-    },
+    
 ];
 
 const Header = () => {
@@ -37,12 +34,12 @@ const Header = () => {
 
     return (
         <div className={`shadow-lg z-50 bg-dark-secondary`}>
-            <div className="container flex items-center w-full h-[72px] py-5 px-0 transition-transform duration-1000">
+            <div className=" flex items-center w-full h-[72px] py-5 px-0 transition-transform duration-1000">
                 <NavLink to="/">
-                    <h1 className="text-2xl text-white">PostmanExpress</h1>
+                    <h1 className="text-2xl ml-10 text-white">PostmanExpress</h1>
                 </NavLink>
                 <div className="ml-auto">
-                    <button className="z-1 relative bg-transparent border-none text-white text-2xl" onClick={openModal}>
+                    <button className="z-1 relative bg-transparent border-none text-white text-2xl mr-10" onClick={openModal}>
                         Menu
                     </button>
                     {isModalOpen && (
@@ -51,7 +48,7 @@ const Header = () => {
                             onClick={handleModalClick}
                         >
                             <div
-                                className="ml-auto w-1/6 h-full bg-dark-secondary border-l-2 border-l-white/5  rounded-tr-none rounded-b-none border-solid p-6 rounded-r-lg shadow-lg"
+                                className="ml-auto w-1/6 h-full bg-dark-secondary border-l-2 border-l-white/5 rounded-tr-none rounded-br-none border-solid p-6 rounded-r-lg shadow-lg"
                                 ref={modalRef}
                             >
                                 <Modal
