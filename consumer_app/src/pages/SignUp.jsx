@@ -1,13 +1,14 @@
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 
 const SignUp = () => {
     return (
         <section className="padding">
             <div className="max-container">
+                <h1 className="mt-14 text-center text-5xl text-white ">
+                    PostmanExpress
+                </h1>
                 <div className="mx-auto w-64">
-                    <h1 className="mt-14 text-center text-5xl text-white ">
-                        PostmanExpress
-                    </h1>
                     <form
                         action=""
                         className="flex flex-col items-center text-lg"
@@ -42,7 +43,7 @@ const SignUp = () => {
                         <select
                             name="location"
                             id=""
-                            className="bg-dark-secondary rounded-low border-slate-blue mb-9 w-full border-2 px-5 py-1 focus:outline-none focus:ring-1.5"
+                            className="bg-dark-secondary rounded-low border-slate-blue focus:ring-1.5 mb-9 w-full border-2 px-5 py-1 focus:outline-none"
                         >
                             <option value="oulu">Oulu</option>
                             <option value="helsinki">Helsinki</option>
@@ -54,9 +55,11 @@ const SignUp = () => {
                             Apply
                         </button>
                     </form>
-                    <p>
+                    <p className="mt-9 text-lg">
                         Already have an account?{" "}
-                        <span className="text-white">Log in</span>
+                        <Link to="/login" className="text-white">
+                            Log in
+                        </Link>
                     </p>
                 </div>
             </div>
