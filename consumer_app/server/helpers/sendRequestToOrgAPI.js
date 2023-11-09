@@ -1,17 +1,22 @@
-import axios from "axios";
+import fetch from "node-fetch";
 
-const sendRequest = async (method, url, config, data) => {
-    config = { ...config, api_key: process.env.API_KEY };
-    switch (method) {
-        case "POST":
-            return axios.post(
-                `${process.env.ORGANIZATION_API_URL}${url}`,
-                data,
-                config,
-            );
-        case "GET":
-            return axios.get(`${process.env.ORGANIZATION_API_URL}${url}`);
+const sendRequest = async (method, url, headers = {}, body = {}) => {
+    headers = {
+        ...headers,
+        "x-api-key": process.env.API_KEY,
+        "Content-Type": "application/json",
+    };
+
+    const options = {
+        method,
+        headers,
+    };
+
+    if (method !== "GET") {
+        options.body = JSON.stringify(body);
     }
+
+    return fetch(`${process.env.ORGANIZATION_API_URL}${url}`, options);
 };
 
 export default sendRequest;

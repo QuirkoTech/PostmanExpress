@@ -1,7 +1,6 @@
 import APIError from "../helpers/APIError.js";
 import catchAsync from "../helpers/catchAsync.js";
 import sendRequest from "../helpers/sendRequestToOrgAPI.js";
-// import axios from "axios";
 import bcrypt from "bcrypt";
 
 export const signUp = catchAsync(async (req, res, next) => {
@@ -23,11 +22,6 @@ export const signUp = catchAsync(async (req, res, next) => {
         location,
     };
 
-    // const response = await axios.post(
-    //     `${process.env.ORGANIZATION_API_URL}/consumer/signup`,
-    //     userData,
-    // );
-
     const response = await sendRequest(
         "POST",
         "/consumer/signup",
@@ -35,9 +29,10 @@ export const signUp = catchAsync(async (req, res, next) => {
         userData,
     );
 
-    if (response.status !== 201) {
-        res.status(response.status).json(response.data);
-    }
+    const resJSON = await response.json();
 
-    res.status(response.status).json({ status: "success" });
+    if (!response.ok)
+        return next(new APIError(resJSON.message, resJSON.error.statusCode));
+
+    res.status(response.status).json(resJSON);
 });

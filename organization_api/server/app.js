@@ -17,15 +17,15 @@ app.use(express.json());
 if (process.env.ENV === "dev") app.use(morgan("dev"));
 
 // Check if API keys match
-app.use((req, res, next) => {
-    console.log(req.api_key);
-    if (req.api_key !== process.env.API_KEY)
-        return res
-            .status(400)
-            .json({ error: "fail", message: "Invaild API key." });
+app.use(
+    catchAsync(async (req, res, next) => {
+        const apiKey = req.headers["x-api-key"];
+        if (apiKey !== process.env.API_KEY)
+            return next(new APIError("Invalid API key.", 400));
 
-    next();
-});
+        next();
+    }),
+);
 
 app.use(`/consumer`, consumerRoutes);
 app.use(`/parcel`, parcelRoutes);

@@ -17,13 +17,6 @@ if (process.env.ENV === "dev") app.use(morgan("dev"));
 
 app.use(checkContentType);
 
-// Set the API key in the request
-app.use((req, res, next) => {
-    req.api_key = process.env.API_KEY;
-    console.log(req.api_key);
-    next();
-});
-
 // Here are all the application routes
 app.use("/auth", authRoutes);
 
