@@ -161,14 +161,7 @@ const SignUp = () => {
                                 {errors.location?.message}
                             </p>
                         </div>
-                        <button
-                            type="submit"
-                            className="rounded-low bg-green-main self-end px-7 py-1"
-                            disabled={isSubmitting}
-                        >
-                            Apply
-                        </button>
-                        {/* < Button type="submit" disabled={isValidating} /> */}
+                        <Button type="submit" disabled={isSubmitting} />
                     </form>
                     <DevTool control={control} />
                     <p className="mt-9 text-lg">
