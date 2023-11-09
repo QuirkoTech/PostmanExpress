@@ -34,5 +34,12 @@ export const signUp = catchAsync(async (req, res, next) => {
     if (!response.ok)
         return next(new APIError(resJSON.message, resJSON.error.statusCode));
 
-    res.status(response.status).json(resJSON);
+    res.cookie("access_token", resJSON.access_token, {
+        httpOnly: true,
+        path: "/",
+        sameSite: "None",
+        secure: true,
+    });
+
+    res.status(response.status).json({ status: resJSON.status });
 });

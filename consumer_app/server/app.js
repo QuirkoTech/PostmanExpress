@@ -10,7 +10,12 @@ import checkContentType from "./helpers/checkContentType.js";
 
 const app = express();
 
-app.use(cors());
+app.use(
+    cors({
+        origin: `${process.env.CONSUMER_APP_URL}`,
+        credentials: true,
+    }),
+);
 app.use(express.json());
 
 if (process.env.ENV === "dev") app.use(morgan("dev"));

@@ -10,8 +10,6 @@ export const consumerSignup = catchAsync(async (req, res, next) => {
     if (!username || !user_email || !password || !location)
         return next(new APIError("Some required fields missing.", 400));
 
-    // Code to sign up
-
     const client = await pool.connect();
 
     try {
@@ -49,8 +47,6 @@ export const consumerSignup = catchAsync(async (req, res, next) => {
         } catch (rollbackError) {
             console.error("User signup rollback failed: ", rollbackError);
         }
-
-        console.log(error);
 
         client.release();
         return next(
