@@ -37,7 +37,7 @@ function Modal({ isOpen, closeModal, name, menuLinks, className }) {
                     </button>
                 <button
                     // onClick={handleDeleteAccount}
-                    className="mr-auto p-0 mt-[480px] bg-transparent transition-all text-[#C55B5B] text-lg font-medium border-none cursor-pointer focus:outline-none hover:border-none"
+                    className="mr-auto p-0 mt-[540px] bg-transparent transition-all text-[#C55B5B] text-lg font-medium border-none cursor-pointer focus:outline-none hover:border-none"
                 >
                     Delete Account
                 </button>
