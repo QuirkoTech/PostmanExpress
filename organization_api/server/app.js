@@ -6,6 +6,8 @@ import "./config.js";
 import globalErrorHandler from "./controllers/errorController.js";
 import APIError from "./helpers/APIError.js";
 import consumerRoutes from "./routes/consumerRoutes.js";
+import parcelRoutes from "./routes/parcelRoutes.js";
+import catchAsync from "./helpers/catchAsync.js";
 
 const app = express();
 
@@ -13,6 +15,17 @@ app.use(cors());
 app.use(express.json());
 
 if (process.env.ENV === "dev") app.use(morgan("dev"));
+
+// Check if API keys match
+app.use((req, res, next) => {
+    console.log(req.api_key);
+    if (req.api_key !== process.env.API_KEY)
+        return res
+            .status(400)
+            .json({ error: "fail", message: "Invaild API key." });
+
+    next();
+});
 
 app.use(`/consumer`, consumerRoutes);
 app.use(`/parcel`, parcelRoutes);

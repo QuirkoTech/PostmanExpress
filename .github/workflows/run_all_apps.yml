@@ -53,7 +53,7 @@ jobs:
                   HOST: ${{ secrets.PVM_HOST }}
                   USERNAME: ${{ secrets.PVM_USERNAME }}
               run: |
-                  ssh -v $USERNAME@$HOST << 'ENDSSH'
+                  ssh $USERNAME@$HOST << 'ENDSSH'
                     cd ~/Projects/PostmanExpress
                     git pull origin main
                     cd consumer_app
