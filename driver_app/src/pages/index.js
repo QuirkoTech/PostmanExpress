@@ -3,4 +3,6 @@
 import Login from "./Login";
 import HomePage from "./HomePage";
 import NotFoundPage from "./NotFoundPage";
-export { Login, HomePage, NotFoundPage };
+import ActiveParcelPage from "./ActiveParcelPage"
+
+export { Login, HomePage, NotFoundPage, ActiveParcelPage };
