@@ -1,5 +1,4 @@
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
 import { Button } from "../components/button";
 
 const Login = () => {
@@ -13,6 +12,7 @@ const Login = () => {
                     <form
                         action=""
                         className="flex flex-col items-center text-lg"
+                        noValidate
                     >
                         <h2 className=" pb-5 pt-20 text-lg text-white ">
                             Driver Log In
@@ -32,12 +32,6 @@ const Login = () => {
 
                         <Button></Button>
                     </form>
-                    <p className="mt-9 whitespace-nowrap text-lg">
-                        Don't have an account yet?{" "}
-                        <Link to="/signup" className="text-white">
-                            Sign up
-                        </Link>
-                    </p>
                 </div>
             </div>
         </section>
