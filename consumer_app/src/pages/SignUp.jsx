@@ -3,11 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { DevTool } from "@hookform/devtools";
 import { ChevronsUpDown } from "lucide-react";
 import { useEffect } from "react";
-import Input from "../components/Input";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 let renderCount = 0;
-import { Button } from "../components/button";
+import { Button, Input } from "../components";
+import axios from "axios";
 
 const SignUp = () => {
     // Yup validation schema for form validation
@@ -44,15 +44,16 @@ const SignUp = () => {
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if (isSubmitSuccessful) {
-            reset();
-            navigate("/login");
-        }
-    }, [isSubmitSuccessful, reset, navigate]);
+    // useEffect(() => {
+    //     if (isSubmitSuccessful) {
+    //         reset();
+    //         navigate("/login");
+    //     }
+    // }, [isSubmitSuccessful, reset, navigate]);
+
+    console.log(isSubmitSuccessful)
 
     renderCount++;
-    console.log(isSubmitting);
 
     const checkEmailExists = async (email) => {
         try {
@@ -78,6 +79,7 @@ const SignUp = () => {
                     type: "manual",
                     message: "Email already exists",
                 });
+                console.log("email exists");
             } else {
                 console.log(data, "Data submitted");
             }
@@ -163,7 +165,7 @@ const SignUp = () => {
                         </div>
                         <Button type="submit" disabled={isSubmitting} />
                     </form>
-                    <DevTool control={control} />
+                    <DevTool control={control} />  
                     <p className="mt-9 text-lg">
                         Already have an account?{" "}
                         <Link to="/login" className="text-white">
