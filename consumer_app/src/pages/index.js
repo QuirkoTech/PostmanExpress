@@ -5,4 +5,5 @@ import Login from "./Login";
 import HomePage from "./HomePage";
 import NotFoundPage from "./NotFoundPage";
 import NewParcelPage from "./NewParcelPage";
-export { SignUp, Login, HomePage, NotFoundPage, NewParcelPage };
+import ActiveParcelPage from "./ActiveParcelPage"
+export { SignUp, Login, HomePage, NotFoundPage, NewParcelPage, ActiveParcelPage };
