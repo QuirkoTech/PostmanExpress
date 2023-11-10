@@ -1,7 +1,7 @@
 import Layout from '../components/layout/Layout';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Button } from '../components/Button';
+import { Button } from '../components';
 import {  Info } from 'lucide-react';
 
 const colorMapping = {
