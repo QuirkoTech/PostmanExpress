@@ -11,6 +11,14 @@
     scroll-behavior: smooth;
 }
 
+
+@layer components {
+    .max-container {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+}
+
 @layer base {
     html {
         font-family: "Barlow";
