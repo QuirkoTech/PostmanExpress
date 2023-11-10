@@ -6,6 +6,7 @@ import "./config.js";
 import globalErrorHandler from "./controllers/errorControllers.js";
 import APIError from "./helpers/APIError.js";
 import authRoutes from "./routes/authRoutes.js";
+import checkContentType from "./helpers/checkContentType.js";
 
 const app = express();
 
@@ -14,11 +15,7 @@ app.use(express.json());
 
 if (process.env.ENV === "dev") app.use(morgan("dev"));
 
-// Set the API key in the request
-app.use((req, res, next) => {
-    req.api_key = process.env.API_KEY;
-    next();
-});
+app.use(checkContentType);
 
 app.use("/auth", authRoutes);
 
