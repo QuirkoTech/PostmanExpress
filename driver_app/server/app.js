@@ -3,8 +3,9 @@ import cors from "cors";
 import morgan from "morgan";
 import "./config.js";
 
-// import globalErrorHandler from './controllers/errorController.js';
-// import APIError from './helpers/APIError.js';
+import globalErrorHandler from "./controllers/errorControllers.js";
+import APIError from "./helpers/APIError.js";
+import authRoutes from "./routes/authRoutes.js";
 
 const app = express();
 
@@ -19,10 +20,12 @@ app.use((req, res, next) => {
     next();
 });
 
-// app.all('*', (req, res, next) => {
-//     next(new APIError(`Can't find ${req.originalUrl} on this server!`, 404));
-// });
+app.use("/auth", authRoutes);
 
-// app.use(globalErrorHandler);
+app.all("*", (req, res, next) => {
+    next(new APIError(`Can't find ${req.originalUrl} on this server!`, 404));
+});
+
+app.use(globalErrorHandler);
 
 export default app;

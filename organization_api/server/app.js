@@ -3,7 +3,7 @@ import cors from "cors";
 import morgan from "morgan";
 import "./config.js";
 
-import globalErrorHandler from "./controllers/errorController.js";
+import globalErrorHandler from "./controllers/errorControllers.js";
 import APIError from "./helpers/APIError.js";
 import consumerRoutes from "./routes/consumerRoutes.js";
 import parcelRoutes from "./routes/parcelRoutes.js";
