@@ -10,6 +10,7 @@ const cookieConfig = {
     path: "/",
     sameSite: "None",
     secure: true,
+    domain: process.env.DRIVER_APP_DOMAIN,
 };
 
 export const logIn = catchAsync(async (req, res, next) => {
