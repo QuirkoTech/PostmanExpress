@@ -46,7 +46,7 @@ export const consumerSignup = catchAsync(async (req, res, next) => {
         try {
             await client.query("ROLLBACK");
         } catch (rollbackError) {
-            console.error("User signup rollback failed: ", rollbackError);
+            console.error("User sign up rollback failed: ", rollbackError);
         }
 
         client.release();
@@ -99,7 +99,7 @@ export const consumerLogin = catchAsync(async (req, res, next) => {
         try {
             await client.query("ROLLBACK");
         } catch (rollbackError) {
-            console.error("User signup rollback failed: ", rollbackError);
+            console.error("User log in rollback failed: ", rollbackError);
         }
 
         client.release();

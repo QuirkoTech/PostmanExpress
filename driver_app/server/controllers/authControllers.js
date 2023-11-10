@@ -5,8 +5,65 @@ import APIError from "../helpers/APIError.js";
 import signTokens from "./../helpers/signTokens.js";
 import bcrypt from "bcrypt";
 
+const cookieConfig = {
+    httpOnly: true,
+    path: "/",
+    sameSite: "None",
+    secure: true,
+};
+
 export const logIn = catchAsync(async (req, res, next) => {
     const { driver_email, password } = req.body;
+
+    if (!password || !driver_email)
+        return next(new APIError("Some required fields missing.", 400));
+
+    const client = await pool.connect();
+
+    try {
+        await client.query("BEGIN");
+
+        const driver = await client.query(
+            "SELECT * FROM drivers WHERE driver_email = $1",
+            [driver_email],
+        );
+
+        if (driver.rowCount === 0)
+            return next(new APIError("No driver found with this email.", 404));
+
+        const isMatch = await bcrypt.compare(password, driver.rows[0].password);
+
+        if (isMatch === false) {
+            return next(new APIError("Invalid credentials.", 403));
+        }
+
+        const { accessToken, refreshToken } = signTokens(
+            "driver",
+            driver.rows[0].driver_id,
+        );
+
+        await client.query(
+            "UPDATE drivers SET refresh_token = $1 WHERE driver_id = $2",
+            [refreshToken, driver.rows[0].driver_id],
+        );
+
+        await client.query("COMMIT");
+        client.release();
+
+        res.cookie("access_token", accessToken, cookieConfig);
+        res.status(201).json({ status: "success" });
+    } catch (error) {
+        try {
+            await client.query("ROLLBACK");
+        } catch (rollbackError) {
+            console.error("Driver log in rollback failed: ", rollbackError);
+        }
+
+        client.release();
+        return next(
+            new APIError("Couldn't perform log in, try again later.", 500),
+        );
+    }
 });
 
 export const signUp = catchAsync(async (req, res, next) => {
@@ -40,7 +97,6 @@ export const signUp = catchAsync(async (req, res, next) => {
         const driver_id = v4();
 
         const { accessToken, refreshToken } = signTokens("driver", driver_id);
-        console.log(accessToken, refreshToken);
 
         await client.query(
             "INSERT INTO drivers(driver_id, driver_name, driver_email, password, refresh_token, driver_location) VALUES($1, $2, $3, $4, $5, $6) RETURNING *",
@@ -57,7 +113,8 @@ export const signUp = catchAsync(async (req, res, next) => {
         await client.query("COMMIT");
         client.release();
 
-        res.status(201).json({ status: "success", access_token: accessToken });
+        res.cookie("access_token", accessToken, cookieConfig);
+        res.status(201).json({ status: "success" });
     } catch (error) {
         try {
             await client.query("ROLLBACK");
