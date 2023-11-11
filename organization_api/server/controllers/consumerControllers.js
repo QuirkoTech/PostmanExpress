@@ -109,4 +109,9 @@ export const consumerLogin = catchAsync(async (req, res, next) => {
     }
 });
 
-export const consumerLoad = catchAsync(async (req, res, next) => {});
+export const consumerLoad = catchAsync(async (req, res, next) => {
+    res.status(200).json({
+        status: "success",
+        data: { username: req.user.user_name, notifications: [] },
+    });
+});
