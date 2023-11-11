@@ -14,7 +14,7 @@
 
 @layer components {
     .max-container {
-        max-width: 600px;
+        max-width: 900px;
         margin: 0 auto;
     }
 }
@@ -22,5 +22,12 @@
 @layer base {
     html {
         font-family: "Barlow";
+    }
+}
+
+
+@layer utilities {
+    .padding {
+        @apply px-20 py-10;
     }
 }
