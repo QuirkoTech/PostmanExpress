@@ -8,6 +8,7 @@ const cookieConfig = {
     path: "/",
     sameSite: "None",
     secure: true,
+    domain: process.env.CONSUMER_APP_DOMAIN,
 };
 
 export const signUp = catchAsync(async (req, res, next) => {
@@ -61,4 +62,13 @@ export const logIn = catchAsync(async (req, res, next) => {
 
     res.cookie("access_token", resJSON.access_token, cookieConfig);
     res.status(response.status).json({ status: resJSON.status });
+});
+
+// eslint-disable-next-line no-unused-vars
+export const logOut = catchAsync(async (req, res, next) => {
+    res.clearCookie("access_token", {
+        path: "/",
+        domain: process.env.CONSUMER_APP_DOMAIN,
+    });
+    res.status(201).json({ status: "success" });
 });
