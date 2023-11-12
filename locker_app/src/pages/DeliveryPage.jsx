@@ -1,6 +1,8 @@
 import Keypad from "../components/Keypad";
 import { ArrowLeftCircle } from "lucide-react";
 import { useState } from "react";
+import { Link } from 'react-router-dom';
+
 
 const DeliveryPage = () => {
     const [pin, setPin] = useState("");
@@ -24,9 +26,9 @@ const DeliveryPage = () => {
                 <div className="flex justify-between text-white">
                     <h2 className=" text-xl">PostmanExpress</h2>
 
-                    <button onClick={() => console.log("hey")}>
-                        <ArrowLeftCircle size={28} />{" "}
-                    </button>
+                    <Link to="/">
+                        <ArrowLeftCircle size={28} />
+                    </Link>
                 </div>
                 <h1 className="mt-10 text-center text-3xl text-white">
                     Deliver Parcel

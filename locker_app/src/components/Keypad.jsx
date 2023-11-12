@@ -12,10 +12,10 @@ const Keypad = ({ onDigitClick, onClearClick, onSubmitClick }) => {
                     {digit}
                 </button>
             ))}
-            <button className="rounded-md bg-red-600 shadow-md shadow-transparent text-xl text-white" onClick={onClearClick}>
+            <button className="rounded-md bg-red-600 shadow-md shadow-transparent text-xl " onClick={onClearClick}>
                 Clear
             </button>
-            <button className="rounded-md bg-green-600 shadow-md shadow-transparent text-xl text-white" onClick={onSubmitClick}>
+            <button className="rounded-md bg-green-600 shadow-md shadow-transparent text-xl " onClick={onSubmitClick}>
                 Submit
             </button>
         </div>

@@ -1,6 +1,7 @@
 import Keypad from "../components/Keypad";
 import { ArrowLeftCircle } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const PickupPage = () => {
     const [pin, setPin] = useState("");
@@ -24,9 +25,9 @@ const PickupPage = () => {
                 <div className="flex justify-between text-white">
                     <h2 className=" text-xl">PostmanExpress</h2>
 
-                    <button onClick={() => console.log("hey")}>
+                    <Link to="/">
                         <ArrowLeftCircle size={28} />{" "}
-                    </button>
+                    </Link>
                 </div>
                 <h1 className="mt-10 text-center text-3xl text-white">
                     Pickup Parcel
