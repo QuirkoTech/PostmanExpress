@@ -81,17 +81,20 @@ const SignUp = () => {
     // Function to handle form submission
     const submitHandler = async (data) => {
         try {
+            console.log(data);
             const response = await axios.post(
                 `${CONSUMER_URL}/auth/signup`,
                 data,
+                { withCredentials: true },
             );
-            const message = response.data.message;
+            const message = response.data.status;
 
             if (message === "success") {
                 reset();
             }
         } catch (error) {
             const message = error.response.data.message;
+            console.log(error);
 
             // Set error message for existing email
             if (message === "User with this email already exists.") {

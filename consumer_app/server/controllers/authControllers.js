@@ -42,7 +42,7 @@ export const signUp = catchAsync(async (req, res, next) => {
         return next(new APIError(resJSON.message, response.status));
 
     res.cookie("access_token", resJSON.access_token, cookieConfig);
-    res.status(response.status).json({ message: resJSON.status });
+    res.status(response.status).json({ status: resJSON.status });
 });
 
 export const logIn = catchAsync(async (req, res, next) => {
