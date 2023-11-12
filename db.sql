@@ -153,7 +153,7 @@ VALUES (
 -- **************************************************************************** TEST QUERIES ****************************************************************************
 
 
-************* Here you can see how to add a new status to the status_timestamps array *************
+-- ************* Here you can see how to add a new status to the status_timestamps array *************
 
 CREATE TABLE test (
   id SERIAL PRIMARY KEY,
@@ -182,3 +182,4 @@ SELECT status_timestamps FROM test;
 
 
 
+-- SELECT * FROM parcels WHERE parcel_id = ANY($1);
