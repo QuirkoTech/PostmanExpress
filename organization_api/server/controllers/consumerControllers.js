@@ -17,11 +17,11 @@ export const consumerSignup = catchAsync(async (req, res, next) => {
         await client.query("BEGIN");
 
         const userEmailCheck = await client.query(
-            "SELECT COUNT(*) FROM users WHERE user_email = $1",
+            "SELECT * FROM users WHERE user_email = $1",
             [user_email],
         );
 
-        if (parseInt(userEmailCheck.rows[0].count, 10) > 0) {
+        if (userEmailCheck.rowCount > 0) {
             await client.query("ROLLBACK");
             client.release();
             return next(
@@ -46,7 +46,7 @@ export const consumerSignup = catchAsync(async (req, res, next) => {
         try {
             await client.query("ROLLBACK");
         } catch (rollbackError) {
-            console.error("User signup rollback failed: ", rollbackError);
+            console.error("User sign up rollback failed: ", rollbackError);
         }
 
         client.release();
@@ -72,7 +72,7 @@ export const consumerLogin = catchAsync(async (req, res, next) => {
             [user_email],
         );
 
-        if (user.rows.length === 0)
+        if (user.rowCount === 0)
             return next(new APIError("No user found with this email.", 404));
 
         const isMatch = await bcrypt.compare(password, user.rows[0].password);
@@ -99,7 +99,7 @@ export const consumerLogin = catchAsync(async (req, res, next) => {
         try {
             await client.query("ROLLBACK");
         } catch (rollbackError) {
-            console.error("User signup rollback failed: ", rollbackError);
+            console.error("User log in rollback failed: ", rollbackError);
         }
 
         client.release();

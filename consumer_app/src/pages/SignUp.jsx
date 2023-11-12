@@ -1,19 +1,45 @@
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { DevTool } from "@hookform/devtools";
 import { ChevronsUpDown } from "lucide-react";
 import { useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-let renderCount = 0;
 import { Button, Input } from "../components";
 import axios from "axios";
 
 const SignUp = () => {
+    // Backend URL
+    const CONSUMER_URL = import.meta.env.VITE_CONSUMER_BACKEND_URL;
+
     // Yup validation schema for form validation
     const schema = yup.object({
-        name: yup.string().required("This field is required"),
-        email: yup
+        username: yup
+            .string()
+            .required("This field is required")
+            .test(
+                "two-names",
+                "Two names is required, with two characters or more",
+                (value) => {
+                    const names = value.split(" ");
+                    if (names.length < 2) {
+                        return false;
+                    }
+                    const [firstName, lastName] = names;
+                    const namesHas2Chars =
+                        firstName.trim().length >= 2 &&
+                        lastName.trim().length >= 2;
+                    return namesHas2Chars;
+                },
+            )
+            .test(
+                "no-special-characters",
+                "Names must not contain numbers or special characters",
+                (value) => {
+                    const hasSpecialCharacters = /[^a-zA-Z\s]/.test(value);
+                    return !hasSpecialCharacters;
+                },
+            ),
+        user_email: yup
             .string()
             .email("Email format is not valid")
             .required("This field is required"),
@@ -21,16 +47,16 @@ const SignUp = () => {
             .string()
             .required("This field is required")
             .min(7, "Password must be at least 7 characters"),
-        confirmPassword: yup
+        password_confirm: yup
             .string()
             .oneOf([yup.ref("password"), null], "Passwords must match"),
         location: yup.string().required("This field is required"),
     });
 
+    // React hook form
     const {
         register,
         handleSubmit,
-        control,
         setError,
         formState: { errors, isSubmitSuccessful, isSubmitting },
         watch,
@@ -42,62 +68,60 @@ const SignUp = () => {
         resolver: yupResolver(schema),
     });
 
+    // Used to re-route user
     const navigate = useNavigate();
-
-    // useEffect(() => {
-    //     if (isSubmitSuccessful) {
-    //         reset();
-    //         navigate("/login");
-    //     }
-    // }, [isSubmitSuccessful, reset, navigate]);
-
-    console.log(isSubmitSuccessful)
-
-    renderCount++;
-
-    const checkEmailExists = async (email) => {
-        try {
-            const response = await fetch(
-                `https://jsonplaceholder.typicode.com/users?email=${email}`,
-            );
-            const data = await response.json();
-            if (data.length > 0) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (error) {
-            console.log(error);
+    // If user is successfully registered, redirect to login page
+    useEffect(() => {
+        if (isSubmitSuccessful) {
+            reset();
+            navigate("/login");
         }
-    };
+    }, [isSubmitSuccessful, reset, navigate]);
 
+    // Function to handle form submission
     const submitHandler = async (data) => {
         try {
-            const emailExists = await checkEmailExists(data.email);
-            if (emailExists) {
-                setError("email", {
+            const response = await axios.post(
+                `${CONSUMER_URL}/auth/signup`,
+                data,
+                { withCredentials: true },
+            );
+            const message = response.data.status;
+
+            if (message === "success") {
+                reset();
+            }
+        } catch (error) {
+            const message = error.response.data.message;
+
+            // Set error message for existing email
+            if (message === "User with this email already exists.") {
+                setError("user_email", {
                     type: "manual",
                     message: "Email already exists",
                 });
-                console.log("email exists");
             } else {
-                console.log(data, "Data submitted");
+                setError("username", {
+                    type: "manual",
+                    message:
+                        "Something went wrong with the request, try again later",
+                });
             }
-        } catch (error) {
-            console.log(error);
         }
     };
 
+    // Set focus on username input on page load
     useEffect(() => {
-        setFocus("name");
+        setFocus("username");
     }, [setFocus]);
 
+    //Keep track of location value
     const locationValue = watch("location");
     return (
         <section className="padding">
             <div className="max-container">
                 <h1 className="mt-14 text-center text-5xl text-white ">
-                    PostmanExpress {renderCount}
+                    PostmanExpress
                 </h1>
                 <div className="mx-auto w-64">
                     <form
@@ -113,17 +137,17 @@ const SignUp = () => {
                             type="text"
                             placeHolder="Full Name"
                             register={{
-                                ...register("name"),
+                                ...register("username"),
                             }}
-                            errorMessage={errors.name?.message}
+                            errorMessage={errors.username?.message}
                         />
                         <Input
                             type="email"
                             placeHolder="Email"
                             register={{
-                                ...register("email"),
+                                ...register("user_email"),
                             }}
-                            errorMessage={errors.email?.message}
+                            errorMessage={errors.user_email?.message}
                         />
                         <Input
                             type="password"
@@ -137,9 +161,9 @@ const SignUp = () => {
                             type="password"
                             placeHolder="Confirm Password"
                             register={{
-                                ...register("confirmPassword"),
+                                ...register("password_confirm"),
                             }}
-                            errorMessage={errors.confirmPassword?.message}
+                            errorMessage={errors.password_confirm?.message}
                         />
                         <div className="relative w-full">
                             <select
@@ -165,7 +189,6 @@ const SignUp = () => {
                         </div>
                         <Button type="submit" disabled={isSubmitting} />
                     </form>
-                    <DevTool control={control} />  
                     <p className="mt-9 text-lg">
                         Already have an account?{" "}
                         <Link to="/login" className="text-white">

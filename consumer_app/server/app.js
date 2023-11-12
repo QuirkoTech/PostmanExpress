@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import "./config.js";
+import cookieParser from "cookie-parser";
 
 import authRoutes from "./routes/authRoutes.js";
 import globalErrorHandler from "./controllers/errorControllers.js";
@@ -16,6 +17,7 @@ app.use(
         credentials: true,
     }),
 );
+app.use(cookieParser());
 app.use(express.json());
 
 if (process.env.ENV === "dev") app.use(morgan("dev"));
