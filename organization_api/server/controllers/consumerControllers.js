@@ -121,11 +121,26 @@ export const consumerLoad = catchAsync(async (req, res, next) => {
             ...parcel,
         };
     });
+
     res.status(200).json({
         status: "success",
         data: {
             username: req.user.user_name,
             notifications,
+        },
+    });
+});
+
+export const userParcels = catchAsync(async (req, res, next) => {
+    const userParcels = await pool.query(
+        "SELECT (status_timestamps[array_upper(status_timestamps, 1)]->>'date') as last_status_date, parcel_id, parcel_status FROM parcels WHERE (parcel_sender_id = $1 OR parcel_receiver_email = $2) AND parcel_status != 'delivered'",
+        [req.user.user_id, req.user.user_email],
+    );
+
+    res.status(200).json({
+        status: "success",
+        data: {
+            user_parcels: userParcels.rows,
         },
     });
 });
