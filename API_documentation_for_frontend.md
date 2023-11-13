@@ -193,3 +193,26 @@ If response failed:
   "message": "<response message>"
 }
 ```
+
+### Consumer application load function
+
+To load the user into the application make a GET request to "/me" route
+NOTE: need to have "credentials": "include" in the request, but i dont know if it has to be set in request headers. This is needed to pass the access_token cookie to the API
+
+Response object:
+
+```
+{
+ "status": "success",
+ data: {
+  "username": "<username>",
+  "notifications": [
+    {
+      "title": "<notification_title>",
+      "parcel_id": "<parcel_id>",
+      "status": "<parcel_status>"
+    },...
+  ]
+ }
+}
+```
