@@ -204,7 +204,7 @@ Response object:
 ```
 {
  "status": "success",
- data: {
+ "data": {
   "username": "<username>",
   "notifications": [
     {
@@ -212,6 +212,28 @@ Response object:
       "parcel_id": "<parcel_id>",
       "status": "<parcel_status>"
     },...
+  ]
+ }
+}
+```
+
+### User active parcels
+
+To load user active parcels make a GET request to "/me/parcels" route
+NOTE: need to have "credentials": "include" in the request, but i dont know if it has to be set in request headers. This is needed to pass the access_token cookie to the API
+
+Response object:
+
+```
+{
+ "status": "success",
+ "data": {
+  "user_parcels": [
+    {
+      "last_status_date": "13.11.23",
+      "parcel_id": "f9a64037-2e16-40ec-95ec-10f64a1886d7",
+      "parcel_status": "prepared for delivery"
+    }
   ]
  }
 }
