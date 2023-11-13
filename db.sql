@@ -84,6 +84,7 @@ CREATE TABLE parcels (
   weight integer NOT NULL,
   pickup_pin integer UNIQUE,
   delivery_pin integer UNIQUE,
+  notify BOOLEAN DEFAULT TRUE,
   status_timestamps jsonb[]
 );
 
@@ -98,11 +99,11 @@ CREATE TABLE cabinets (
   parcel_id UUID REFERENCES parcels(parcel_id)
 );
 
-CREATE TABLE user_parcels (
-  id SERIAL PRIMARY KEY,
-  parcel_id UUID REFERENCES parcels(parcel_id),
-  notify BOOLEAN DEFAULT TRUE
-);
+-- CREATE TABLE user_parcels (
+--   id SERIAL PRIMARY KEY,
+--   parcel_id UUID REFERENCES parcels(parcel_id),
+--   notify BOOLEAN DEFAULT TRUE
+-- );
 
 
 -- **************************************************************************** DRIVER DB  ****************************************************************************
@@ -120,7 +121,7 @@ CREATE TABLE driver_parcels (
   id SERIAL PRIMARY KEY,
   driver_id UUID REFERENCES drivers(driver_id),
   parcel_id UUID UNIQUE NOT NULL,
-  notify BOOLEAN DEFAULT TRUE
+  delivered BOOLEAN DEFAULT FALSE
 );
 
 
