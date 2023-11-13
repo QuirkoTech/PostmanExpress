@@ -10,6 +10,7 @@ import axios from "axios";
 const SignUp = () => {
     // Backend URL
     const CONSUMER_URL = import.meta.env.VITE_CONSUMER_BACKEND_URL;
+    console.log(import.meta.env.VITE_TEST)
 
     // Yup validation schema for form validation
     const schema = yup.object({
