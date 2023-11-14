@@ -84,6 +84,7 @@ CREATE TABLE parcels (
   weight integer NOT NULL,
   pickup_pin integer UNIQUE,
   delivery_pin integer UNIQUE,
+  notify BOOLEAN DEFAULT TRUE,
   status_timestamps jsonb[]
 );
 
@@ -98,11 +99,11 @@ CREATE TABLE cabinets (
   parcel_id UUID REFERENCES parcels(parcel_id)
 );
 
-CREATE TABLE user_parcels (
-  id SERIAL PRIMARY KEY,
-  parcel_id UUID REFERENCES parcels(parcel_id),
-  notify BOOLEAN DEFAULT TRUE
-);
+-- CREATE TABLE user_parcels (
+--   id SERIAL PRIMARY KEY,
+--   parcel_id UUID REFERENCES parcels(parcel_id),
+--   notify BOOLEAN DEFAULT TRUE
+-- );
 
 
 -- **************************************************************************** DRIVER DB  ****************************************************************************
@@ -119,8 +120,8 @@ CREATE TABLE drivers (
 CREATE TABLE driver_parcels (
   id SERIAL PRIMARY KEY,
   driver_id UUID REFERENCES drivers(driver_id),
-  parcel_id UUID REFERENCES parcels(parcel_id),
-  notify BOOLEAN DEFAULT TRUE
+  parcel_id UUID UNIQUE NOT NULL,
+  delivered BOOLEAN DEFAULT FALSE
 );
 
 
@@ -153,7 +154,7 @@ VALUES (
 -- **************************************************************************** TEST QUERIES ****************************************************************************
 
 
-************* Here you can see how to add a new status to the status_timestamps array *************
+-- ************* Here you can see how to add a new status to the status_timestamps array *************
 
 CREATE TABLE test (
   id SERIAL PRIMARY KEY,
@@ -182,3 +183,4 @@ SELECT status_timestamps FROM test;
 
 
 
+-- SELECT * FROM parcels WHERE parcel_id = ANY($1);

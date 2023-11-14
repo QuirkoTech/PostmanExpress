@@ -57,18 +57,18 @@ jobs:
                     cd ~/Projects/PostmanExpress
                     git pull origin main || exit 1
                     cd consumer_app 
-                    npm i || exit 1
+                    npm ci || exit 1
                     npm run build || exit 1
                     pm2 restart consumer_app_api || exit 1
                     cd ../driver_app
-                    npm i || exit 1
+                    npm ci || exit 1
                     npm run build || exit 1
                     pm2 restart driver_app_api || exit 1
                     cd ../locker_app
-                    npm i || exit 1
+                    npm ci || exit 1
                     npm run build || exit 1
                     pm2 restart locker_app_api || exit 1
                     cd ../organization_api
-                    npm i || exit 1
+                    npm ci || exit 1
                     pm2 restart organization_api || exit 1
                   ENDSSH
