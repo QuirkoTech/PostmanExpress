@@ -1,5 +1,6 @@
 import catchAsync from "../helpers/catchAsync.js";
 import pool from "../db.js";
+import APIError from "../../../consumer_app/server/helpers/APIError.js";
 
 export const newParcel = catchAsync(async (req, res, next) => {
     const {
@@ -12,12 +13,17 @@ export const newParcel = catchAsync(async (req, res, next) => {
         status = "awaiting drop-off",
     } = req.body;
 
+    let pickup_pin = null;
+    let delivery_pin = null;
+
     const client = await pool.connect();
     try {
         await client.query("BEGIN");
 
+        if (status === "awaiting drop-off") delivery_pin = 12345;
+
         await client.query(
-            "INSERT INTO parcels (parcel_status, parcel_sender_id, parcel_receiver_email, height, length, width, weight, pickup_pin, delivery_pin, status_timestamps) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)",
+            "INSERT INTO parcels (parcel_status, parcel_sender_id, parcel_receiver_email, height, length, width, weight, pickup_pin, delivery_pin, status_timestamps, notify) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, ARRAY[jsonb_build_object('date', TO_CHAR( now(), 'DD.MM.YY'), 'time', TO_CHAR(now(), 'HH24:MI'), 'status', 'awaiting drop-off')], $10)",
             [
                 status,
                 req.user.user_id,
@@ -26,6 +32,9 @@ export const newParcel = catchAsync(async (req, res, next) => {
                 length,
                 width,
                 weight,
+                pickup_pin,
+                delivery_pin,
+                false,
             ],
         );
 
@@ -37,6 +46,8 @@ export const newParcel = catchAsync(async (req, res, next) => {
         } catch (rollbackError) {
             console.error("Parcel creation rollback failed: ", rollbackError);
         }
+
+        console.log(error);
 
         client.release();
         return next(
