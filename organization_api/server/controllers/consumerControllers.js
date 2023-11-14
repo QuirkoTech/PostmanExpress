@@ -110,22 +110,52 @@ export const consumerLogin = catchAsync(async (req, res, next) => {
 });
 
 export const consumerLoad = catchAsync(async (req, res, next) => {
-    const parcelsToNotify = await pool.query(
-        "SELECT parcel_id, parcel_status FROM parcels WHERE (parcel_sender_id = $1 OR parcel_receiver_email = $2) AND notify = 'true'",
-        [req.user.user_id, req.user.user_email],
-    );
+    const client = await pool.connect();
 
-    const notifications = parcelsToNotify.rows.map((parcel) => {
-        return {
-            title: "Status update",
-            ...parcel,
-        };
-    });
-    res.status(200).json({
-        status: "success",
-        data: {
-            username: req.user.user_name,
-            notifications,
-        },
-    });
+    try {
+        await client.query("BEGIN");
+
+        const parcelsToNotify = await client.query(
+            "SELECT parcel_id, parcel_status FROM parcels WHERE (parcel_sender_id = $1 OR parcel_receiver_email = $2) AND notify = 'true' AND parcel_status = 'delivered'",
+            [req.user.user_id, req.user.user_email],
+        );
+
+        const parcelIds = parcelsToNotify.rows.map((parcel) => {
+            return parcel.parcel_id;
+        });
+
+        await client.query(
+            "UPDATE parcels SET notify = 'false' WHERE parcel_id = ANY($1)",
+            [parcelIds],
+        );
+
+        const notifications = parcelsToNotify.rows.map((parcel) => {
+            return {
+                title: "Status update",
+                ...parcel,
+            };
+        });
+
+        await client.query("COMMIT");
+        client.release();
+
+        res.status(200).json({
+            status: "success",
+            data: {
+                username: req.user.user_name,
+                notifications,
+            },
+        });
+    } catch (error) {
+        try {
+            await client.query("ROLLBACK");
+        } catch (rollbackError) {
+            console.error("User load rollback failed: ", rollbackError);
+        }
+
+        client.release();
+        return next(
+            new APIError("Couldn't perform user load, try again later.", 500),
+        );
+    }
 });
