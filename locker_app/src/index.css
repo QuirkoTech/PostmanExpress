@@ -11,8 +11,27 @@
     scroll-behavior: smooth;
 }
 
+
+@layer components {
+    .max-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .custom-select {
+        @apply bg-dark-main rounded-low font-barlow appearance-none pl-7 pr-2  focus:outline-none focus:ring-0 text-white;
+    }
+}
+
 @layer base {
     html {
         font-family: "Barlow";
+    }
+}
+
+
+@layer utilities {
+    .padding {
+        @apply px-20 py-10;
     }
 }
