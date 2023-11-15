@@ -10,6 +10,7 @@ function App() {
         <main className="bg-dark-main text-slate-gray relative min-h-screen">
             <Authprovider>
                 <Routes>
+                    {/* Private routes */}
                     <Route
                         path="/"
                         element={
@@ -27,6 +28,8 @@ function App() {
                             </PrivateRoute>
                         }
                     />
+
+                    {/* Auth routes */}
                     <Route
                         path="/signup"
                         element={
@@ -44,6 +47,7 @@ function App() {
                         }
                     />
 
+                    {/* 404 */}
                     <Route path="*" element={<NotFoundPage />} />
                 </Routes>
             </Authprovider>

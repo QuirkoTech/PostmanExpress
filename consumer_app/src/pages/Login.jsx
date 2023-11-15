@@ -35,8 +35,6 @@ const Login = () => {
         setFocus("user_email");
     }, [setFocus]);
 
-    console.log(isSubmitting);
-
     const submitHandler = async (data) => {
         try {
             const response = await axios.post(

@@ -74,7 +74,7 @@ const SignUp = () => {
     useEffect(() => {
         if (isSubmitSuccessful) {
             reset();
-            navigate("/login");
+            navigate("/");
         }
     }, [isSubmitSuccessful, reset, navigate]);
 
