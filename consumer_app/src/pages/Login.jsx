@@ -1,14 +1,18 @@
-import { useForm } from "react-hook-form";
-import { Button, Input } from "../components";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { Button, Input } from "../components";
+import { AuthContext } from "../components/auth";
 
 const Login = () => {
     // Backend URL for the consumer app
     const CONSUMER_URL = import.meta.env.VITE_CONSUMER_BACKEND_URL;
+
+    // Function to fetch user data from the backend
+    const { fetchUser } = useContext(AuthContext);
 
     // Yup validation schema for form validation
     const schema = yup.object({
@@ -84,10 +88,11 @@ const Login = () => {
     const navigate = useNavigate();
     useEffect(() => {
         if (isSubmitSuccessful) {
-            reset();
+            fetchUser();
             navigate("/");
+            reset();
         }
-    }, [isSubmitSuccessful, reset, navigate]);
+    }, [isSubmitSuccessful, reset, navigate, fetchUser]);
 
     return (
         <section className="padding">

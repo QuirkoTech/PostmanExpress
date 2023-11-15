@@ -1,15 +1,20 @@
-import { useForm } from "react-hook-form";
+import { useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ChevronsUpDown } from "lucide-react";
-import { useEffect } from "react";
+import axios from "axios";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Button, Input } from "../components";
-import axios from "axios";
+import { ChevronsUpDown } from "lucide-react";
+
+import { AuthContext } from "../components/auth";
 
 const SignUp = () => {
     // Backend URL
     const CONSUMER_URL = import.meta.env.VITE_CONSUMER_BACKEND_URL;
+
+    // Function to fetch user data from the backend
+    const { fetchUser } = useContext(AuthContext);
 
     // Yup validation schema for form validation
     const schema = yup.object({
@@ -74,9 +79,10 @@ const SignUp = () => {
     useEffect(() => {
         if (isSubmitSuccessful) {
             reset();
+            fetchUser();
             navigate("/");
         }
-    }, [isSubmitSuccessful, reset, navigate]);
+    }, [isSubmitSuccessful, reset, navigate, fetchUser]);
 
     // Function to handle form submission
     const submitHandler = async (data) => {

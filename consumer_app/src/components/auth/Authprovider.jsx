@@ -10,31 +10,31 @@ const Authprovider = ({ children }) => {
     const [notifications, setNotifications] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            setIsLoading(true);
-            try {
-                const response = await axios.get(`${CONSUMER_URL}/me`, {
-                    withCredentials: true,
-                });
+    const fetchUser = async () => {
+        setIsLoading(true);
+        try {
+            const response = await axios.get(`${CONSUMER_URL}/me`, {
+                withCredentials: true,
+            });
 
-                const { status, data } = response.data;
+            const { status, data } = response.data;
 
-                if (status === "success") {
-                    setIsAuthenticated(true);
-                    setUserName(data.username);
-                    setNotifications(data.notifications);
-                }
-            } catch (error) {
-                const message = error.response.data.status;
-                if (message) {
-                    console.log(message);
-                }
-                setIsAuthenticated(false);
-                console.log(error);
+            if (status === "success") {
+                setIsAuthenticated(true);
+                setUserName(data.username);
+                setNotifications(data.notifications);
             }
-            setIsLoading(false);
-        };
+        } catch (error) {
+            const message = error.response.data.status;
+            if (message) {
+                console.log(message);
+            }
+            setIsAuthenticated(false);
+            console.log(error);
+        }
+        setIsLoading(false);
+    };
+    useEffect(() => {
         fetchUser();
     }, []);
 
@@ -43,6 +43,7 @@ const Authprovider = ({ children }) => {
         userName,
         notifications,
         isLoading,
+        fetchUser,
     };
     return (
         <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
