@@ -10,7 +10,7 @@ const generateUniquePin = async (pinType) => {
     let newPin;
 
     while (!isUnique) {
-        newPin = Math.floor(Math.random() * 100000);
+        newPin = Math.floor(10000 + Math.random() * 90000);
         isUnique = !takenPins.rows.some(
             (pinObj) => pinObj.delivery_pin === newPin,
         );

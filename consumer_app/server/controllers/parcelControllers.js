@@ -3,13 +3,29 @@ import catchAsync from "./../helpers/catchAsync.js";
 import sendRequest from "./../helpers/sendRequestToOrgAPI.js";
 
 export const newParcel = catchAsync(async (req, res, next) => {
-    let { package_name, recipient_email, weight, height, width, length } =
-        req.body;
+    let {
+        parcel_name,
+        recipient_email,
+        weight,
+        height,
+        width,
+        length,
+        ship_from,
+        ship_to,
+    } = req.body;
 
-    if (!recipient_email || !weight || !height || !width || !length)
+    if (
+        !recipient_email ||
+        !weight ||
+        !height ||
+        !width ||
+        !length ||
+        !ship_to ||
+        !ship_from
+    )
         return next(new APIError("Some required fields missing.", 400));
 
-    if (!package_name) req.body.package_name = "Parcel";
+    if (!parcel_name) req.body.parcel_name = "Parcel";
 
     const response = await sendRequest(
         "POST",

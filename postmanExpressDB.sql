@@ -6,8 +6,6 @@ CREATE DATABASE postman_express_db;
 -- DROP TABLES
 
 
-DROP TABLE IF EXISTS user_parcels;
-
 DROP TABLE IF EXISTS cabinets;
 
 DROP TABLE IF EXISTS parcels;
@@ -77,6 +75,8 @@ CREATE TABLE parcels (
   parcel_sender_id UUID REFERENCES users(user_id),
   parcel_receiver_email varchar(255),
   parcel_name varchar(255) NOT NULL,
+  ship_to LOCATION NOT NULL,
+  ship_from LOCATION NOT NULL,
   height integer NOT NULL,
   length integer NOT NULL,
   width integer NOT NULL,
