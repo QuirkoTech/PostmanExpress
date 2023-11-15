@@ -92,19 +92,26 @@ const SignUp = () => {
                 reset();
             }
         } catch (error) {
-            const message = error.response.data.message;
+            if (error.response) {
+                const message = error.response.data.message;
 
-            // Set error message for existing email
-            if (message === "User with this email already exists.") {
-                setError("user_email", {
-                    type: "manual",
-                    message: "Email already exists",
-                });
+                // Set error message for existing email
+                if (message === "User with this email already exists.") {
+                    setError("user_email", {
+                        type: "manual",
+                        message: "Email already exists",
+                    });
+                } else {
+                    setError("username", {
+                        type: "manual",
+                        message:
+                            "Something went wrong with the request, try again later",
+                    });
+                }
             } else {
                 setError("username", {
                     type: "manual",
-                    message:
-                        "Something went wrong with the request, try again later",
+                    message: "Error connecting to server, try again later",
                 });
             }
         }

@@ -35,7 +35,8 @@ const Login = () => {
         setFocus("user_email");
     }, [setFocus]);
 
-    // Submit handler for the form
+    console.log(isSubmitting);
+
     const submitHandler = async (data) => {
         try {
             const response = await axios.post(
@@ -50,22 +51,32 @@ const Login = () => {
                 reset();
             }
         } catch (error) {
-            const message = error.response.data.message;
-            if (message === "No user found with this email.") {
-                setError("user_email", {
-                    type: "manual",
-                    message: "No user found with this email",
-                });
-            } else if (message === "Invalid credentials.") {
-                setError("password", {
-                    type: "manual",
-                    message: "Invalid password",
-                });
+            if (error.response) {
+                // Handling specific API response errors
+                const message = error.response.data.message;
+                if (message === "No user found with this email.") {
+                    setError("user_email", {
+                        type: "manual",
+                        message: "No user found with this email",
+                    });
+                } else if (message === "Invalid credentials.") {
+                    setError("password", {
+                        type: "manual",
+                        message: "Invalid password",
+                    });
+                } else {
+                    setError("user_email", {
+                        type: "manual",
+                        message:
+                            "Something went wrong with the request, try again later",
+                    });
+                }
             } else {
+                // Handling network errors or other unhandled errors
+                console.error("Network error:", error.message);
                 setError("user_email", {
                     type: "manual",
-                    message:
-                        "Something went wrong with the request, try again later",
+                    message: "Error connecting to server, try again later",
                 });
             }
         }
