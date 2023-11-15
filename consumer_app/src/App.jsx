@@ -1,9 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { SignUp, Login, HomePage, NotFoundPage, NewParcelPage } from "./pages";
 
-import Authprovider from "./components/auth/Authprovider";
-import PrivateRoute from "./components/auth/PrivateRoute";
-import AuthRoute from "./components/auth/AuthRoute";
+import { AuthRoute, PrivateRoute, Authprovider } from "./components/auth";
 
 function App() {
     return (

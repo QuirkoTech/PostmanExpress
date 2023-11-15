@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import AuthContext from "./AuthContext";
+// import AuthContext from "./AuthContext";
 import axios from "axios";
-import { get } from "react-hook-form";
+import { AuthContext } from "./";
 
 const Authprovider = ({ children }) => {
     const CONSUMER_URL = import.meta.env.VITE_CONSUMER_BACKEND_URL;
@@ -10,8 +10,6 @@ const Authprovider = ({ children }) => {
     const [notifications, setNotifications] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
-  
-  
     useEffect(() => {
         const fetchUser = async () => {
             setIsLoading(true);
