@@ -1,23 +1,26 @@
 import { useState, useEffect } from "react";
 import AuthContext from "./AuthContext";
 import axios from "axios";
+import { set } from "react-hook-form";
 
 const Authprovider = ({ children }) => {
     const CONSUMER_URL = import.meta.env.VITE_CONSUMER_BACKEND_URL;
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [userName, setUserName] = useState("");
     const [notifications, setNotifications] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchUser = async () => {
+          setIsLoading(true);
             try {
                 const response = await axios.get(`${CONSUMER_URL}/me`, {
                     withCredentials: true,
                 });
 
-                const { message, data } = response.data;
+                const { status, data } = response.data;
 
-                if (message === "success") {
+                if (status === "success") {
                     setIsAuthenticated(true);
                     setUserName(data.username);
                     setNotifications(data.notifications);
@@ -30,6 +33,7 @@ const Authprovider = ({ children }) => {
                 setIsAuthenticated(false);
                 console.log(error);
             }
+            setIsLoading(false);
         };
         fetchUser();
     }, []);
@@ -38,8 +42,8 @@ const Authprovider = ({ children }) => {
         isAuthenticated,
         userName,
         notifications,
+        isLoading
     };
-
     return (
         <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
     );
