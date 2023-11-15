@@ -1,13 +1,9 @@
-
 DROP DATABASE IF EXISTS postman_express_db;
 
 CREATE DATABASE postman_express_db;
 
 
-DROP TABLE IF EXISTS driver_parcels;
-
-
-DROP TABLE IF EXISTS drivers;
+-- DROP TABLES
 
 
 DROP TABLE IF EXISTS user_parcels;
@@ -19,6 +15,7 @@ DROP TABLE IF EXISTS parcels;
 DROP TABLE IF EXISTS users;
 
 
+-- DROP TYPES
 
 
 DROP TYPE IF EXISTS PARCELSTATUS;
@@ -28,6 +25,9 @@ DROP TYPE IF EXISTS CABINETSTATUS;
 DROP TYPE IF EXISTS LOCATION;
 
 DROP EXTENSION IF EXISTS "uuid-ossp";
+
+
+-- CREATE TYPES
 
 
 CREATE TYPE LOCATION AS ENUM (
@@ -56,11 +56,11 @@ CREATE TYPE PARCELSTATUS AS ENUM (
   'delivered' -- Customer picked up the parcel from the cabinet
 );
 
-
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 
--- **************************************************************************** POSTMAN EXPRESS DB  ****************************************************************************
+-- CREATE TABLES
+
 
 CREATE TABLE users (
   user_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -71,13 +71,12 @@ CREATE TABLE users (
   user_location LOCATION NOT NULL
 );
 
-
-
 CREATE TABLE parcels (
   parcel_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   parcel_status PARCELSTATUS NOT NULL,
   parcel_sender_id UUID REFERENCES users(user_id),
   parcel_receiver_email varchar(255),
+  parcel_name varchar(255) NOT NULL,
   height integer NOT NULL,
   length integer NOT NULL,
   width integer NOT NULL,
@@ -88,10 +87,6 @@ CREATE TABLE parcels (
   status_timestamps jsonb[]
 );
 
-
-
-
-
 CREATE TABLE cabinets (
   cabinet_id SERIAL PRIMARY KEY,
   cabinet_status CABINETSTATUS NOT NULL,
@@ -99,38 +94,18 @@ CREATE TABLE cabinets (
   parcel_id UUID REFERENCES parcels(parcel_id)
 );
 
--- CREATE TABLE user_parcels (
---   id SERIAL PRIMARY KEY,
---   parcel_id UUID REFERENCES parcels(parcel_id),
---   notify BOOLEAN DEFAULT TRUE
--- );
+
+-- TEST DATA
+
+INSERT INTO cabinets (cabinet_location, cabinet_status) SELECT 'oulu', 'empty' FROM generate_series(1, 15);
+INSERT INTO cabinets (cabinet_location, cabinet_status) SELECT 'espoo', 'empty' FROM generate_series(1, 15);
+INSERT INTO cabinets (cabinet_location, cabinet_status) SELECT 'turku', 'empty' FROM generate_series(1, 15);
+INSERT INTO cabinets (cabinet_location, cabinet_status) SELECT 'tampere', 'empty' FROM generate_series(1, 15);
+INSERT INTO cabinets (cabinet_location, cabinet_status) SELECT 'helsinki', 'empty' FROM generate_series(1, 15);
+INSERT INTO cabinets (cabinet_location, cabinet_status) SELECT 'warehouse', 'empty' FROM generate_series(1, 100);
 
 
--- **************************************************************************** DRIVER DB  ****************************************************************************
-
-CREATE TABLE drivers (
-  driver_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-  driver_name varchar(255) NOT NULL,
-  driver_email varchar(255) UNIQUE NOT NULL,
-  password varchar(255) NOT NULL,
-  refresh_token varchar(255),
-  driver_location LOCATION NOT NULL
-);
-
-CREATE TABLE driver_parcels (
-  id SERIAL PRIMARY KEY,
-  driver_id UUID REFERENCES drivers(driver_id),
-  parcel_id UUID UNIQUE NOT NULL,
-  delivered BOOLEAN DEFAULT FALSE
-);
-
-
-
--- **************************************************************************** TEST DATA  ****************************************************************************
 INSERT INTO users (user_name, user_email, password, user_location) VALUES ('test', 'usertest@gmail.com', 'test', 'oulu');
-
-INSERT INTO drivers (driver_name, driver_email, password, driver_location) VALUES ('test', 'drivertest@gmail.com', 'test', 'helsinki');
-
 
 INSERT INTO parcels (parcel_status, parcel_sender_id, parcel_receiver_email, height, length, width, weight, pickup_pin, delivery_pin, status_timestamps)
 VALUES (
@@ -147,12 +122,6 @@ VALUES (
   jsonb_build_object('status', 'awaiting drop-off', 'date', TO_CHAR( now(), 'DD.MM.YY'), 'time', TO_CHAR(now(), 'HH24:MI') )
   ]
 );
-
-
-
-
--- **************************************************************************** TEST QUERIES ****************************************************************************
-
 
 -- ************* Here you can see how to add a new status to the status_timestamps array *************
 
@@ -179,8 +148,7 @@ WHERE id = 5;
 SELECT status_timestamps FROM test;
 
 
-
-
+-- SOME QUERIES
 
 
 -- SELECT * FROM parcels WHERE parcel_id = ANY($1);
