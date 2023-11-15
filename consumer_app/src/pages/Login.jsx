@@ -89,7 +89,7 @@ const Login = () => {
     useEffect(() => {
         if (isSubmitSuccessful) {
             fetchUser();
-            navigate("/");
+            navigate("/", { replace: true });
             reset();
         }
     }, [isSubmitSuccessful, reset, navigate, fetchUser]);

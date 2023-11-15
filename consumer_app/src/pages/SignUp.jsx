@@ -80,7 +80,7 @@ const SignUp = () => {
         if (isSubmitSuccessful) {
             reset();
             fetchUser();
-            navigate("/");
+            navigate("/", { replace: true });
         }
     }, [isSubmitSuccessful, reset, navigate, fetchUser]);
 
