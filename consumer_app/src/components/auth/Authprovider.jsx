@@ -1,12 +1,12 @@
-import { createContext, useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
+import { AuthContext } from "./AuthContext";
 import axios from "axios";
 
 const Authprovider = ({ children }) => {
     const CONSUMER_URL = import.meta.env.VITE_CONSUMER_BACKEND_URL;
-    const AuthContext = createContext();
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [userName, setUserName] = useState("");
-    const [notifications, setNotification] = useState(null);
+    const [notifications, setNotifications] = useState(null);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -15,22 +15,24 @@ const Authprovider = ({ children }) => {
                     withCredentials: true,
                 });
 
-                const message = response.data.status;
+                const { message, data } = response.data;
 
                 if (message === "success") {
                     setIsAuthenticated(true);
-                    setUserName(response.data.data.username);
-                    setNotification(response.data.data.notifications);
+                    setUserName(data.username);
+                    setNotifications(data.notifications);
                 }
             } catch (error) {
                 const message = error.response.data.status;
                 if (message) {
-                    setIsAuthenticated(false);
+                    console.log(message);
                 }
+                setIsAuthenticated(false);
+                console.log(error);
             }
         };
         fetchUser();
-    });
+    }, []);
 
     const value = {
         isAuthenticated,
