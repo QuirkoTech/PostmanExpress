@@ -123,12 +123,14 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
     const { parcel_id } = req.params;
 
     const parcel = await pool.query(
-        "SELECT current_location, ship_to, ship_from FROM parcels WHERE parcel_id = $1",
+        "SELECT current_location, ship_to, ship_from, parcel_sender_id, parcel_receiver_email FROM parcels WHERE parcel_id = $1",
         [parcel_id],
     );
 
     if (parcel.rowCount === 0)
         return next(new APIError("No parcel found with this ID.", 404));
+
+    const parcelObj = parcel.rows[0];
 
     let accessToken = null;
     if (
@@ -182,7 +184,11 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
             },
         );
 
-        parcelSearchQuery = `
+        if (
+            parcelObj.parcel_sender_id === user.rows[0].user_id ||
+            parcelObj.parcel_receiver_email === user.rows[0].user_email
+        ) {
+            parcelSearchQuery = `
                             SELECT 
                                 p.parcel_id,
                                 sender.user_name AS sender_name,
@@ -205,19 +211,20 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
                             WHERE 
                                 p.parcel_id = $1;
                         `;
-    } else if (orgType === process.env.CONSUMER_APP_HEADER) {
-        parcelSearchQuery = `
-                            SELECT 
-                                parcel_id,
-                                parcel_status,
-                                status_timestamps,
-                                ship_to,
-                                ship_from
-                            FROM 
-                                parcels
-                            WHERE 
-                                parcel_id = $1;
-                        `;
+        } else {
+            parcelSearchQuery = `
+                                SELECT 
+                                    parcel_id,
+                                    parcel_status,
+                                    status_timestamps,
+                                    ship_to,
+                                    ship_from
+                                FROM 
+                                    parcels
+                                WHERE 
+                                    parcel_id = $1;
+                            `;
+        }
     } else if (
         orgType === process.env.DRIVER_APP_HEADER &&
         req.headers["x-driver-location"]
@@ -225,10 +232,10 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
         const driverLocation = req.headers["x-driver-location"];
 
         if (
-            (parcel.rows[0].current_location === driverLocation &&
-                parcel.rows[0].ship_to !== parcel.rows[0].current_location) ||
-            (parcel.rows[0].current_location === "warehouse" &&
-                parcel.rows[0].ship_to === driverLocation)
+            (parcelObj.current_location === driverLocation &&
+                parcelObj.ship_to !== parcelObj.current_location) ||
+            (parcelObj.current_location === "warehouse" &&
+                parcelObj.ship_to === driverLocation)
         ) {
             parcelSearchQuery = `
                             SELECT 
@@ -260,7 +267,7 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
     if (
         orgType === process.env.DRIVER_APP_HEADER &&
         req.headers["x-driver-location"] &&
-        parcel.rows[0].current_location !== "warehouse"
+        parcelObj.current_location !== "warehouse"
     ) {
         parcelInfo.rows[0].ship_to = "warehouse";
     }

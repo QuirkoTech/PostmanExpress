@@ -146,7 +146,7 @@ Response object:
 
 To post new parcels make a POST request to "/parcels/new" route
 
--   NOTE: need to have "credentials": "include" in the request, but i dont know if it has to be set in request headers. This is needed to pass the access_token cookie to the API
+-   NOTE: need to have "credentials": "include" in the request. This is needed to pass the access_token cookie to the API
 -   NOTE: you can leave parcel_name field as an empty string when user submits the parcel, API will automatically replace empty string with "Parcel"
 
 Request body:
@@ -174,6 +174,16 @@ Response object:
  }
 }
 ```
+
+### Parcel info
+
+To get the parcel info, make a GET request to "/parcels/:parcel_id", ":parcel_id" is a parameter
+
+-   NOTE: need to have "credentials": "include" in the request. This is needed to pass the access_token cookie to the API
+
+There are two scenarios of what you will get in response:
+
+-   First is when user is the
 
 ## Driver application
 
