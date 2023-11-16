@@ -1,5 +1,21 @@
 # How to use application APIs in frontend
 
+## NAVIGATION
+
+-   [Consumer application endpoints](#consumer-application)
+
+    -   [Sign up](#sign-up)
+    -   [Log in](#log-in)
+    -   [Consumer application load function](#consumer-application-load-function)
+    -   [User active parcels](#user-active-parcels)
+    -   [Post new parcels](#post-new-parcels)
+    -   [Parcel info](#parcel-info)
+
+-   [Driver application](#driver-application)
+    -   [Sign up](#sign-up-1)
+    -   [Log in](#log-in-1)
+    -   [Parcel info](#parcel-info-1)
+
 ## Consumer application
 
 ### Sign up
