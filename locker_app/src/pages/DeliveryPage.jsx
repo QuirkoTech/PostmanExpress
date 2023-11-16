@@ -1,10 +1,21 @@
-import Keypad from "../components/Keypad";
+import { Keypad, Modal } from "../components";
 import { ArrowLeftCircle } from "lucide-react";
 import { useState } from "react";
-import { Link } from 'react-router-dom';
-
+import { Link } from "react-router-dom";
 
 const DeliveryPage = () => {
+    // Handling the modal
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
+    // Handling the input
     const [pin, setPin] = useState("");
 
     const handleDigitClick = (digit) => {
@@ -15,9 +26,13 @@ const DeliveryPage = () => {
         setPin("");
     };
 
+    // Handling the submit
     const handleSubmitClick = () => {
         // Implement your logic to handle the submitted input
         console.log("Submitted input:", pin);
+
+        // Open the modal
+        openModal();
     };
 
     return (
@@ -47,6 +62,7 @@ const DeliveryPage = () => {
                     />
                 </div>
             </div>
+            <Modal closeModal={closeModal} isOpen={isModalOpen} />
         </section>
     );
 };
