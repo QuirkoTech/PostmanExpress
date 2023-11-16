@@ -127,7 +127,7 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
         [parcel_id],
     );
 
-    if (parcel.rows.length === 0)
+    if (parcel.rowCount === 0)
         return next(new APIError("No parcel found with this ID.", 404));
 
     let accessToken = null;
@@ -165,7 +165,7 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
             [userId],
         );
 
-        if (user.rows.length === 0)
+        if (user.rowCount === 0)
             return next(new APIError("No user found.", 404));
 
         jwt.verify(
@@ -225,7 +225,8 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
         const driverLocation = req.headers["x-driver-location"];
 
         if (
-            parcel.rows[0].current_location === driverLocation ||
+            (parcel.rows[0].current_location === driverLocation &&
+                parcel.rows[0].ship_to !== parcel.rows[0].current_location) ||
             (parcel.rows[0].current_location === "warehouse" &&
                 parcel.rows[0].ship_to === driverLocation)
         ) {

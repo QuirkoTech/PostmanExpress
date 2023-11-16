@@ -23,7 +23,7 @@ const protect = catchAsync(async (req, res, next) => {
         [driverId],
     );
 
-    if (driver.rows.length === 0)
+    if (driver.rowCount === 0)
         return next(new APIError("No driver found.", 404));
 
     jwt.verify(

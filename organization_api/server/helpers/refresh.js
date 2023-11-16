@@ -14,7 +14,7 @@ const refresh = catchAsync(async (req, res, next) => {
         [refreshToken, req.user.user_id],
     );
 
-    if (result.rows.length === 0)
+    if (result.rowCount === 0)
         return next(new APIError("Couldn't refresh your session.", 500));
     next();
 });
