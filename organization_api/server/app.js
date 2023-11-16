@@ -8,6 +8,7 @@ import APIError from "./helpers/APIError.js";
 import consumerRoutes from "./routes/consumerRoutes.js";
 import parcelRoutes from "./routes/parcelRoutes.js";
 import catchAsync from "./helpers/catchAsync.js";
+import { consumerProtect } from "./helpers/protectAppFocusedRoutes.js";
 
 const app = express();
 
@@ -16,7 +17,6 @@ app.use(express.json());
 
 if (process.env.ENV === "dev") app.use(morgan("dev"));
 
-// Check if API keys match
 app.use(
     catchAsync(async (req, res, next) => {
         const apiKey = req.headers["x-api-key"];
@@ -25,14 +25,14 @@ app.use(
 
         const orgType = req.headers["x-Organization-type"];
         if (!orgType)
-            return next(new APIError("Invalid organization header.", 400));
+            return next(new APIError("No organization header provided.", 400));
 
         next();
     }),
 );
 
-app.use(`/consumer`, consumerRoutes);
-app.use(`/parcel`, parcelRoutes);
+app.use(`/consumer`, consumerProtect, consumerRoutes);
+app.use(`/parcels`, parcelRoutes);
 
 app.all("*", (req, res, next) => {
     next(new APIError(`Can't find ${req.originalUrl} on this server!`, 404));
