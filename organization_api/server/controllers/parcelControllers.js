@@ -277,9 +277,6 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
                         `;
     }
 
-    if (parcelSearchQuery === "")
-        return next(new APIError("Request not allowed.", 403));
-
     const parcelInfo = await pool.query(parcelSearchQuery, [parcel_id]);
 
     if (
