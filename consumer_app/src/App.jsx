@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
-import { SignUp, Login, HomePage, NotFoundPage, NewParcelPage } from './pages'
+import { SignUp, Login, HomePage, NotFoundPage, NewParcelPage, ParcelInFoPage } from './pages'
+
 
 
 function App() {
@@ -8,9 +9,11 @@ function App() {
             <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/signup" element={<SignUp />} />
-                <Route path="/login" element={<Login />} />
+                <Route path="/login" element={<Login />} />         
                 <Route path="/new" element={<NewParcelPage />} />
+                <Route path="/parcels/:parcel_id" element={<ParcelInFoPage />} />
                 
+
                 <Route path="*" element={<NotFoundPage />} />
             </Routes>
 

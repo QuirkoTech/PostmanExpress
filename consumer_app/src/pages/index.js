@@ -6,4 +6,5 @@ import HomePage from "./HomePage";
 import NotFoundPage from "./NotFoundPage";
 import NewParcelPage from "./NewParcelPage";
 import ActiveParcelPage from "./ActiveParcelPage"
-export { SignUp, Login, HomePage, NotFoundPage, NewParcelPage, ActiveParcelPage };
+import ParcelInFoPage from "./ParcelInfoPage"
+export { SignUp, Login, HomePage, NotFoundPage, NewParcelPage, ActiveParcelPage, ParcelInFoPage };
