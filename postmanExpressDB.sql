@@ -104,10 +104,10 @@ INSERT INTO cabinets (cabinet_location, cabinet_status) SELECT 'tampere', 'empty
 INSERT INTO cabinets (cabinet_location, cabinet_status) SELECT 'helsinki', 'empty' FROM generate_series(1, 15);
 INSERT INTO cabinets (cabinet_location, cabinet_status) SELECT 'warehouse', 'empty' FROM generate_series(1, 100);
 
-
+-- Need to create user manually due to pw encryption
 INSERT INTO users (user_name, user_email, password, user_location) VALUES ('test', 'usertest@gmail.com', 'test', 'oulu');
 
-INSERT INTO parcels (parcel_status, parcel_sender_id, parcel_receiver_email, height, length, width, weight, pickup_pin, delivery_pin, status_timestamps)
+INSERT INTO parcels (parcel_status, parcel_sender_id, parcel_receiver_email, height, length, width, weight, pickup_pin, delivery_pin, status_timestamps,ship_to, ship_from,notify, parcel_name)
 VALUES (
   'awaiting drop-off',
   (SELECT user_id FROM users WHERE user_name = 'test'),
@@ -120,8 +120,96 @@ VALUES (
   22222,
   ARRAY[
   jsonb_build_object('status', 'awaiting drop-off', 'date', TO_CHAR( now(), 'DD.MM.YY'), 'time', TO_CHAR(now(), 'HH24:MI') )
-  ]
+  ],
+  'helsinki',
+  'oulu',
+  true,
+  'Nike shoes'
 );
+
+INSERT INTO parcels (parcel_status, parcel_sender_id, parcel_receiver_email, height, length, width, weight, pickup_pin, delivery_pin, status_timestamps, ship_to, ship_from, notify, parcel_name)
+VALUES (
+  'awaiting drop-off',
+  (SELECT user_id FROM users WHERE user_name = 'test'),
+  'test@gmail.com',
+  13,
+  16,
+  31,
+  21,
+  22222,
+  33333,
+  ARRAY[
+    jsonb_build_object('status', 'awaiting drop-off', 'date', TO_CHAR( now() - interval '1 day', 'DD.MM.YY'), 'time', TO_CHAR(now() - interval '1 day', 'HH24:MI') )
+  ],
+  'turku',
+  'oulu',
+  true,
+  'Adidas jacket'
+);
+
+INSERT INTO parcels (parcel_status, parcel_sender_id, parcel_receiver_email, height, length, width, weight, pickup_pin, delivery_pin, status_timestamps, ship_to, ship_from, notify, parcel_name)
+VALUES (
+  'awaiting drop-off',
+  (SELECT user_id FROM users WHERE user_name = 'test'),
+  'test@gmail.com',
+  13,
+  16,
+  31,
+  21,
+  33333,
+  44444,
+  ARRAY[
+    jsonb_build_object('status', 'awaiting drop-off', 'date', TO_CHAR( now() - interval '2 days', 'DD.MM.YY'), 'time', TO_CHAR(now() - interval '2 days', 'HH24:MI') )
+  ],
+  'turku',
+  'oulu',
+  true,
+  'Shiny cup'
+);
+
+INSERT INTO parcels (parcel_status, parcel_sender_id, parcel_receiver_email, height, length, width, weight, pickup_pin, delivery_pin, status_timestamps, ship_to, ship_from, notify, parcel_name)
+VALUES (
+  'awaiting drop-off',
+  (SELECT user_id FROM users WHERE user_name = 'test'),
+  'test@gmail.com',
+  13,
+  16,
+  31,
+  21,
+  44444,
+  55555,
+  ARRAY[
+    jsonb_build_object('status', 'awaiting drop-off', 'date', TO_CHAR( now() - interval '3 days', 'DD.MM.YY'), 'time', TO_CHAR(now() - interval '3 days', 'HH24:MI') )
+  ],
+  'espoo',
+  'helsinki',
+  true,
+  'Book collection'
+);
+
+
+INSERT INTO parcels (parcel_status, parcel_sender_id, parcel_receiver_email, height, length, width, weight, pickup_pin, delivery_pin, status_timestamps, ship_to, ship_from, notify, parcel_name)
+VALUES (
+  'awaiting drop-off',
+  (SELECT user_id FROM users WHERE user_name = 'test'),
+  'test@gmail.com',
+  13,
+  16,
+  31,
+  21,
+  55555,
+  66666,
+  ARRAY[
+    jsonb_build_object('status', 'awaiting drop-off', 'date', TO_CHAR( now() - interval '4 days', 'DD.MM.YY'), 'time', TO_CHAR(now() - interval '4 days', 'HH24:MI') )
+  ],
+  'tampere',
+  'helsinki',
+  true,
+  'Tech gadgets'
+);
+
+
+
 
 -- ************* Here you can see how to add a new status to the status_timestamps array *************
 
