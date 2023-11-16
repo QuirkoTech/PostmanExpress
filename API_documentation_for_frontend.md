@@ -342,7 +342,11 @@ If response failed:
 To get the parcel info, make a GET request to "/parcels/:parcel_id", ":parcel_id" is a parameter
 
 -   NOTE: need to have "credentials": "include" in the request. This is needed to pass the access_token cookie to the API
--   NOTE: parcel detail will be sent only if driver accepted, not yet delivered the parcel and he is able to pick it up from his location city OR he can bring it there
+-   NOTE: the field "already_accepted" indicates if the parcel is already accepted by any driver and it is used for dispaying "Accept" button in driver application parcel info page, so if this field is set to "true" no need to dispay "Accept" button
+
+There are two scenarios:
+
+-   First is when logged in driver accepted the parcel
 
 Response object:
 
@@ -351,7 +355,7 @@ Response object:
     "status": "success",
     "data": {
         "parcel_info": {
-            "parcel_id": "c604a188-a441-4a5b-a1b5-3c44a000ccaf",
+            "parcel_id": "ce32b3c5-788f-467c-bce3-9935fbb42fce",
             "ship_to": "warehouse",
             "current_location": "oulu",
             "pickup_pin": null,
@@ -359,7 +363,30 @@ Response object:
             "length": 1,
             "height": 3,
             "width": 1,
-            "weight": 1
+            "weight": 1,
+            "already_accepted": true
+        }
+    }
+}
+```
+
+-   Second is when driver is able to deliver the parcel (it means that drivers' location city is the same as where parcel has to be shipped or from where it has ot be shipped), but hasn't accepted it yet or probably someone else accepted it
+
+Response object:
+
+```
+{
+    "status": "success",
+    "data": {
+        "parcel_info": {
+            "parcel_id": "ce32b3c5-788f-467c-bce3-9935fbb42fce",
+            "ship_to": "warehouse",
+            "current_location": "oulu",
+            "length": 1,
+            "height": 3,
+            "width": 1,
+            "weight": 1,
+            "already_accepted": <false or true>
         }
     }
 }
