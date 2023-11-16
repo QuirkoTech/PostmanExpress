@@ -116,7 +116,7 @@ export const consumerLoad = catchAsync(async (req, res, next) => {
         await client.query("BEGIN");
 
         const parcelsToNotify = await client.query(
-            "SELECT parcel_id, parcel_status FROM parcels WHERE (parcel_sender_id = $1 OR parcel_receiver_email = $2) AND notify = 'true' AND parcel_status = 'delivered'",
+            "SELECT parcel_id, parcel_status, parcel_name FROM parcels WHERE (parcel_sender_id = $1 OR parcel_receiver_email = $2) AND notify = 'true' AND parcel_status = 'delivered'",
             [req.user.user_id, req.user.user_email],
         );
 
