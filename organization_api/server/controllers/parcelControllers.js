@@ -97,8 +97,10 @@ export const newParcel = catchAsync(async (req, res, next) => {
         client.release();
         res.status(201).json({
             status: "success",
-            message:
-                "Parcel created. Check your email for further instructions.",
+            data: {
+                message:
+                    "Parcel created. Check your email for further instructions.",
+            },
         });
     } catch (error) {
         try {

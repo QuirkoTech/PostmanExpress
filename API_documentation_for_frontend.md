@@ -142,6 +142,39 @@ Response object:
 }
 ```
 
+### Post new parcels
+
+To post new parcels make a POST request to "/parcels/new" route
+
+-   NOTE: need to have "credentials": "include" in the request, but i dont know if it has to be set in request headers. This is needed to pass the access_token cookie to the API
+-   NOTE: you can leave parcel_name field as an empty string when user submits the parcel, API will automatically replace empty string with "Parcel"
+
+Request body:
+
+```
+{
+  "parcel_name": "",
+  "recipient_email": "test@mail.com",
+  "ship_to": "helsinki",
+  "ship_from": "oulu",
+  "weight": "1",
+  "height": "3",
+  "width": "1",
+  "length": "1"
+}
+```
+
+Response object:
+
+```
+{
+ "status": "success",
+ "data": {
+   "message": "Parcel created. Check your email for further instructions."
+ }
+}
+```
+
 ## Driver application
 
 ### Sign up
