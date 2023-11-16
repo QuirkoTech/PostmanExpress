@@ -140,7 +140,10 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
 
     const orgType = req.headers["x-organization-type"];
 
-    if (orgType === process.env.DRIVER_APP_HEADER && !req.body.driver_location)
+    if (
+        orgType === process.env.DRIVER_APP_HEADER &&
+        !req.headers["x-driver-location"]
+    )
         return next(new APIError("No location of the driver provided.", 400));
 
     let parcelSearchQuery = "";
@@ -217,17 +220,16 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
                         `;
     } else if (
         orgType === process.env.DRIVER_APP_HEADER &&
-        req.body.driver_location
+        req.headers["x-driver-location"]
     ) {
-        if (
-            parcel.rows[0].current_location !==
-            ("warehouse" || req.body.driver_location)
-        )
-            return next(
-                new APIError("You can't access this parcel info.", 403),
-            );
+        const driverLocation = req.headers["x-driver-location"];
 
-        parcelSearchQuery = `
+        if (
+            parcel.rows[0].current_location === driverLocation ||
+            (parcel.rows[0].current_location === "warehouse" &&
+                parcel.rows[0].ship_to === driverLocation)
+        ) {
+            parcelSearchQuery = `
                             SELECT 
                                 parcel_id,
                                 ship_to,
@@ -243,12 +245,24 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
                             WHERE 
                                 parcel_id = $1;
                             `;
+        } else
+            return next(
+                new APIError("You are not allowed to this parcel info.", 400),
+            );
     }
 
     if (parcelSearchQuery === "")
         return next(new APIError("Request not allowed.", 403));
 
     const parcelInfo = await pool.query(parcelSearchQuery, [parcel_id]);
+
+    if (
+        orgType === process.env.DRIVER_APP_HEADER &&
+        req.headers["x-driver-location"] &&
+        parcel.rows[0].current_location !== "warehouse"
+    ) {
+        parcelInfo.rows[0].ship_to = "warehouse";
+    }
 
     res.status(200).json({
         status: "success",
