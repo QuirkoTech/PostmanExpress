@@ -109,8 +109,8 @@ INSERT INTO users (user_name, user_email, password, user_location) VALUES ('test
 
 INSERT INTO parcels (parcel_status, parcel_sender_id, parcel_receiver_email, height, length, width, weight, pickup_pin, delivery_pin, status_timestamps,ship_to, ship_from,notify, parcel_name)
 VALUES (
-  'awaiting drop-off',
-  (SELECT user_id FROM users WHERE user_name = 'test'),
+  'delivered',
+  (SELECT user_id FROM users WHERE user_email = 'usertest@gmail.com'),
   'test@gmail.com',
   13,
   16,
@@ -119,7 +119,7 @@ VALUES (
   11111,
   22222,
   ARRAY[
-  jsonb_build_object('status', 'awaiting drop-off', 'date', TO_CHAR( now(), 'DD.MM.YY'), 'time', TO_CHAR(now(), 'HH24:MI') )
+  jsonb_build_object('status', 'delivered', 'date', TO_CHAR( now(), 'DD.MM.YY'), 'time', TO_CHAR(now(), 'HH24:MI') )
   ],
   'helsinki',
   'oulu',
@@ -129,8 +129,8 @@ VALUES (
 
 INSERT INTO parcels (parcel_status, parcel_sender_id, parcel_receiver_email, height, length, width, weight, pickup_pin, delivery_pin, status_timestamps, ship_to, ship_from, notify, parcel_name)
 VALUES (
-  'awaiting drop-off',
-  (SELECT user_id FROM users WHERE user_name = 'test'),
+  'delivered',
+  (SELECT user_id FROM users WHERE user_email = 'usertest@gmail.com'),
   'test@gmail.com',
   13,
   16,
@@ -139,7 +139,7 @@ VALUES (
   22222,
   33333,
   ARRAY[
-    jsonb_build_object('status', 'awaiting drop-off', 'date', TO_CHAR( now() - interval '1 day', 'DD.MM.YY'), 'time', TO_CHAR(now() - interval '1 day', 'HH24:MI') )
+    jsonb_build_object('status', 'delivered', 'date', TO_CHAR( now() - interval '1 day', 'DD.MM.YY'), 'time', TO_CHAR(now() - interval '1 day', 'HH24:MI') )
   ],
   'turku',
   'oulu',
@@ -149,8 +149,8 @@ VALUES (
 
 INSERT INTO parcels (parcel_status, parcel_sender_id, parcel_receiver_email, height, length, width, weight, pickup_pin, delivery_pin, status_timestamps, ship_to, ship_from, notify, parcel_name)
 VALUES (
-  'awaiting drop-off',
-  (SELECT user_id FROM users WHERE user_name = 'test'),
+  'delivered',
+  (SELECT user_id FROM users WHERE user_email = 'usertest@gmail.com'),
   'test@gmail.com',
   13,
   16,
@@ -159,7 +159,7 @@ VALUES (
   33333,
   44444,
   ARRAY[
-    jsonb_build_object('status', 'awaiting drop-off', 'date', TO_CHAR( now() - interval '2 days', 'DD.MM.YY'), 'time', TO_CHAR(now() - interval '2 days', 'HH24:MI') )
+    jsonb_build_object('status', 'delivered', 'date', TO_CHAR( now() - interval '2 days', 'DD.MM.YY'), 'time', TO_CHAR(now() - interval '2 days', 'HH24:MI') )
   ],
   'turku',
   'oulu',
@@ -169,8 +169,8 @@ VALUES (
 
 INSERT INTO parcels (parcel_status, parcel_sender_id, parcel_receiver_email, height, length, width, weight, pickup_pin, delivery_pin, status_timestamps, ship_to, ship_from, notify, parcel_name)
 VALUES (
-  'awaiting drop-off',
-  (SELECT user_id FROM users WHERE user_name = 'test'),
+  'delivered',
+  (SELECT user_id FROM users WHERE user_email = 'usertest@gmail.com'),
   'test@gmail.com',
   13,
   16,
@@ -179,7 +179,7 @@ VALUES (
   44444,
   55555,
   ARRAY[
-    jsonb_build_object('status', 'awaiting drop-off', 'date', TO_CHAR( now() - interval '3 days', 'DD.MM.YY'), 'time', TO_CHAR(now() - interval '3 days', 'HH24:MI') )
+    jsonb_build_object('status', 'delivered', 'date', TO_CHAR( now() - interval '3 days', 'DD.MM.YY'), 'time', TO_CHAR(now() - interval '3 days', 'HH24:MI') )
   ],
   'espoo',
   'helsinki',
@@ -190,8 +190,8 @@ VALUES (
 
 INSERT INTO parcels (parcel_status, parcel_sender_id, parcel_receiver_email, height, length, width, weight, pickup_pin, delivery_pin, status_timestamps, ship_to, ship_from, notify, parcel_name)
 VALUES (
-  'awaiting drop-off',
-  (SELECT user_id FROM users WHERE user_name = 'test'),
+  'delivered',
+  (SELECT user_id FROM users WHERE user_email = 'usertest@gmail.com'),
   'test@gmail.com',
   13,
   16,
@@ -200,13 +200,15 @@ VALUES (
   55555,
   66666,
   ARRAY[
-    jsonb_build_object('status', 'awaiting drop-off', 'date', TO_CHAR( now() - interval '4 days', 'DD.MM.YY'), 'time', TO_CHAR(now() - interval '4 days', 'HH24:MI') )
+    jsonb_build_object('status', 'delivered', 'date', TO_CHAR( now() - interval '4 days', 'DD.MM.YY'), 'time', TO_CHAR(now() - interval '4 days', 'HH24:MI') )
   ],
   'tampere',
   'helsinki',
   true,
   'Tech gadgets'
 );
+
+DELETE FROM parcels;
 
 
 

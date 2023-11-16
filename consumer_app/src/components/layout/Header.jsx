@@ -19,10 +19,14 @@ const menuLinks = [
     },
 ];
 
+// {title: 'Status update', parcel_id: '22c445ca-af04-478e-82d6-4ab6fe84fc5b', parcel_status: 'delivered', parcel_name: 'Tech gadgets'}
+
 const Header = () => {
-    const { userName } = useContext(AuthContext);
+    const { userName, notifications } = useContext(AuthContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const modalRef = useRef();
+
+    console.log(notifications);
 
     const openModal = () => {
         setIsModalOpen(true);
@@ -39,7 +43,7 @@ const Header = () => {
     };
 
     return (
-        <div className={`bg-dark-secondary z-50 shadow-lg`}>
+        <header className={`bg-dark-secondary z-50 shadow-lg`}>
             <div className=" flex h-[72px] w-full items-center px-0 py-5 transition-transform duration-1000">
                 <NavLink to="/">
                     <h1 className="ml-10 text-2xl text-white">
@@ -74,7 +78,19 @@ const Header = () => {
                     )}
                 </div>
             </div>
-        </div>
+
+            <div className="absolute flex flex-col gap-2 text-base ">
+                <div className="bg-dark-secondary rounded-max border-slate-blue grid w-[260px] grid-cols-2 grid-rows-2 border-2 px-6 py-4">
+                    <h2 className="col-span-2 text-white mb-3">Parcel status update</h2>
+                    <p>Nike Shoes</p>
+                    <div className="flex "><div className="w-2 h-2 rounded-full bg-blue-600"></div> <p>On the way</p></div>
+                </div>
+
+
+
+                
+            </div>
+        </header>
     );
 };
 
