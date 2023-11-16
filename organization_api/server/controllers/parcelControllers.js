@@ -128,7 +128,7 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
     );
 
     if (parcel.rowCount === 0)
-        return next(new APIError("No parcel found with this ID.", 404));
+        return next(new APIError("No parcel found.", 404));
 
     const parcelObj = parcel.rows[0];
 
@@ -144,9 +144,9 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
 
     if (
         orgType === process.env.DRIVER_APP_HEADER &&
-        !req.headers["x-driver-location"]
+        (!req.headers["x-driver-location"] || !req.headers["x-driver-accepted"])
     )
-        return next(new APIError("No location of the driver provided.", 400));
+        return next(new APIError("Invalid driver application headers.", 400));
 
     let parcelSearchQuery = "";
 
@@ -224,26 +224,44 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
             (parcelObj.current_location === "warehouse" &&
                 parcelObj.ship_to === driverLocation)
         ) {
-            parcelSearchQuery = `
-                            SELECT 
-                                parcel_id,
-                                ship_to,
-                                current_location,
-                                pickup_pin,
-                                delivery_pin, 
-                                length,
-                                height,
-                                width,
-                                weight
-                            FROM 
-                                parcels
-                            WHERE 
-                                parcel_id = $1;
-                            `;
-        } else
+            if (req.headers["x-driver-accepted"] === "true") {
+                parcelSearchQuery = `
+                                SELECT 
+                                    parcel_id,
+                                    ship_to,
+                                    current_location,
+                                    pickup_pin,
+                                    delivery_pin, 
+                                    length,
+                                    height,
+                                    width,
+                                    weight
+                                FROM 
+                                    parcels
+                                WHERE 
+                                    parcel_id = $1;
+                                `;
+            } else if (req.headers["x-driver-accepted"] === "false") {
+                parcelSearchQuery = `
+                SELECT 
+                    parcel_id,
+                    ship_to,
+                    current_location,
+                    length,
+                    height,
+                    width,
+                    weight
+                FROM 
+                    parcels
+                WHERE 
+                    parcel_id = $1;
+                `;
+            }
+        } else {
             return next(
                 new APIError("You are not allowed to this parcel info.", 400),
             );
+        }
     } else {
         parcelSearchQuery = `
                             SELECT 

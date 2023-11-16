@@ -31,7 +31,7 @@ In respose from this endpoint you will get:
 
 If response is successfull:
 
-1. Access toekn cookie is set for a user
+1. Access token cookie is set for a user
 2. Object like this:
 
 ```
@@ -77,7 +77,7 @@ In respose from this endpoint you will get:
 
 If response is successfull:
 
-1. Access toekn cookie is set for a user
+1. Access token cookie is set for a user
 2. Object like this:
 
 ```
@@ -217,6 +217,29 @@ Response object:
 
 -   Second is when user is not logged in or if he is not the sender or receiver of the parcel
 
+Response object:
+
+```
+{
+    "status": "success",
+    "data": {
+        "parcel_info": {
+            "parcel_id": "c604a188-a441-4a5b-a1b5-3c44a000ccaf",
+            "parcel_status": "awaiting drop-off",
+            "status_timestamps": [
+                {
+                    "date": "16.11.23",
+                    "time": "15:40",
+                    "status": "awaiting drop-off"
+                }
+            ],
+            "ship_to": "helsinki",
+            "ship_from": "oulu"
+        }
+    }
+}
+```
+
 ## Driver application
 
 ### Sign up
@@ -248,7 +271,7 @@ In respose from this endpoint you will get:
 
 If response is successfull:
 
-1. Access toekn cookie is set for a driver
+1. Access token cookie is set for a driver
 2. Object like this:
 
 ```
@@ -294,7 +317,7 @@ In respose from this endpoint you will get:
 
 If response is successfull:
 
-1. Access toekn cookie is set for a driver
+1. Access token cookie is set for a driver
 2. Object like this:
 
 ```
@@ -311,5 +334,33 @@ If response failed:
 {
   "status": "<fail or error>",
   "message": "<response message>"
+}
+```
+
+### Parcel info
+
+To get the parcel info, make a GET request to "/parcels/:parcel_id", ":parcel_id" is a parameter
+
+-   NOTE: need to have "credentials": "include" in the request. This is needed to pass the access_token cookie to the API
+-   NOTE: parcel detail will be sent only if driver accepted, not yet delivered the parcel and he is able to pick it up from his location city OR he can bring it there
+
+Response object:
+
+```
+{
+    "status": "success",
+    "data": {
+        "parcel_info": {
+            "parcel_id": "c604a188-a441-4a5b-a1b5-3c44a000ccaf",
+            "ship_to": "warehouse",
+            "current_location": "oulu",
+            "pickup_pin": null,
+            "delivery_pin": null,
+            "length": 1,
+            "height": 3,
+            "width": 1,
+            "weight": 1
+        }
+    }
 }
 ```
