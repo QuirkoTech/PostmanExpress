@@ -5,6 +5,7 @@ import sendEmail from "../helpers/sendEmail.js";
 import checkFreeCabinets from "../helpers/checkFreeCabinets.js";
 import { v4 } from "uuid";
 import generateUniquePin from "../helpers/generateUniquePin.js";
+import jwt from "jsonwebtoken";
 
 export const newParcel = catchAsync(async (req, res, next) => {
     const {
@@ -116,4 +117,141 @@ export const newParcel = catchAsync(async (req, res, next) => {
             new APIError("Couldn't create new parcel, try again later.", 500),
         );
     }
+});
+
+export const singleParcelInfo = catchAsync(async (req, res, next) => {
+    const { parcel_id } = req.params;
+
+    const parcel = await pool.query(
+        "SELECT current_location, ship_to, ship_from FROM parcels WHERE parcel_id = $1",
+        [parcel_id],
+    );
+
+    if (parcel.rows.length === 0)
+        return next(new APIError("No parcel found with this ID.", 404));
+
+    let accessToken = null;
+    if (
+        req.headers.authorization &&
+        req.headers.authorization.startsWith("Bearer")
+    ) {
+        accessToken = req.headers.authorization.split(" ")[1];
+    }
+
+    const orgType = req.headers["x-organization-type"];
+
+    if (orgType === process.env.DRIVER_APP_HEADER && !req.body.driver_location)
+        return next(new APIError("No location of the driver provided.", 400));
+
+    let parcelSearchQuery = "";
+
+    if (accessToken && orgType === process.env.CONSUMER_APP_HEADER) {
+        const payload = jwt.decode(
+            accessToken,
+            process.env.ACCESS_TOKEN_SECRET,
+        );
+
+        if (!payload) return next(new APIError("Invalid token.", 401));
+
+        const userId = payload.id;
+        if (!userId) return next(new APIError("No user id provided", 400));
+
+        let user;
+        user = await pool.query(
+            "SELECT user_id, user_name, user_email, refresh_token, user_location FROM users WHERE user_id = $1",
+            [userId],
+        );
+
+        if (user.rows.length === 0)
+            return next(new APIError("No user found.", 404));
+
+        jwt.verify(
+            user.rows[0].refresh_token,
+            process.env.REFRESH_TOKEN_SECRET,
+            (err, decoded) => {
+                if (err)
+                    return next(
+                        new APIError(
+                            "Session expired, please log in again.",
+                            401,
+                        ),
+                    );
+            },
+        );
+
+        parcelSearchQuery = `
+                            SELECT 
+                                p.parcel_id,
+                                sender.user_name AS sender_name,
+                                COALESCE(receiver.user_name, p.parcel_receiver_email) AS receiver_name,
+                                p.parcel_status,
+                                p.status_timestamps,
+                                p.width,
+                                p.height,
+                                p.length,
+                                p.weight,
+                                p.parcel_name,
+                                p.ship_to,
+                                p.ship_from
+                            FROM 
+                                parcels p
+                            LEFT JOIN 
+                                users sender ON p.parcel_sender_id = sender.user_id
+                            LEFT JOIN 
+                                users receiver ON p.parcel_receiver_email = receiver.user_email
+                            WHERE 
+                                p.parcel_id = $1;
+                        `;
+    } else if (orgType === process.env.CONSUMER_APP_HEADER) {
+        parcelSearchQuery = `
+                            SELECT 
+                                parcel_id,
+                                parcel_status,
+                                status_timestamps,
+                                ship_to,
+                                ship_from
+                            FROM 
+                                parcels
+                            WHERE 
+                                parcel_id = $1;
+                        `;
+    } else if (
+        orgType === process.env.DRIVER_APP_HEADER &&
+        req.body.driver_location
+    ) {
+        if (
+            parcel.rows[0].current_location !==
+            ("warehouse" || req.body.driver_location)
+        )
+            return next(
+                new APIError("You can't access this parcel info.", 403),
+            );
+
+        parcelSearchQuery = `
+                            SELECT 
+                                parcel_id,
+                                ship_to,
+                                current_location,
+                                pickup_pin,
+                                delivery_pin, 
+                                length,
+                                height,
+                                width,
+                                weight
+                            FROM 
+                                parcels
+                            WHERE 
+                                parcel_id = $1;
+                            `;
+    }
+
+    if (parcelSearchQuery === "")
+        return next(new APIError("Request not allowed.", 403));
+
+    const parcelInfo = await pool.query(parcelSearchQuery, [parcel_id]);
+
+    res.status(200).json({
+        status: "success",
+        data: { parcel_info: parcelInfo.rows[0] },
+    });
 });

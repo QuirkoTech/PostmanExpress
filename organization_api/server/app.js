@@ -8,7 +8,7 @@ import APIError from "./helpers/APIError.js";
 import consumerRoutes from "./routes/consumerRoutes.js";
 import parcelRoutes from "./routes/parcelRoutes.js";
 import catchAsync from "./helpers/catchAsync.js";
-import { consumerProtect } from "./helpers/protectAppFocusedRoutes.js";
+import { protectConsumer } from "./helpers/protectAppFocusedRoutes.js";
 
 const app = express();
 
@@ -23,7 +23,7 @@ app.use(
         if (apiKey !== process.env.API_KEY)
             return next(new APIError("Invalid API key.", 400));
 
-        const orgType = req.headers["x-Organization-type"];
+        const orgType = req.headers["x-organization-type"];
         if (!orgType)
             return next(new APIError("No organization header provided.", 400));
 
@@ -31,7 +31,7 @@ app.use(
     }),
 );
 
-app.use(`/consumer`, consumerProtect, consumerRoutes);
+app.use(`/consumer`, protectConsumer, consumerRoutes);
 app.use(`/parcels`, parcelRoutes);
 
 app.all("*", (req, res, next) => {
