@@ -211,19 +211,6 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
                             WHERE 
                                 p.parcel_id = $1;
                         `;
-        } else {
-            parcelSearchQuery = `
-                                SELECT 
-                                    parcel_id,
-                                    parcel_status,
-                                    status_timestamps,
-                                    ship_to,
-                                    ship_from
-                                FROM 
-                                    parcels
-                                WHERE 
-                                    parcel_id = $1;
-                            `;
         }
     } else if (
         orgType === process.env.DRIVER_APP_HEADER &&
@@ -257,6 +244,19 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
             return next(
                 new APIError("You are not allowed to this parcel info.", 400),
             );
+    } else {
+        parcelSearchQuery = `
+                            SELECT 
+                                parcel_id,
+                                parcel_status,
+                                status_timestamps,
+                                ship_to,
+                                ship_from
+                            FROM 
+                                parcels
+                            WHERE 
+                                parcel_id = $1;
+                        `;
     }
 
     if (parcelSearchQuery === "")

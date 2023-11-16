@@ -183,7 +183,39 @@ To get the parcel info, make a GET request to "/parcels/:parcel_id", ":parcel_id
 
 There are two scenarios of what you will get in response:
 
--   First is when user is the
+-   First is when user is the sender or receiver of the parcel AND he is logged in:
+
+Response object:
+
+```
+{
+    "status": "success",
+    "data": {
+        "parcel_info": {
+            "parcel_id": "c604a188-a441-4a5b-a1b5-3c44a000ccaf",
+            "sender_name": "RepoRover",
+            "receiver_name": "test@mail.com",
+            "parcel_status": "awaiting drop-off",
+            "status_timestamps": [
+                {
+                    "date": "16.11.23",
+                    "time": "15:40",
+                    "status": "awaiting drop-off"
+                }
+            ],
+            "width": 1,
+            "height": 3,
+            "length": 1,
+            "weight": 1,
+            "parcel_name": "Parcel",
+            "ship_to": "helsinki",
+            "ship_from": "oulu"
+        }
+    }
+}
+```
+
+-   Second is when user is not logged in or if he is not the sender or receiver of the parcel
 
 ## Driver application
 
