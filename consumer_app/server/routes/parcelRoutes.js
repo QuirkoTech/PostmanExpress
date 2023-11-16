@@ -1,10 +1,9 @@
 import { Router } from "express";
-import protect from "./../helpers/protect.js";
-import refresh from "./../helpers/refresh.js";
 import { newParcel } from "../controllers/parcelControllers.js";
+import protect from "../helpers/protect.js";
 
 const router = Router();
 
-router.route("/new").post(protect, refresh, newParcel);
+router.route("/new").post(protect, newParcel);
 
 export default router;

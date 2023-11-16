@@ -1,16 +1,22 @@
-import { useForm } from "react-hook-form";
-import { Button, Input } from "../components";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { useEffect } from "react";
-import { DevTool } from "@hookform/devtools";
+import { useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { Button, Input } from "../components";
+import { AuthContext } from "../components/auth";
 
 const Login = () => {
+    // Backend URL for the consumer app
+    const CONSUMER_URL = import.meta.env.VITE_CONSUMER_BACKEND_URL;
+
+    // Function to fetch user data from the backend
+    const { fetchUser } = useContext(AuthContext);
+
     // Yup validation schema for form validation
     const schema = yup.object({
-        email: yup
+        user_email: yup
             .string()
             .email("Email format is not valid")
             .required("This field is required"),
@@ -20,8 +26,8 @@ const Login = () => {
     const {
         register,
         handleSubmit,
-        control,
         setError,
+        reset,
         formState: { errors, isSubmitSuccessful, isSubmitting },
         setFocus,
     } = useForm({
@@ -30,55 +36,64 @@ const Login = () => {
 
     // Set focus on email input on page load
     useEffect(() => {
-        setFocus("email");
+        setFocus("user_email");
     }, [setFocus]);
 
-
-
-    // Filler handler for form submission for test purposes
     const submitHandler = async (data) => {
         try {
-            const response = await fetch("https://reqres.in/api/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email: data.email,
-                    password: data.password,
-                }),
-            });
+            const response = await axios.post(
+                `${CONSUMER_URL}/auth/login`,
+                data,
+                { withCredentials: true },
+            );
 
-            if (response.ok) {
-                // Successful response
-                return;
-            } else {
-                // Handle different HTTP status codes
-                if (response.status === 400) {
-                    setError("email", {
-                        type: "manual",
-                        message: "Invalid email or password",
-                    });
-                    console.log("set custom");
-                }
+            const message = response.data.status;
+
+            if (message === "success") {
+                reset();
             }
         } catch (error) {
-            console.log("Error:", error);
-
-            // Additional error handling if needed
+            if (error.response) {
+                // Handling specific API response errors
+                const message = error.response.data.message;
+                if (message === "No user found with this email.") {
+                    setError("user_email", {
+                        type: "manual",
+                        message: "No user found with this email",
+                    });
+                } else if (message === "Invalid credentials.") {
+                    setError("password", {
+                        type: "manual",
+                        message: "Invalid password",
+                    });
+                } else {
+                    setError("user_email", {
+                        type: "manual",
+                        message:
+                            "Something went wrong with the request, try again later",
+                    });
+                }
+            } else {
+                // Handling network errors or other unhandled errors
+                console.error("Network error:", error.message);
+                setError("user_email", {
+                    type: "manual",
+                    message: "Error connecting to server, try again later",
+                });
+            }
         }
     };
 
-    // // Reroute to home page after successful login
-    // const navigate = useNavigate();
-    // useEffect(() => {
-    //     if (isSubmitSuccessful) {
-    //         reset();
-    //         navigate("/");
-    //     }
-    // }, [isSubmitSuccessful, reset, navigate]);
+    // Reroute to home page after successful login
+    const navigate = useNavigate();
+    useEffect(() => {
+        if (isSubmitSuccessful) {
+            fetchUser();
+            navigate("/", { replace: true });
+            reset();
+        }
+    }, [isSubmitSuccessful, reset, navigate, fetchUser]);
 
-    console.log(isSubmitSuccessful);
     return (
         <section className="padding">
             <div className="max-container">
@@ -99,9 +114,9 @@ const Login = () => {
                             type="email"
                             placeHolder="Email"
                             register={{
-                                ...register("email"),
+                                ...register("user_email"),
                             }}
-                            errorMessage={errors.email?.message}
+                            errorMessage={errors.user_email?.message}
                         />
                         <Input
                             type="password"
@@ -110,10 +125,10 @@ const Login = () => {
                             errorMessage={errors.password?.message}
                         />
 
-                        <Button />
+                        <Button type="submit" disabled={isSubmitting} />
                     </form>
-                    <DevTool control={control} />
                     <p className="mt-9 whitespace-nowrap text-lg">
+                        {/* eslint-disable-next-line react/no-unescaped-entities */}
                         Don't have an account yet?{" "}
                         <Link to="/signup" className="text-white">
                             Sign up
