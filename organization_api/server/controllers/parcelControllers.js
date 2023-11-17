@@ -140,17 +140,17 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
         accessToken = req.headers.authorization.split(" ")[1];
     }
 
-    const orgType = req.headers["x-organization-type"];
+    const appType = req.headers["x-application-type"];
 
     if (
-        orgType === process.env.DRIVER_APP_HEADER &&
+        appType === process.env.DRIVER_APP_HEADER &&
         (!req.headers["x-driver-location"] || !req.headers["x-driver-accepted"])
     )
         return next(new APIError("Invalid driver application headers.", 400));
 
     let parcelSearchQuery = "";
 
-    if (accessToken && orgType === process.env.CONSUMER_APP_HEADER) {
+    if (accessToken && appType === process.env.CONSUMER_APP_HEADER) {
         const payload = jwt.decode(
             accessToken,
             process.env.ACCESS_TOKEN_SECRET,
@@ -213,10 +213,11 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
                         `;
         }
     } else if (
-        orgType === process.env.DRIVER_APP_HEADER &&
+        appType === process.env.DRIVER_APP_HEADER &&
         req.headers["x-driver-location"]
     ) {
         const driverLocation = req.headers["x-driver-location"];
+        const loggedDriverAccepted = req.headers["x-driver-accepted"];
 
         if (
             (parcelObj.current_location === driverLocation &&
@@ -224,7 +225,7 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
             (parcelObj.current_location === "warehouse" &&
                 parcelObj.ship_to === driverLocation)
         ) {
-            if (req.headers["x-driver-accepted"] === "true") {
+            if (loggedDriverAccepted === "true") {
                 parcelSearchQuery = `
                                 SELECT 
                                     parcel_id,
@@ -235,13 +236,14 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
                                     length,
                                     height,
                                     width,
-                                    weight
+                                    weight,
+                                    driver_accepted
                                 FROM 
                                     parcels
                                 WHERE 
                                     parcel_id = $1;
                                 `;
-            } else if (req.headers["x-driver-accepted"] === "false") {
+            } else if (loggedDriverAccepted === "false") {
                 parcelSearchQuery = `
                 SELECT 
                     parcel_id,
@@ -250,7 +252,8 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
                     length,
                     height,
                     width,
-                    weight
+                    weight,
+                    driver_accepted
                 FROM 
                     parcels
                 WHERE 
@@ -280,7 +283,7 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
     const parcelInfo = await pool.query(parcelSearchQuery, [parcel_id]);
 
     if (
-        orgType === process.env.DRIVER_APP_HEADER &&
+        appType === process.env.DRIVER_APP_HEADER &&
         req.headers["x-driver-location"] &&
         parcelObj.current_location !== "warehouse"
     ) {

@@ -23,7 +23,7 @@ app.use(
         if (apiKey !== process.env.API_KEY)
             return next(new APIError("Invalid API key.", 400));
 
-        const orgType = req.headers["x-organization-type"];
+        const orgType = req.headers["x-application-type"];
         if (!orgType)
             return next(new APIError("No organization header provided.", 400));
 

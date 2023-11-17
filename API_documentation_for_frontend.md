@@ -358,7 +358,7 @@ If response failed:
 To get the parcel info, make a GET request to "/parcels/:parcel_id", ":parcel_id" is a parameter
 
 -   NOTE: need to have "credentials": "include" in the request. This is needed to pass the access_token cookie to the API
--   NOTE: the field "already_accepted" indicates if the parcel is already accepted by any driver and it is used for dispaying "Accept" button in driver application parcel info page, so if this field is set to "true" no need to dispay "Accept" button
+-   NOTE: the field "driver_accepted" indicates if the parcel is already accepted by any driver and it is used for dispaying "Accept" button in driver application parcel info page, so if this field is set to "true" no need to dispay "Accept" button
 
 There are two scenarios:
 
@@ -380,7 +380,7 @@ Response object:
             "height": 3,
             "width": 1,
             "weight": 1,
-            "already_accepted": true
+            "driver_accepted": true
         }
     }
 }
@@ -402,7 +402,7 @@ Response object:
             "height": 3,
             "width": 1,
             "weight": 1,
-            "already_accepted": <false or true>
+            "driver_accepted": <false or true>
         }
     }
 }

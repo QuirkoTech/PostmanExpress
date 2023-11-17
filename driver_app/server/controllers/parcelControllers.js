@@ -7,7 +7,7 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
     const { parcel_id } = req.params;
 
     let loggedDriverAccepted = false;
-    let parcelAlreadyAccepted = false;
+    // let parcelAlreadyAccepted = false;
 
     const parcelDriver = await pool.query(
         "SELECT * FROM driver_parcels WHERE parcel_id = $1",
@@ -15,7 +15,7 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
     );
 
     if (parcelDriver.rowCount !== 0) {
-        parcelAlreadyAccepted = true;
+        // parcelAlreadyAccepted = true;
         if (parcelDriver.rows[0].driver_id === req.driver.driver_id) {
             loggedDriverAccepted = true;
         } else if (parcelDriver.rows[0].driver_id !== req.driver.driver_id) {
@@ -41,7 +41,7 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
     if (!response.ok)
         return next(new APIError(resJSON.message, response.status));
 
-    resJSON.data.parcel_info.already_accepted = parcelAlreadyAccepted;
+    // resJSON.data.parcel_info.already_accepted = parcelAlreadyAccepted;
 
     res.status(response.status).json(resJSON);
 });
