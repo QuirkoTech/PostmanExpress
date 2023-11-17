@@ -6,6 +6,7 @@ import checkFreeCabinets from "../helpers/checkFreeCabinets.js";
 import { v4 } from "uuid";
 import generateUniquePin from "../helpers/generateUniquePin.js";
 import jwt from "jsonwebtoken";
+import compareDriverAndParcelLocations from "../helpers/compareDriverAndParcelLocations.js";
 
 export const newParcel = catchAsync(async (req, res, next) => {
     const {
@@ -219,14 +220,19 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
         const driverLocation = req.headers["x-driver-location"];
         const loggedDriverAccepted = req.headers["x-driver-accepted"];
 
-        if (
-            (parcelObj.current_location === driverLocation &&
-                parcelObj.ship_to !== parcelObj.current_location) ||
-            (parcelObj.current_location === "warehouse" &&
-                parcelObj.ship_to === driverLocation)
-        ) {
-            if (loggedDriverAccepted === "true") {
-                parcelSearchQuery = `
+        const driverCanGetInfo = compareDriverAndParcelLocations(
+            parcelObj.current_location,
+            parcelObj.ship_to,
+            driverLocation,
+        );
+
+        if (!driverCanGetInfo)
+            return next(
+                new APIError("You are not allowed to this parcel info.", 400),
+            );
+
+        if (loggedDriverAccepted === "true") {
+            parcelSearchQuery = `
                                 SELECT 
                                     parcel_id,
                                     ship_to,
@@ -243,8 +249,8 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
                                 WHERE 
                                     parcel_id = $1;
                                 `;
-            } else if (loggedDriverAccepted === "false") {
-                parcelSearchQuery = `
+        } else if (loggedDriverAccepted === "false") {
+            parcelSearchQuery = `
                 SELECT 
                     parcel_id,
                     ship_to,
@@ -259,11 +265,6 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
                 WHERE 
                     parcel_id = $1;
                 `;
-            }
-        } else {
-            return next(
-                new APIError("You are not allowed to this parcel info.", 400),
-            );
         }
     } else {
         parcelSearchQuery = `
@@ -294,4 +295,123 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
         status: "success",
         data: { parcel_info: parcelInfo.rows[0] },
     });
+});
+
+export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
+    const { parcel_id } = req.params;
+
+    const parcel = await pool.query(
+        "SELECT current_location, ship_to, ship_from, driver_accepted FROM parcels WHERE parcel_id = $1",
+        [parcel_id],
+    );
+
+    if (parcel.rowCount === 0)
+        return next(new APIError("No parcel found.", 404));
+
+    const driverLocation = req.headers["x-driver-location"];
+    const loggedDriverAccepted = req.headers["x-driver-accepted"];
+    const parcelDisassign = req.headers["x-disassign"];
+    const currentParcelLocation = parcel.rows[0].current_location;
+    const shipToParcelLocation = parcel.rows[0].ship_to;
+
+    if (loggedDriverAccepted !== "true" && loggedDriverAccepted !== "false")
+        return next(
+            new APIError("Invalid 'driver-accepted' header value.", 400),
+        );
+
+    if (parcelDisassign !== "true" && parcelDisassign !== "false")
+        return next(new APIError("Invalid 'disassign' header value.", 400));
+
+    const driverCanAcceptParcel = compareDriverAndParcelLocations(
+        currentParcelLocation,
+        shipToParcelLocation,
+        driverLocation,
+    );
+
+    if (!driverCanAcceptParcel)
+        return next(
+            new APIError("You can't perfom any action with this parcel.", 400),
+        );
+
+    const client = await pool.connect();
+
+    try {
+        await client.query("BEGIN");
+
+        if (
+            parcel.rows[0].driver_accepted &&
+            loggedDriverAccepted === "false"
+        ) {
+            return next(
+                new APIError("Parcel accepted by another driver.", 409),
+            );
+        } else if (
+            !parcel.rows[0].driver_accepted &&
+            loggedDriverAccepted === "true"
+        ) {
+            return next(
+                new APIError(
+                    "Conflict, header 'driver-accepted' is set to true, while parcel is not accepted by any driver.",
+                    409,
+                ),
+            );
+        } else if (
+            parcel.rows[0].driver_accepted &&
+            loggedDriverAccepted === "true"
+        ) {
+            if (parcelDisassign === "true") {
+                await client.query(
+                    "UPDATE parcels SET driver_accepted = false, pickup_pin = null WHERE parcel_id = $1",
+                    [parcel_id],
+                );
+                // Send an email to a driver that parcel got disassigned for him due to server error
+
+                await client.query("COMMIT");
+                client.release();
+                res.status(201).json({
+                    status: "success",
+                    data: { message: "Parcel disassigned." },
+                });
+            } else if (parcelDisassign === "false") {
+                return next(
+                    new APIError(
+                        "Invalid 'disassign' header value to disassign the parcel.",
+                        400,
+                    ),
+                );
+            }
+        } else if (
+            !parcel.rows[0].driver_accepted &&
+            loggedDriverAccepted === "false"
+        ) {
+            await client.query(
+                "UPDATE parcels SET driver_accepted = true WHERE parcel_id = $1",
+                [parcel_id],
+            );
+            // Send an email to a driver with pickup pin for a parcel
+
+            await client.query("COMMIT");
+            client.release();
+            res.status(201).json({
+                status: "success",
+                data: { message: "Parcel assigned." },
+            });
+        } else {
+            return next(new APIError("Something wrong with the request.", 400));
+        }
+    } catch (error) {
+        try {
+            await client.query("ROLLBACK");
+        } catch (rollbackError) {
+            console.error("Parcel assing rollback failed: ", rollbackError);
+        }
+
+        client.release();
+        return next(
+            new APIError(
+                "Couldn't assign/disassign parcel, try again later.",
+                500,
+            ),
+        );
+    }
 });

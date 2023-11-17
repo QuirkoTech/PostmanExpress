@@ -9,7 +9,7 @@ export const protectConsumer = catchAsync(async (req, res, next) => {
 });
 
 export const protectDriver = catchAsync(async (req, res, next) => {
-    const orgType = req.headers["x-application-typee"];
+    const orgType = req.headers["x-application-type"];
     if (orgType !== process.env.DRIVER_APP_HEADER)
         return next(new APIError("Invalid Organization header.", 400));
 
