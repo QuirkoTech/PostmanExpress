@@ -66,9 +66,6 @@ export const logIn = catchAsync(async (req, res, next) => {
 
 // eslint-disable-next-line no-unused-vars
 export const logOut = catchAsync(async (req, res, next) => {
-    res.clearCookie("access_token", {
-        path: "/",
-        domain: process.env.CONSUMER_APP_DOMAIN,
-    });
+    res.clearCookie("access_token", cookieConfig);
     res.status(201).json({ status: "success" });
 });
