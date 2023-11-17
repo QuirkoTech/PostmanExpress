@@ -28,7 +28,7 @@ app.use(
 );
 
 app.use(`/consumer`, consumerRoutes);
-app.use(`/parcel`, parcelRoutes);
+app.use(`/parcels`, parcelRoutes);
 
 app.all("*", (req, res, next) => {
     next(new APIError(`Can't find ${req.originalUrl} on this server!`, 404));

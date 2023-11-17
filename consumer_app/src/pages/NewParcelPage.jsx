@@ -30,7 +30,7 @@ const ParcelAddNew = [
         measure: "m"
     },
     {
-        title: "Depth",
+        title: "Length",
         placeholder: "Input a number",
         measure: "m"
     }

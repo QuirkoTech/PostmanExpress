@@ -1,16 +1,20 @@
-import { useForm } from "react-hook-form";
+import { useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ChevronsUpDown } from "lucide-react";
-import { useEffect } from "react";
+import axios from "axios";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Button, Input } from "../components";
-import axios from "axios";
+import { ChevronsUpDown } from "lucide-react";
+
+import { AuthContext } from "../components/auth";
 
 const SignUp = () => {
     // Backend URL
     const CONSUMER_URL = import.meta.env.VITE_CONSUMER_BACKEND_URL;
-    console.log(import.meta.env.VITE_TEST)
+
+    // Function to fetch user data from the backend
+    const { fetchUser } = useContext(AuthContext);
 
     // Yup validation schema for form validation
     const schema = yup.object({
@@ -75,9 +79,10 @@ const SignUp = () => {
     useEffect(() => {
         if (isSubmitSuccessful) {
             reset();
-            navigate("/login");
+            fetchUser();
+            navigate("/", { replace: true });
         }
-    }, [isSubmitSuccessful, reset, navigate]);
+    }, [isSubmitSuccessful, reset, navigate, fetchUser]);
 
     // Function to handle form submission
     const submitHandler = async (data) => {
@@ -93,19 +98,26 @@ const SignUp = () => {
                 reset();
             }
         } catch (error) {
-            const message = error.response.data.message;
+            if (error.response) {
+                const message = error.response.data.message;
 
-            // Set error message for existing email
-            if (message === "User with this email already exists.") {
-                setError("user_email", {
-                    type: "manual",
-                    message: "Email already exists",
-                });
+                // Set error message for existing email
+                if (message === "User with this email already exists.") {
+                    setError("user_email", {
+                        type: "manual",
+                        message: "Email already exists",
+                    });
+                } else {
+                    setError("username", {
+                        type: "manual",
+                        message:
+                            "Something went wrong with the request, try again later",
+                    });
+                }
             } else {
                 setError("username", {
                     type: "manual",
-                    message:
-                        "Something went wrong with the request, try again later",
+                    message: "Error connecting to server, try again later",
                 });
             }
         }
