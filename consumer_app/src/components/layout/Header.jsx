@@ -1,7 +1,7 @@
 import Modal from "../modal/Modal";
 import { useRef, useState, useContext } from "react";
 import { NavLink } from "react-router-dom";
-import { Notification } from "../";
+import { Notifications } from "../";
 import { AuthContext } from "../auth";
 
 const menuLinks = [
@@ -18,6 +18,40 @@ const menuLinks = [
         title: "Parcel History",
     },
 ];
+
+
+const notifdata = [
+    {
+        "title": "Status update",
+        "parcel_id": "495c17e3-e6e0-403c-93a1-5b79c09d4d13",
+        "parcel_status": "delivered",
+        "parcel_name": "Nike shoes"
+    },
+    {
+        "title": "Status update",
+        "parcel_id": "10552409-02fe-4749-ba02-dff2b6837766",
+        "parcel_status": "delivered",
+        "parcel_name": "Adidas jacket"
+    },
+    {
+        "title": "Status update",
+        "parcel_id": "415bd7a6-d2df-4a12-8e86-ae1887715ac2",
+        "parcel_status": "delivered",
+        "parcel_name": "Book collection"
+    },
+    {
+        "title": "Status update",
+        "parcel_id": "c007d841-df33-421e-abd5-b0a1e341b9ae",
+        "parcel_status": "delivered",
+        "parcel_name": "Shiny cup"
+    },
+    {
+        "title": "Status update",
+        "parcel_id": "22c445ca-af04-478e-82d6-4ab6fe84fc5b",
+        "parcel_status": "delivered",
+        "parcel_name": "Tech gadgets"
+    }
+]
 
 // {title: 'Status update', parcel_id: '22c445ca-af04-478e-82d6-4ab6fe84fc5b', parcel_status: 'delivered', parcel_name: 'Tech gadgets'}
 
@@ -79,7 +113,7 @@ const Header = () => {
                 </div>
             </div>
 
-            <Notification />
+            <Notifications notifications={notifdata} />
         </header>
     );
 };
