@@ -76,6 +76,7 @@ CREATE TABLE parcels (
   parcel_receiver_email varchar(255),
   parcel_name varchar(255) NOT NULL,
   ship_to LOCATION NOT NULL,
+  current_location LOCATION,
   ship_from LOCATION NOT NULL,
   height integer NOT NULL,
   length integer NOT NULL,

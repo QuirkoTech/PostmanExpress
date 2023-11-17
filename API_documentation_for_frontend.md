@@ -1,5 +1,21 @@
 # How to use application APIs in frontend
 
+## NAVIGATION
+
+-   [Consumer application endpoints](#consumer-application)
+
+    -   [Sign up](#sign-up)
+    -   [Log in](#log-in)
+    -   [Consumer application load function](#consumer-application-load-function)
+    -   [User active parcels](#user-active-parcels)
+    -   [Post new parcels](#post-new-parcels)
+    -   [Parcel info](#parcel-info)
+
+-   [Driver application](#driver-application)
+    -   [Sign up](#sign-up-1)
+    -   [Log in](#log-in-1)
+    -   [Parcel info](#parcel-info-1)
+
 ## Consumer application
 
 ### Sign up
@@ -31,7 +47,7 @@ In respose from this endpoint you will get:
 
 If response is successfull:
 
-1. Access toekn cookie is set for a user
+1. Access token cookie is set for a user
 2. Object like this:
 
 ```
@@ -77,7 +93,7 @@ In respose from this endpoint you will get:
 
 If response is successfull:
 
-1. Access toekn cookie is set for a user
+1. Access token cookie is set for a user
 2. Object like this:
 
 ```
@@ -146,7 +162,7 @@ Response object:
 
 To post new parcels make a POST request to "/parcels/new" route
 
--   NOTE: need to have "credentials": "include" in the request, but i dont know if it has to be set in request headers. This is needed to pass the access_token cookie to the API
+-   NOTE: need to have "credentials": "include" in the request. This is needed to pass the access_token cookie to the API
 -   NOTE: you can leave parcel_name field as an empty string when user submits the parcel, API will automatically replace empty string with "Parcel"
 
 Request body:
@@ -172,6 +188,71 @@ Response object:
  "data": {
    "message": "Parcel created. Check your email for further instructions."
  }
+}
+```
+
+### Parcel info
+
+To get the parcel info, make a GET request to "/parcels/:parcel_id", ":parcel_id" is a parameter
+
+-   NOTE: need to have "credentials": "include" in the request. This is needed to pass the access_token cookie to the API
+
+There are two scenarios of what you will get in response:
+
+-   First is when user is the sender or receiver of the parcel AND he is logged in:
+
+Response object:
+
+```
+{
+    "status": "success",
+    "data": {
+        "parcel_info": {
+            "parcel_id": "c604a188-a441-4a5b-a1b5-3c44a000ccaf",
+            "sender_name": "RepoRover",
+            "receiver_name": "test@mail.com",
+            "parcel_status": "awaiting drop-off",
+            "status_timestamps": [
+                {
+                    "date": "16.11.23",
+                    "time": "15:40",
+                    "status": "awaiting drop-off"
+                }
+            ],
+            "width": 1,
+            "height": 3,
+            "length": 1,
+            "weight": 1,
+            "parcel_name": "Parcel",
+            "ship_to": "helsinki",
+            "ship_from": "oulu"
+        }
+    }
+}
+```
+
+-   Second is when user is not logged in or if he is not the sender or receiver of the parcel
+
+Response object:
+
+```
+{
+    "status": "success",
+    "data": {
+        "parcel_info": {
+            "parcel_id": "c604a188-a441-4a5b-a1b5-3c44a000ccaf",
+            "parcel_status": "awaiting drop-off",
+            "status_timestamps": [
+                {
+                    "date": "16.11.23",
+                    "time": "15:40",
+                    "status": "awaiting drop-off"
+                }
+            ],
+            "ship_to": "helsinki",
+            "ship_from": "oulu"
+        }
+    }
 }
 ```
 
@@ -206,7 +287,7 @@ In respose from this endpoint you will get:
 
 If response is successfull:
 
-1. Access toekn cookie is set for a driver
+1. Access token cookie is set for a driver
 2. Object like this:
 
 ```
@@ -252,7 +333,7 @@ In respose from this endpoint you will get:
 
 If response is successfull:
 
-1. Access toekn cookie is set for a driver
+1. Access token cookie is set for a driver
 2. Object like this:
 
 ```
@@ -269,5 +350,60 @@ If response failed:
 {
   "status": "<fail or error>",
   "message": "<response message>"
+}
+```
+
+### Parcel info
+
+To get the parcel info, make a GET request to "/parcels/:parcel_id", ":parcel_id" is a parameter
+
+-   NOTE: need to have "credentials": "include" in the request. This is needed to pass the access_token cookie to the API
+-   NOTE: the field "already_accepted" indicates if the parcel is already accepted by any driver and it is used for dispaying "Accept" button in driver application parcel info page, so if this field is set to "true" no need to dispay "Accept" button
+
+There are two scenarios:
+
+-   First is when logged in driver accepted the parcel
+
+Response object:
+
+```
+{
+    "status": "success",
+    "data": {
+        "parcel_info": {
+            "parcel_id": "ce32b3c5-788f-467c-bce3-9935fbb42fce",
+            "ship_to": "warehouse",
+            "current_location": "oulu",
+            "pickup_pin": null,
+            "delivery_pin": null,
+            "length": 1,
+            "height": 3,
+            "width": 1,
+            "weight": 1,
+            "already_accepted": true
+        }
+    }
+}
+```
+
+-   Second is when driver is able to deliver the parcel (it means that drivers' location city is the same as where parcel has to be shipped or from where it has ot be shipped), but hasn't accepted it yet or probably someone else accepted it
+
+Response object:
+
+```
+{
+    "status": "success",
+    "data": {
+        "parcel_info": {
+            "parcel_id": "ce32b3c5-788f-467c-bce3-9935fbb42fce",
+            "ship_to": "warehouse",
+            "current_location": "oulu",
+            "length": 1,
+            "height": 3,
+            "width": 1,
+            "weight": 1,
+            "already_accepted": <false or true>
+        }
+    }
 }
 ```
