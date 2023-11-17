@@ -5,7 +5,7 @@ import { AuthRoute, PrivateRoute, Authprovider } from "./components/auth";
 
 function App() {
     return (
-        <main className="bg-dark-main text-slate-gray relative min-h-screen">
+        <div className="bg-dark-main text-slate-gray relative min-h-screen">
             <Authprovider>
                 <Routes>
                     {/* Private routes */}
@@ -49,7 +49,7 @@ function App() {
                     <Route path="*" element={<NotFoundPage />} />
                 </Routes>
             </Authprovider>
-        </main>
+        </div>
     );
 }
 
