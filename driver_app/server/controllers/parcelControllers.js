@@ -96,7 +96,12 @@ export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
 
         await client.query("COMMIT");
         client.release();
-        res.status(201).json({ status: "success" });
+        res.status(201).json({
+            status: "success",
+            data: {
+                pickup_pin: assignResJSON.data.parcel_info.pin,
+            },
+        });
     } catch (error) {
         try {
             await client.query("ROLLBACK");

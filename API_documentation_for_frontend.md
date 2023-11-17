@@ -15,6 +15,7 @@
     -   [Sign up](#sign-up-1)
     -   [Log in](#log-in-1)
     -   [Parcel info](#parcel-info-1)
+    -   [Accept the parcel](#accept-the-parcel)
 
 ## Consumer application
 
@@ -116,45 +117,73 @@ If response failed:
 ### Consumer application load function
 
 To load the user into the application make a GET request to "/me" route
-NOTE: need to have "credentials": "include" in the request, but i dont know if it has to be set in request headers. This is needed to pass the access_token cookie to the API
 
-Response object:
+-   NOTE: need to have "credentials": "include" in the request, but i dont know if it has to be set in request headers. This is needed to pass the access_token cookie to the API
+
+If response is successfull:
+
+1. Object like this:
 
 ```
 {
- "status": "success",
- "data": {
-  "username": "<username>",
-  "notifications": [
-    {
-      "title": "<notification_title>",
-      "parcel_id": "<parcel_id>",
-      "status": "<parcel_status>"
-    },...
-  ]
- }
+  "status": "success",
+  "data": {
+    "username": "<username>",
+    "notifications": [
+      {
+        "title": "<notification_title>",
+        "parcel_id": "<parcel_id>",
+        "status": "<parcel_status>"
+      },...
+    ]
+  }
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
 }
 ```
 
 ### User active parcels
 
 To load user active parcels make a GET request to "/me/parcels" route
-NOTE: need to have "credentials": "include" in the request, but i dont know if it has to be set in request headers. This is needed to pass the access_token cookie to the API
 
-Response object:
+-   NOTE: need to have "credentials": "include" in the request, but i dont know if it has to be set in request headers. This is needed to pass the access_token cookie to the API
+
+If response is successfull:
+
+1. Object like this:
 
 ```
 {
- "status": "success",
- "data": {
-  "user_parcels": [
-    {
-      "last_status_date": "13.11.23",
-      "parcel_id": "f9a64037-2e16-40ec-95ec-10f64a1886d7",
-      "parcel_status": "prepared for delivery"
-    }
-  ]
- }
+  "status": "success",
+  "data": {
+    "user_parcels": [
+      {
+        "last_status_date": "13.11.23",
+        "parcel_id": "f9a64037-2e16-40ec-95ec-10f64a1886d7",
+        "parcel_status": "prepared for delivery"
+      }
+    ]
+  }
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
 }
 ```
 
@@ -180,7 +209,9 @@ Request body:
 }
 ```
 
-Response object:
+If response is successfull:
+
+1. Object like this:
 
 ```
 {
@@ -188,6 +219,17 @@ Response object:
  "data": {
    "message": "Parcel created. Check your email for further instructions."
  }
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
 }
 ```
 
@@ -201,7 +243,9 @@ There are two scenarios of what you will get in response:
 
 -   First is when user is the sender or receiver of the parcel AND he is logged in:
 
-Response object:
+If response is successfull:
+
+1. Object like this:
 
 ```
 {
@@ -231,9 +275,22 @@ Response object:
 }
 ```
 
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
+}
+```
+
 -   Second is when user is not logged in or if he is not the sender or receiver of the parcel
 
-Response object:
+If response is successfull:
+
+1. Object like this:
 
 ```
 {
@@ -253,6 +310,17 @@ Response object:
             "ship_from": "oulu"
         }
     }
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
 }
 ```
 
@@ -364,7 +432,9 @@ There are two scenarios:
 
 -   First is when logged in driver accepted the parcel
 
-Response object:
+If response is successfull:
+
+1. Object like this:
 
 ```
 {
@@ -386,9 +456,22 @@ Response object:
 }
 ```
 
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
+}
+```
+
 -   Second is when driver is able to deliver the parcel (it means that drivers' location city is the same as where parcel has to be shipped or from where it has ot be shipped), but hasn't accepted it yet or probably someone else accepted it
 
-Response object:
+If response is successfull:
+
+1. Object like this:
 
 ```
 {
@@ -405,5 +488,46 @@ Response object:
             "driver_accepted": <false or true>
         }
     }
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
+}
+```
+
+### Accept the parcel
+
+To accept the parcel, make a PATCH request to "/parcels/:parcel_id" route in driver API
+
+-   NOTE: need to have "credentials": "include" in the request. This is needed to pass the access_token cookie to the API
+
+If response is successfull:
+
+1. Object like this:
+
+```
+{
+    "status": "success",
+    "data": {
+        "pickup_pin": 28374
+    }
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
 }
 ```
