@@ -360,17 +360,19 @@ export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
             loggedDriverAccepted === "true"
         ) {
             if (parcelDisassign === "true") {
-                await client.query(
-                    "UPDATE parcels SET driver_accepted = false, pickup_pin = null WHERE parcel_id = $1",
+                const updatedParcel = await client.query(
+                    "UPDATE parcels SET driver_accepted = false, pickup_pin = null WHERE parcel_id = $1 RETURNING parcel_id, ship_from, ship_to",
                     [parcel_id],
                 );
-                // Send an email to a driver that parcel got disassigned for him due to server error
 
                 await client.query("COMMIT");
                 client.release();
                 res.status(201).json({
                     status: "success",
-                    data: { message: "Parcel disassigned." },
+                    data: {
+                        message: "Parcel disassigned.",
+                        parcel_info: updatedParcel.rows[0],
+                    },
                 });
             } else if (parcelDisassign === "false") {
                 return next(
@@ -384,17 +386,24 @@ export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
             !parcel.rows[0].driver_accepted &&
             loggedDriverAccepted === "false"
         ) {
-            await client.query(
-                "UPDATE parcels SET driver_accepted = true WHERE parcel_id = $1",
-                [parcel_id],
+            const pickup_pin = await generateUniquePin("pickup");
+            const updatedParcel = await client.query(
+                "UPDATE parcels SET driver_accepted = true, pickup_pin = $1 WHERE parcel_id = $2 RETURNING parcel_id, ship_from, ship_to, current_location",
+                [pickup_pin, parcel_id],
             );
-            // Send an email to a driver with pickup pin for a parcel
+
+            if (updatedParcel.rows[0].current_location !== "warehouse") {
+                updatedParcel.rows[0].ship_to = "warehouse";
+            }
 
             await client.query("COMMIT");
             client.release();
             res.status(201).json({
                 status: "success",
-                data: { message: "Parcel assigned." },
+                data: {
+                    message: "Parcel assigned.",
+                    parcel_info: { ...updatedParcel.rows[0], pin: pickup_pin },
+                },
             });
         } else {
             return next(new APIError("Something wrong with the request.", 400));

@@ -2,6 +2,7 @@ import catchAsync from "../helpers/catchAsync.js";
 import sendRequest from "./../helpers/sendRequestToOrgAPI.js";
 import APIError from "./../helpers/APIError.js";
 import pool from "./../db.js";
+import sendEmail from "../helpers/sendEmail.js";
 
 export const singleParcelInfo = catchAsync(async (req, res, next) => {
     const { parcel_id } = req.params;
@@ -85,6 +86,13 @@ export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
             "INSERT INTO driver_parcels (driver_id, parcel_id) VALUES ($1, $2)",
             [req.driver.driver_id, parcel_id],
         );
+        await sendEmail(
+            req.driver.driver_email,
+            "Parcel ready to be collected",
+            assignResJSON.data.parcel_info,
+            "driver",
+            assignResJSON.data.parcel_info.current_location,
+        );
 
         await client.query("COMMIT");
         client.release();
@@ -105,6 +113,12 @@ export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
         );
 
         const disAssignResJSON = await disAssignResponse.json();
+        await sendEmail(
+            req.driver.driver_email,
+            "Parcel disassigned due to server error",
+            assignResJSON.data.parcel_info,
+            "driver",
+        );
 
         if (!disAssignResponse.ok) {
             return next(
