@@ -1,9 +1,13 @@
-import React from 'react';
+import React from "react";
 
-const Button = ({ className = '', onClick = () => {}, ...props }) => {
+const Button = ({ children, className = "", onClick = () => {}, ...props }) => {
     return (
-        <button className={`rounded-low bg-green-main self-end px-7 py-1 ${className}`} onClick={onClick} {...props}>
-            Apply
+        <button
+            className={`rounded-low bg-green-main self-end px-7 py-1 ${className}`}
+            onClick={onClick}
+            {...props}
+        >
+            {children}
         </button>
     );
 };
