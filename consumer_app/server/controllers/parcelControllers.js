@@ -43,3 +43,23 @@ export const newParcel = catchAsync(async (req, res, next) => {
 
     res.status(response.status).json(resJSON);
 });
+
+export const singleParcelInfo = catchAsync(async (req, res, next) => {
+    const { parcel_id } = req.params;
+    let headers = {};
+
+    if (req.cookies["access_token"]) {
+        headers = {
+            Authorization: `Bearer ${req.cookies["access_token"]}`,
+        };
+    }
+
+    const response = await sendRequest("GET", `/parcels/${parcel_id}`, headers);
+
+    const resJSON = await response.json();
+
+    if (!response.ok)
+        return next(new APIError(resJSON.message, response.status));
+
+    res.status(response.status).json(resJSON);
+});

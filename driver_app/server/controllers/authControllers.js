@@ -87,7 +87,7 @@ export const signUp = catchAsync(async (req, res, next) => {
             [driver_email],
         );
 
-        if (driver.rows.length > 0) {
+        if (driver.rowCount > 0) {
             await client.query("ROLLBACK");
             client.release();
             return next(new APIError("Driver already exists.", 409));
