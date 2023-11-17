@@ -6,6 +6,7 @@
 
     -   [Sign up](#sign-up)
     -   [Log in](#log-in)
+    -   [Log out](#log-out)
     -   [Consumer application load function](#consumer-application-load-function)
     -   [User active parcels](#user-active-parcels)
     -   [Post new parcels](#post-new-parcels)
@@ -14,6 +15,7 @@
 -   [Driver application](#driver-application)
     -   [Sign up](#sign-up-1)
     -   [Log in](#log-in-1)
+    -   [Log out](#log-out-1)
     -   [Parcel info](#parcel-info-1)
 
 ## Consumer application
@@ -94,6 +96,43 @@ In respose from this endpoint you will get:
 If response is successfull:
 
 1. Access token cookie is set for a user
+2. Object like this:
+
+```
+{
+  "status": "success"
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
+}
+```
+
+### Log out
+
+To log out the user, make a POST request to the consumer API endpoint "/auth/logout"
+Requiremets:
+
+Request headers:
+
+```
+{
+  "Content-type": "application/json"
+}
+```
+
+In respose from this endpoint you will get:
+
+If response is successfull:
+
+1. Access token cookie deleted
 2. Object like this:
 
 ```
@@ -334,6 +373,43 @@ In respose from this endpoint you will get:
 If response is successfull:
 
 1. Access token cookie is set for a driver
+2. Object like this:
+
+```
+{
+  "status": "success"
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
+}
+```
+
+### Log out
+
+To log out the driver, make a POST request to the driver API endpoint "/auth/logout"
+Requiremets:
+
+Request headers:
+
+```
+{
+  "Content-type": "application/json"
+}
+```
+
+In respose from this endpoint you will get:
+
+If response is successfull:
+
+1. Access token cookie deleted
 2. Object like this:
 
 ```
