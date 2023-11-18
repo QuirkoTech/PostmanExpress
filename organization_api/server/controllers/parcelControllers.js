@@ -167,7 +167,7 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
             [userId],
         );
 
-        if (user.rowCount === 0)
+        if (user.rowCount === 0 || user.rows[0].user_email === null)
             return next(new APIError("No user found.", 404));
 
         jwt.verify(
@@ -189,28 +189,31 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
             parcelObj.parcel_receiver_email === user.rows[0].user_email
         ) {
             parcelSearchQuery = `
-                            SELECT 
-                                p.parcel_id,
-                                sender.user_name AS sender_name,
-                                COALESCE(receiver.user_name, p.parcel_receiver_email) AS receiver_name,
-                                p.parcel_status,
-                                p.status_timestamps,
-                                p.width,
-                                p.height,
-                                p.length,
-                                p.weight,
-                                p.parcel_name,
-                                p.ship_to,
-                                p.ship_from
-                            FROM 
-                                parcels p
-                            LEFT JOIN 
-                                users sender ON p.parcel_sender_id = sender.user_id
-                            LEFT JOIN 
-                                users receiver ON p.parcel_receiver_email = receiver.user_email
-                            WHERE 
-                                p.parcel_id = $1;
-                        `;
+                                SELECT 
+                                    p.parcel_id,
+                                    CASE 
+                                        WHEN sender.user_email IS NULL THEN 'Deleted'
+                                        ELSE sender.user_name
+                                    END AS sender_name,
+                                    COALESCE(receiver.user_name, p.parcel_receiver_email) AS receiver_name,
+                                    p.parcel_status,
+                                    p.status_timestamps,
+                                    p.width,
+                                    p.height,
+                                    p.length,
+                                    p.weight,
+                                    p.parcel_name,
+                                    p.ship_to,
+                                    p.ship_from
+                                FROM 
+                                    parcels p
+                                LEFT JOIN 
+                                    users sender ON p.parcel_sender_id = sender.user_id
+                                LEFT JOIN 
+                                    users receiver ON p.parcel_receiver_email = receiver.user_email
+                                WHERE 
+                                    p.parcel_id = $1;
+                            `;
         }
     } else if (
         appType === process.env.DRIVER_APP_HEADER &&

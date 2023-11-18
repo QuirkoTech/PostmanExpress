@@ -198,3 +198,30 @@ export const userParcelsHistory = catchAsync(async (req, res, next) => {
         return next(new APIError("Something went wrong.", 500));
     }
 });
+
+export const consumerDelete = catchAsync(async (req, res, next) => {
+    const client = await pool.connect();
+
+    try {
+        await client.query(
+            "UPDATE users SET user_name = null, user_email = null, refresh_token = null, password = null, user_location = null WHERE user_id = $1",
+            [req.user.user_id],
+        );
+
+        await client.query("COMMIT");
+        client.release();
+        res.status(200).json({ status: "success" });
+    } catch (error) {
+        try {
+            await client.query("ROLLBACK");
+        } catch (rollbackError) {
+            console.error("User delete rollback failed: ", rollbackError);
+        }
+        console.log(error);
+
+        client.release();
+        return next(
+            new APIError("Couldn't delete user, try again later.", 500),
+        );
+    }
+});

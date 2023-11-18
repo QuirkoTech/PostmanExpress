@@ -27,7 +27,8 @@ const protect = catchAsync(async (req, res, next) => {
         [userId],
     );
 
-    if (user.rowCount === 0) return next(new APIError("No user found.", 404));
+    if (user.rowCount === 0 || user.rows[0].user_email === null)
+        return next(new APIError("No user found.", 404));
 
     jwt.verify(
         user.rows[0].refresh_token,
