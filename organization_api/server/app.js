@@ -7,8 +7,12 @@ import globalErrorHandler from "./controllers/errorControllers.js";
 import APIError from "./helpers/APIError.js";
 import consumerRoutes from "./routes/consumerRoutes.js";
 import parcelRoutes from "./routes/parcelRoutes.js";
+import cabinetRoutes from "./routes/cabinetRoutes.js";
 import catchAsync from "./helpers/catchAsync.js";
-import { protectConsumer } from "./helpers/protectAppFocusedRoutes.js";
+import {
+    protectConsumer,
+    protectLocker,
+} from "./helpers/protectAppFocusedRoutes.js";
 
 const app = express();
 
@@ -33,6 +37,7 @@ app.use(
 
 app.use(`/consumer`, protectConsumer, consumerRoutes);
 app.use(`/parcels`, parcelRoutes);
+app.use("/cabinet", protectLocker, cabinetRoutes);
 
 app.all("*", (req, res, next) => {
     next(new APIError(`Can't find ${req.originalUrl} on this server!`, 404));

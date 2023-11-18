@@ -6,8 +6,7 @@ import "./config.js";
 import globalErrorHandler from "./controllers/errorControllers.js";
 import APIError from "./helpers/APIError.js";
 import checkContentType from "./helpers/checkContentType.js";
-import pinRoutes from "./routes/pinRoutes.js";
-import catchAsync from "./helpers/catchAsync.js";
+import cabinetRoutes from "./routes/cabinetRoutes.js";
 
 const app = express();
 
@@ -18,7 +17,7 @@ if (process.env.ENV === "dev") app.use(morgan("dev"));
 
 app.use(checkContentType);
 
-app.use("/pin", pinRoutes);
+app.use("/pin", cabinetRoutes);
 
 app.all("*", (req, res, next) => {
     next(new APIError(`Can't find ${req.originalUrl} on this server!`, 404));

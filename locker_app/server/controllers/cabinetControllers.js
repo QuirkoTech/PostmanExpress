@@ -1,12 +1,18 @@
-import catchAsync from "./../helpers/catchAsync.js";
+import catchAsync from "../helpers/catchAsync.js";
 import APIError from "../helpers/APIError.js";
 import sendRequest from "../helpers/sendRequestToOrgAPI.js";
 
 export const checkPinLength = catchAsync(async (req, res, next) => {
-    const { pin } = req.body;
+    const { pin, cabinet_location } = req.body;
+
+    if (!cabinet_location)
+        return next(new APIError("No cabinet location provided.", 400));
+
     if (!pin) return next(new APIError("No pin provided.", 400));
 
-    if (pin.length !== 5) return next(new APIError("Invalid pin length.", 400));
+    const isFiveDigits = /^\d{5}$/.test(pin);
+    if (!isFiveDigits) return next(new APIError("Invalid pin.", 400));
+
     next();
 });
 
@@ -15,7 +21,7 @@ export const pastePickupPin = catchAsync(async (req, res, next) => {
         "POST",
         `/cabinet/pickup`,
         {},
-        { pin: req.body.pin },
+        { pin: req.body.pin, cabinet_location: req.body.cabinet_location },
     );
 
     const resJSON = await response.json();
@@ -31,7 +37,7 @@ export const pasteDeliveryPin = catchAsync(async (req, res, next) => {
         "POST",
         `/cabinet/deliver`,
         {},
-        { pin: req.body.pin },
+        { pin: req.body.pin, cabinet_location: req.body.cabinet_location },
     );
 
     const resJSON = await response.json();

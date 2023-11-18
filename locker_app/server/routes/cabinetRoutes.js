@@ -4,7 +4,7 @@ import {
     pasteDeliveryPin,
     pastePickupPin,
     checkPinLength,
-} from "../controllers/pinControllers.js";
+} from "../controllers/cabinetControllers.js";
 
 const router = Router();
 
