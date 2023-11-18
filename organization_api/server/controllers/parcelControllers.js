@@ -313,8 +313,8 @@ export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
     const driverLocation = req.headers["x-driver-location"];
     const loggedDriverAccepted = req.headers["x-driver-accepted"];
     const parcelDisassign = req.headers["x-disassign"];
-    const currentParcelLocation = parcel.rows[0].current_location;
-    const shipToParcelLocation = parcel.rows[0].ship_to;
+    let currentParcelLocation = parcel.rows[0].current_location;
+    let shipToParcelLocation = parcel.rows[0].ship_to;
 
     if (loggedDriverAccepted !== "true" && loggedDriverAccepted !== "false")
         return next(
@@ -336,6 +336,10 @@ export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
         );
 
     const client = await pool.connect();
+
+    if (currentParcelLocation !== "warehouse") {
+        shipToParcelLocation = "warehouse";
+    }
 
     try {
         await client.query("BEGIN");
@@ -362,6 +366,23 @@ export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
             loggedDriverAccepted === "true"
         ) {
             if (parcelDisassign === "true") {
+                await client.query(
+                    "WITH selected_cabinet AS \
+                (SELECT \
+                   cabinet_id FROM cabinets \
+                   WHERE \
+                   cabinet_location = $1 AND cabinet_status = 'reserved' \
+                   LIMIT 1 ) \
+                UPDATE \
+                cabinets \
+                   SET \
+                   cabinet_status = 'empty' \
+                   FROM selected_cabinet \
+                   WHERE \
+                   cabinets.cabinet_id = selected_cabinet.cabinet_id",
+                    [shipToParcelLocation],
+                );
+
                 const updatedParcel = await client.query(
                     "UPDATE parcels SET driver_accepted = false, pickup_pin = null WHERE parcel_id = $1 RETURNING parcel_id, ship_from, ship_to",
                     [parcel_id],
@@ -388,6 +409,35 @@ export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
             !parcel.rows[0].driver_accepted &&
             loggedDriverAccepted === "false"
         ) {
+            const freeDestinationLockers = await client.query(
+                "SELECT cabinet_id FROM cabinets WHERE cabinet_status = 'empty' AND cabinet_location = $1",
+                [shipToParcelLocation],
+            );
+            if (freeDestinationLockers.rowCount === 0)
+                return next(
+                    new APIError(
+                        "No free cabinets to deliver the parcel to.",
+                        404,
+                    ),
+                );
+
+            await client.query(
+                "WITH selected_cabinet AS \
+            (SELECT \
+               cabinet_id FROM cabinets \
+               WHERE \
+               cabinet_location = $1 AND cabinet_status = 'empty' \
+               LIMIT 1 ) \
+            UPDATE \
+            cabinets \
+               SET \
+               cabinet_status = 'reserved' \
+               FROM selected_cabinet \
+               WHERE \
+               cabinets.cabinet_id = selected_cabinet.cabinet_id",
+                [shipToParcelLocation],
+            );
+
             const pickup_pin = await generateUniquePin("pickup");
             const updatedParcel = await client.query(
                 "UPDATE parcels SET driver_accepted = true, pickup_pin = $1 WHERE parcel_id = $2 RETURNING parcel_id, ship_from, ship_to, current_location",
