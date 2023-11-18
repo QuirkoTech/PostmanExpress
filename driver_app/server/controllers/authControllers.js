@@ -60,6 +60,7 @@ export const logIn = catchAsync(async (req, res, next) => {
             console.error("Driver log in rollback failed: ", rollbackError);
         }
 
+        console.error(error);
         client.release();
         return next(
             new APIError("Couldn't perform log in, try again later.", 500),
@@ -123,6 +124,7 @@ export const signUp = catchAsync(async (req, res, next) => {
             console.error("Driver signup rollback failed: ", rollbackError);
         }
 
+        console.error(error);
         client.release();
         return next(
             new APIError("Couldn't perform sign up, try again later.", 500),
