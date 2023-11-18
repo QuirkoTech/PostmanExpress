@@ -3,7 +3,7 @@ import catchAsync from "../helpers/catchAsync.js";
 import hashPwd from "../helpers/hashPwd.js";
 import sendRequest from "../helpers/sendRequestToOrgAPI.js";
 
-const cookieConfig = {
+export const cookieConfig = {
     httpOnly: true,
     path: "/",
     sameSite: "None",
