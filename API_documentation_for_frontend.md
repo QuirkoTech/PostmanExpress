@@ -6,6 +6,7 @@
 
     -   [Sign up](#sign-up)
     -   [Log in](#log-in)
+    -   [Delete](#Delete)
     -   [Consumer application load function](#consumer-application-load-function)
     -   [User active parcels](#user-active-parcels)
     -   [Post new parcels](#post-new-parcels)
@@ -113,10 +114,49 @@ If response failed:
 }
 ```
 
+### Delete
+
+To delete the user, make a DELETE request to the consumer API endpoint "/me"
+
+-   NOTE: need to have "credentials": "include" in the request. This is needed to pass the access_token cookie to the API
+
+Request headers:
+
+```
+{
+  "Content-type": "application/json"
+}
+```
+
+In respose from this endpoint you will get:
+
+If response is successfull:
+
+1. Access token cookie is deleted
+2. Object like this:
+
+```
+{
+  "status": "success"
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
+}
+```
+
 ### Consumer application load function
 
 To load the user into the application make a GET request to "/me" route
-NOTE: need to have "credentials": "include" in the request, but i dont know if it has to be set in request headers. This is needed to pass the access_token cookie to the API
+
+-   NOTE: need to have "credentials": "include" in the request. This is needed to pass the access_token cookie to the API
 
 Response object:
 
@@ -139,7 +179,8 @@ Response object:
 ### User active parcels
 
 To load user active parcels make a GET request to "/me/parcels" route
-NOTE: need to have "credentials": "include" in the request, but i dont know if it has to be set in request headers. This is needed to pass the access_token cookie to the API
+
+-   NOTE: need to have "credentials": "include" in the request. This is needed to pass the access_token cookie to the API
 
 Response object:
 
