@@ -49,6 +49,7 @@ export const consumerSignup = catchAsync(async (req, res, next) => {
             console.error("User sign up rollback failed: ", rollbackError);
         }
 
+        console.error(error);
         client.release();
         return next(
             new APIError("Couldn't perform sign up, try again later.", 500),
@@ -102,6 +103,7 @@ export const consumerLogin = catchAsync(async (req, res, next) => {
             console.error("User log in rollback failed: ", rollbackError);
         }
 
+        console.error(error);
         client.release();
         return next(
             new APIError("Couldn't perform log in, try again later.", 500),
@@ -153,6 +155,7 @@ export const consumerLoad = catchAsync(async (req, res, next) => {
             console.error("User load rollback failed: ", rollbackError);
         }
 
+        console.error(error);
         client.release();
         return next(
             new APIError("Couldn't perform user load, try again later.", 500),
@@ -161,17 +164,39 @@ export const consumerLoad = catchAsync(async (req, res, next) => {
 });
 
 export const userParcels = catchAsync(async (req, res, next) => {
-    const userParcels = await pool.query(
-        "SELECT (status_timestamps[array_upper(status_timestamps, 1)]->>'date') as last_status_date, parcel_id, parcel_status FROM parcels WHERE (parcel_sender_id = $1 OR parcel_receiver_email = $2) AND parcel_status != 'delivered'",
-        [req.user.user_id, req.user.user_email],
-    );
+    try {
+        const userParcels = await pool.query(
+            "SELECT (status_timestamps[array_upper(status_timestamps, 1)]->>'date') as last_status_date, parcel_id, parcel_status, parcel_name FROM parcels WHERE (parcel_sender_id = $1 OR parcel_receiver_email = $2) AND parcel_status != 'delivered'",
+            [req.user.user_id, req.user.user_email],
+        );
 
-    res.status(200).json({
-        status: "success",
-        data: {
-            user_parcels: userParcels.rows,
-        },
-    });
+        res.status(200).json({
+            status: "success",
+            data: {
+                user_parcels: userParcels.rows,
+            },
+        });
+    } catch (error) {
+        console.error(error);
+        return next(new APIError("Something went wrong.", 500));
+    }
+});
+
+export const userParcelsHistory = catchAsync(async (req, res, next) => {
+    try {
+        const parcels = await pool.query(
+            "SELECT (status_timestamps[array_upper(status_timestamps, 1)]->>'date') as last_status_date, parcel_id, parcel_status, parcel_name FROM parcels WHERE (parcel_sender_id = $1 OR parcel_receiver_email = $2) AND parcel_status = 'delivered'",
+            [req.user.user_id, req.user.user_email],
+        );
+
+        res.status(200).json({
+            status: "success",
+            data: { parcels: parcels.rows },
+        });
+    } catch (error) {
+        console.error(error);
+        return next(new APIError("Something went wrong.", 500));
+    }
 });
 
 export const consumerDelete = catchAsync(async (req, res, next) => {

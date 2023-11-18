@@ -110,8 +110,7 @@ export const newParcel = catchAsync(async (req, res, next) => {
             console.error("Parcel creation rollback failed: ", rollbackError);
         }
 
-        console.log(error);
-
+        console.error(error);
         client.release();
         return next(
             new APIError("Couldn't create new parcel, try again later.", 500),

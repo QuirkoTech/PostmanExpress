@@ -11,6 +11,7 @@
     -   [User active parcels](#user-active-parcels)
     -   [Post new parcels](#post-new-parcels)
     -   [Parcel info](#parcel-info)
+    -   [Parcel history](#parcel-history)
 
 -   [Driver application](#driver-application)
     -   [Sign up](#sign-up-1)
@@ -294,6 +295,43 @@ Response object:
             "ship_from": "oulu"
         }
     }
+}
+```
+
+### Parcel history
+
+To get user parcel history make a GET request to "/me/history" route
+
+-   NOTE: need to have "credentials": "include" in the request. This is needed to pass the access_token cookie to the API
+
+If response is successfull:
+
+1. Object like this:
+
+```
+{
+    "status": "success",
+    "data": {
+        "parcels": [
+            {
+                "last_status_date": "18.11.23",
+                "parcel_id": "14322898-dc21-4b47-98cc-0a276b20fa0d",
+                "parcel_status": "delivered",
+                "parcel_name": "Bottle of wine"
+            }
+        ]
+    }
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
 }
 ```
 
