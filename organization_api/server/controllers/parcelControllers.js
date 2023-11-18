@@ -6,6 +6,7 @@ import checkFreeCabinets from "../helpers/checkFreeCabinets.js";
 import { v4 } from "uuid";
 import generateUniquePin from "../helpers/generateUniquePin.js";
 import jwt from "jsonwebtoken";
+import compareDriverAndParcelLocations from "../helpers/compareDriverAndParcelLocations.js";
 
 export const newParcel = catchAsync(async (req, res, next) => {
     const {
@@ -139,17 +140,17 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
         accessToken = req.headers.authorization.split(" ")[1];
     }
 
-    const orgType = req.headers["x-organization-type"];
+    const appType = req.headers["x-application-type"];
 
     if (
-        orgType === process.env.DRIVER_APP_HEADER &&
+        appType === process.env.DRIVER_APP_HEADER &&
         (!req.headers["x-driver-location"] || !req.headers["x-driver-accepted"])
     )
         return next(new APIError("Invalid driver application headers.", 400));
 
     let parcelSearchQuery = "";
 
-    if (accessToken && orgType === process.env.CONSUMER_APP_HEADER) {
+    if (accessToken && appType === process.env.CONSUMER_APP_HEADER) {
         const payload = jwt.decode(
             accessToken,
             process.env.ACCESS_TOKEN_SECRET,
@@ -166,7 +167,7 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
             [userId],
         );
 
-        if (user.rowCount === 0)
+        if (user.rowCount === 0 || user.rows[0].user_email === null)
             return next(new APIError("No user found.", 404));
 
         jwt.verify(
@@ -188,43 +189,52 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
             parcelObj.parcel_receiver_email === user.rows[0].user_email
         ) {
             parcelSearchQuery = `
-                            SELECT 
-                                p.parcel_id,
-                                sender.user_name AS sender_name,
-                                COALESCE(receiver.user_name, p.parcel_receiver_email) AS receiver_name,
-                                p.parcel_status,
-                                p.status_timestamps,
-                                p.width,
-                                p.height,
-                                p.length,
-                                p.weight,
-                                p.parcel_name,
-                                p.ship_to,
-                                p.ship_from
-                            FROM 
-                                parcels p
-                            LEFT JOIN 
-                                users sender ON p.parcel_sender_id = sender.user_id
-                            LEFT JOIN 
-                                users receiver ON p.parcel_receiver_email = receiver.user_email
-                            WHERE 
-                                p.parcel_id = $1;
-                        `;
+                                SELECT 
+                                    p.parcel_id,
+                                    CASE 
+                                        WHEN sender.user_email IS NULL THEN 'Deleted'
+                                        ELSE sender.user_name
+                                    END AS sender_name,
+                                    COALESCE(receiver.user_name, p.parcel_receiver_email) AS receiver_name,
+                                    p.parcel_status,
+                                    p.status_timestamps,
+                                    p.width,
+                                    p.height,
+                                    p.length,
+                                    p.weight,
+                                    p.parcel_name,
+                                    p.ship_to,
+                                    p.ship_from
+                                FROM 
+                                    parcels p
+                                LEFT JOIN 
+                                    users sender ON p.parcel_sender_id = sender.user_id
+                                LEFT JOIN 
+                                    users receiver ON p.parcel_receiver_email = receiver.user_email
+                                WHERE 
+                                    p.parcel_id = $1;
+                            `;
         }
     } else if (
-        orgType === process.env.DRIVER_APP_HEADER &&
+        appType === process.env.DRIVER_APP_HEADER &&
         req.headers["x-driver-location"]
     ) {
         const driverLocation = req.headers["x-driver-location"];
+        const loggedDriverAccepted = req.headers["x-driver-accepted"];
 
-        if (
-            (parcelObj.current_location === driverLocation &&
-                parcelObj.ship_to !== parcelObj.current_location) ||
-            (parcelObj.current_location === "warehouse" &&
-                parcelObj.ship_to === driverLocation)
-        ) {
-            if (req.headers["x-driver-accepted"] === "true") {
-                parcelSearchQuery = `
+        const driverCanGetInfo = compareDriverAndParcelLocations(
+            parcelObj.current_location,
+            parcelObj.ship_to,
+            driverLocation,
+        );
+
+        if (!driverCanGetInfo)
+            return next(
+                new APIError("You are not allowed to this parcel info.", 400),
+            );
+
+        if (loggedDriverAccepted === "true") {
+            parcelSearchQuery = `
                                 SELECT 
                                     parcel_id,
                                     ship_to,
@@ -234,14 +244,15 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
                                     length,
                                     height,
                                     width,
-                                    weight
+                                    weight,
+                                    driver_accepted
                                 FROM 
                                     parcels
                                 WHERE 
                                     parcel_id = $1;
                                 `;
-            } else if (req.headers["x-driver-accepted"] === "false") {
-                parcelSearchQuery = `
+        } else if (loggedDriverAccepted === "false") {
+            parcelSearchQuery = `
                 SELECT 
                     parcel_id,
                     ship_to,
@@ -249,17 +260,13 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
                     length,
                     height,
                     width,
-                    weight
+                    weight,
+                    driver_accepted
                 FROM 
                     parcels
                 WHERE 
                     parcel_id = $1;
                 `;
-            }
-        } else {
-            return next(
-                new APIError("You are not allowed to this parcel info.", 400),
-            );
         }
     } else {
         parcelSearchQuery = `
@@ -279,7 +286,7 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
     const parcelInfo = await pool.query(parcelSearchQuery, [parcel_id]);
 
     if (
-        orgType === process.env.DRIVER_APP_HEADER &&
+        appType === process.env.DRIVER_APP_HEADER &&
         req.headers["x-driver-location"] &&
         parcelObj.current_location !== "warehouse"
     ) {
@@ -290,4 +297,132 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
         status: "success",
         data: { parcel_info: parcelInfo.rows[0] },
     });
+});
+
+export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
+    const { parcel_id } = req.params;
+
+    const parcel = await pool.query(
+        "SELECT current_location, ship_to, ship_from, driver_accepted FROM parcels WHERE parcel_id = $1",
+        [parcel_id],
+    );
+
+    if (parcel.rowCount === 0)
+        return next(new APIError("No parcel found.", 404));
+
+    const driverLocation = req.headers["x-driver-location"];
+    const loggedDriverAccepted = req.headers["x-driver-accepted"];
+    const parcelDisassign = req.headers["x-disassign"];
+    const currentParcelLocation = parcel.rows[0].current_location;
+    const shipToParcelLocation = parcel.rows[0].ship_to;
+
+    if (loggedDriverAccepted !== "true" && loggedDriverAccepted !== "false")
+        return next(
+            new APIError("Invalid 'driver-accepted' header value.", 400),
+        );
+
+    if (parcelDisassign !== "true" && parcelDisassign !== "false")
+        return next(new APIError("Invalid 'disassign' header value.", 400));
+
+    const driverCanAcceptParcel = compareDriverAndParcelLocations(
+        currentParcelLocation,
+        shipToParcelLocation,
+        driverLocation,
+    );
+
+    if (!driverCanAcceptParcel)
+        return next(
+            new APIError("You can't perfom any action with this parcel.", 400),
+        );
+
+    const client = await pool.connect();
+
+    try {
+        await client.query("BEGIN");
+
+        if (
+            parcel.rows[0].driver_accepted &&
+            loggedDriverAccepted === "false"
+        ) {
+            return next(
+                new APIError("Parcel accepted by another driver.", 409),
+            );
+        } else if (
+            !parcel.rows[0].driver_accepted &&
+            loggedDriverAccepted === "true"
+        ) {
+            return next(
+                new APIError(
+                    "Conflict, header 'driver-accepted' is set to true, while parcel is not accepted by any driver.",
+                    409,
+                ),
+            );
+        } else if (
+            parcel.rows[0].driver_accepted &&
+            loggedDriverAccepted === "true"
+        ) {
+            if (parcelDisassign === "true") {
+                const updatedParcel = await client.query(
+                    "UPDATE parcels SET driver_accepted = false, pickup_pin = null WHERE parcel_id = $1 RETURNING parcel_id, ship_from, ship_to",
+                    [parcel_id],
+                );
+
+                await client.query("COMMIT");
+                client.release();
+                res.status(201).json({
+                    status: "success",
+                    data: {
+                        message: "Parcel disassigned.",
+                        parcel_info: updatedParcel.rows[0],
+                    },
+                });
+            } else if (parcelDisassign === "false") {
+                return next(
+                    new APIError(
+                        "Invalid 'disassign' header value to disassign the parcel.",
+                        400,
+                    ),
+                );
+            }
+        } else if (
+            !parcel.rows[0].driver_accepted &&
+            loggedDriverAccepted === "false"
+        ) {
+            const pickup_pin = await generateUniquePin("pickup");
+            const updatedParcel = await client.query(
+                "UPDATE parcels SET driver_accepted = true, pickup_pin = $1 WHERE parcel_id = $2 RETURNING parcel_id, ship_from, ship_to, current_location",
+                [pickup_pin, parcel_id],
+            );
+
+            if (updatedParcel.rows[0].current_location !== "warehouse") {
+                updatedParcel.rows[0].ship_to = "warehouse";
+            }
+
+            await client.query("COMMIT");
+            client.release();
+            res.status(201).json({
+                status: "success",
+                data: {
+                    message: "Parcel assigned.",
+                    parcel_info: { ...updatedParcel.rows[0], pin: pickup_pin },
+                },
+            });
+        } else {
+            return next(new APIError("Something wrong with the request.", 400));
+        }
+    } catch (error) {
+        try {
+            await client.query("ROLLBACK");
+        } catch (rollbackError) {
+            console.error("Parcel assing rollback failed: ", rollbackError);
+        }
+
+        client.release();
+        return next(
+            new APIError(
+                "Couldn't assign/disassign parcel, try again later.",
+                500,
+            ),
+        );
+    }
 });

@@ -6,6 +6,8 @@
 
     -   [Sign up](#sign-up)
     -   [Log in](#log-in)
+    -   [Log out](#log-out)
+    -   [Delete](#Delete)
     -   [Consumer application load function](#consumer-application-load-function)
     -   [User active parcels](#user-active-parcels)
     -   [Post new parcels](#post-new-parcels)
@@ -15,7 +17,9 @@
 -   [Driver application](#driver-application)
     -   [Sign up](#sign-up-1)
     -   [Log in](#log-in-1)
+    -   [Log out](#log-out-1)
     -   [Parcel info](#parcel-info-1)
+    -   [Accept the parcel](#accept-the-parcel)
 
 ## Consumer application
 
@@ -114,27 +118,115 @@ If response failed:
 }
 ```
 
+### Delete
+
+To delete the user, make a DELETE request to the consumer API endpoint "/me"
+
+-   NOTE: need to have "credentials": "include" in the request. This is needed to pass the access_token cookie to the API
+
+Request headers:
+
+```
+{
+  "Content-type": "application/json"
+}
+```
+
+In respose from this endpoint you will get:
+
+If response is successfull:
+
+1. Access token cookie is deleted
+2. Object like this:
+
+```
+{
+  "status": "success"
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
+}
+```
+
+### Log out
+
+To log out the user, make a POST request to the consumer API endpoint "/auth/logout"
+Requiremets:
+
+Request headers:
+
+```
+{
+  "Content-type": "application/json"
+}
+```
+
+In respose from this endpoint you will get:
+
+If response is successfull:
+
+1. Access token cookie deleted
+2. Object like this:
+
+```
+{
+  "status": "success"
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
+}
+```
+
 ### Consumer application load function
 
 To load the user into the application make a GET request to "/me" route
 
--   NOTE: need to have "credentials": "include" in the request, but i dont know if it has to be set in request headers. This is needed to pass the access_token cookie to the API
+-   NOTE: need to have "credentials": "include" in the request. This is needed to pass the access_token cookie to the API
 
-Response object:
+If response is successfull:
+
+1. Object like this:
 
 ```
 {
- "status": "success",
- "data": {
-  "username": "<username>",
-  "notifications": [
-    {
-      "title": "<notification_title>",
-      "parcel_id": "<parcel_id>",
-      "status": "<parcel_status>"
-    },...
-  ]
- }
+  "status": "success",
+  "data": {
+    "username": "<username>",
+    "notifications": [
+      {
+        "title": "<notification_title>",
+        "parcel_id": "<parcel_id>",
+        "status": "<parcel_status>"
+      },...
+    ]
+  }
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
 }
 ```
 
@@ -142,22 +234,35 @@ Response object:
 
 To load user active parcels make a GET request to "/me/parcels" route
 
--   NOTE: need to have "credentials": "include" in the request, but i dont know if it has to be set in request headers. This is needed to pass the access_token cookie to the API
+-   NOTE: need to have "credentials": "include" in the request. This is needed to pass the access_token cookie to the API
 
-Response object:
+If response is successfull:
+
+1. Object like this:
 
 ```
 {
- "status": "success",
- "data": {
-  "user_parcels": [
-    {
-      "last_status_date": "13.11.23",
-      "parcel_id": "f9a64037-2e16-40ec-95ec-10f64a1886d7",
-      "parcel_status": "prepared for delivery"
-    }
-  ]
- }
+  "status": "success",
+  "data": {
+    "user_parcels": [
+      {
+        "last_status_date": "13.11.23",
+        "parcel_id": "f9a64037-2e16-40ec-95ec-10f64a1886d7",
+        "parcel_status": "prepared for delivery"
+      }
+    ]
+  }
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
 }
 ```
 
@@ -183,7 +288,9 @@ Request body:
 }
 ```
 
-Response object:
+If response is successfull:
+
+1. Object like this:
 
 ```
 {
@@ -191,6 +298,17 @@ Response object:
  "data": {
    "message": "Parcel created. Check your email for further instructions."
  }
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
 }
 ```
 
@@ -204,7 +322,9 @@ There are two scenarios of what you will get in response:
 
 -   First is when user is the sender or receiver of the parcel AND he is logged in:
 
-Response object:
+If response is successfull:
+
+1. Object like this:
 
 ```
 {
@@ -234,9 +354,22 @@ Response object:
 }
 ```
 
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
+}
+```
+
 -   Second is when user is not logged in or if he is not the sender or receiver of the parcel
 
-Response object:
+If response is successfull:
+
+1. Object like this:
 
 ```
 {
@@ -256,6 +389,17 @@ Response object:
             "ship_from": "oulu"
         }
     }
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
 }
 ```
 
@@ -393,18 +537,57 @@ If response failed:
 }
 ```
 
+### Log out
+
+To log out the driver, make a POST request to the driver API endpoint "/auth/logout"
+Requiremets:
+
+Request headers:
+
+```
+{
+  "Content-type": "application/json"
+}
+```
+
+In respose from this endpoint you will get:
+
+If response is successfull:
+
+1. Access token cookie deleted
+2. Object like this:
+
+```
+{
+  "status": "success"
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
+}
+```
+
 ### Parcel info
 
 To get the parcel info, make a GET request to "/parcels/:parcel_id", ":parcel_id" is a parameter
 
 -   NOTE: need to have "credentials": "include" in the request. This is needed to pass the access_token cookie to the API
--   NOTE: the field "already_accepted" indicates if the parcel is already accepted by any driver and it is used for dispaying "Accept" button in driver application parcel info page, so if this field is set to "true" no need to dispay "Accept" button
+-   NOTE: the field "driver_accepted" indicates if the parcel is already accepted by any driver and it is used for dispaying "Accept" button in driver application parcel info page, so if this field is set to "true" no need to dispay "Accept" button
 
 There are two scenarios:
 
 -   First is when logged in driver accepted the parcel
 
-Response object:
+If response is successfull:
+
+1. Object like this:
 
 ```
 {
@@ -420,15 +603,28 @@ Response object:
             "height": 3,
             "width": 1,
             "weight": 1,
-            "already_accepted": true
+            "driver_accepted": true
         }
     }
 }
 ```
 
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
+}
+```
+
 -   Second is when driver is able to deliver the parcel (it means that drivers' location city is the same as where parcel has to be shipped or from where it has ot be shipped), but hasn't accepted it yet or probably someone else accepted it
 
-Response object:
+If response is successfull:
+
+1. Object like this:
 
 ```
 {
@@ -442,8 +638,49 @@ Response object:
             "height": 3,
             "width": 1,
             "weight": 1,
-            "already_accepted": <false or true>
+            "driver_accepted": <false or true>
         }
     }
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
+}
+```
+
+### Accept the parcel
+
+To accept the parcel, make a PATCH request to "/parcels/:parcel_id" route in driver API
+
+-   NOTE: need to have "credentials": "include" in the request. This is needed to pass the access_token cookie to the API
+
+If response is successfull:
+
+1. Object like this:
+
+```
+{
+    "status": "success",
+    "data": {
+        "pickup_pin": 28374
+    }
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
 }
 ```

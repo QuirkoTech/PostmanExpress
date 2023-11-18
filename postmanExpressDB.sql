@@ -62,11 +62,11 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE users (
   user_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-  user_name varchar(255) NOT NULL,
-  user_email varchar(255) UNIQUE NOT NULL,
-  password varchar(255) NOT NULL,
+  user_name varchar(255),
+  user_email varchar(255) UNIQUE,
+  password varchar(255),
   refresh_token varchar(255),
-  user_location LOCATION NOT NULL
+  user_location LOCATION 
 );
 
 CREATE TABLE parcels (
@@ -84,6 +84,7 @@ CREATE TABLE parcels (
   weight integer NOT NULL,
   pickup_pin integer UNIQUE,
   delivery_pin integer UNIQUE,
+  driver_accepted BOOLEAN DEFAULT FALSE,
   notify BOOLEAN DEFAULT TRUE,
   status_timestamps jsonb[]
 );

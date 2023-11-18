@@ -3,6 +3,27 @@ import cors from "cors";
 import morgan from "morgan";
 import "./config.js";
 
+if (
+    !process.env.ENV ||
+    !process.env.API_PROCESS_PORT ||
+    !process.env.DB_USER ||
+    !process.env.DB_PWD ||
+    !process.env.DB_HOST ||
+    !process.env.DB_PORT ||
+    !process.env.DB_DATABASE ||
+    !process.env.ACCESS_TOKEN_SECRET ||
+    !process.env.REFRESH_TOKEN_SECRET ||
+    !process.env.ACCESS_TOKEN_TTL ||
+    !process.env.REFRESH_TOKEN_TTL ||
+    !process.env.API_KEY ||
+    !process.env.CONSUMER_APP_HEADER ||
+    !process.env.DRIVER_APP_HEADER ||
+    !process.env.LOCKER_APP_HEADER
+) {
+    console.error("Missing required environment variables. Exiting...");
+    process.exit(1);
+}
+
 import globalErrorHandler from "./controllers/errorControllers.js";
 import APIError from "./helpers/APIError.js";
 import consumerRoutes from "./routes/consumerRoutes.js";
@@ -27,7 +48,7 @@ app.use(
         if (apiKey !== process.env.API_KEY)
             return next(new APIError("Invalid API key.", 400));
 
-        const orgType = req.headers["x-organization-type"];
+        const orgType = req.headers["x-application-type"];
         if (!orgType)
             return next(new APIError("No organization header provided.", 400));
 

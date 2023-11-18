@@ -4,7 +4,7 @@ const sendRequest = async (method, url, headers = {}, body = {}) => {
     headers = {
         ...headers,
         "x-api-key": process.env.API_KEY,
-        "x-organization-type": process.env.APP_HEADER,
+        "x-application-type": process.env.APP_HEADER,
         "Content-Type": "application/json",
     };
 
