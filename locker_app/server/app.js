@@ -1,22 +1,29 @@
-import express from 'express';
-import cors from 'cors';
-import morgan from 'morgan';
-import './config.js';
+import express from "express";
+import cors from "cors";
+import morgan from "morgan";
+import "./config.js";
 
-// import globalErrorHandler from './controllers/errorController.js';
-// import APIError from './helpers/APIError.js';
+import globalErrorHandler from "./controllers/errorControllers.js";
+import APIError from "./helpers/APIError.js";
+import checkContentType from "./helpers/checkContentType.js";
+import pinRoutes from "./routes/pinRoutes.js";
+import catchAsync from "./helpers/catchAsync.js";
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-if (process.env.ENV === 'dev') app.use(morgan('dev'));
+if (process.env.ENV === "dev") app.use(morgan("dev"));
 
-// app.all('*', (req, res, next) => {
-//     next(new APIError(`Can't find ${req.originalUrl} on this server!`, 404));
-// });
+app.use(checkContentType);
 
-// app.use(globalErrorHandler);
+app.use("/pin", pinRoutes);
+
+app.all("*", (req, res, next) => {
+    next(new APIError(`Can't find ${req.originalUrl} on this server!`, 404));
+});
+
+app.use(globalErrorHandler);
 
 export default app;
