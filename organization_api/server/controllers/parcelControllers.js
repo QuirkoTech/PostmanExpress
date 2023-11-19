@@ -293,9 +293,30 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
         parcelInfo.rows[0].ship_to = "warehouse";
     }
 
+    let data = { parcel_info: parcelInfo.rows[0] };
+    if (
+        appType === process.env.CONSUMER_APP_HEADER &&
+        parcelSearchQuery ===
+            `
+    SELECT 
+        parcel_id,
+        parcel_status,
+        status_timestamps,
+        ship_to,
+        ship_from
+    FROM 
+        parcels
+    WHERE 
+        parcel_id = $1;
+`
+    ) {
+        data.authorized = false;
+    } else if (appType === process.env.CONSUMER_APP_HEADER) {
+        data.authorized = true;
+    }
     res.status(200).json({
         status: "success",
-        data: { parcel_info: parcelInfo.rows[0] },
+        data: data,
     });
 });
 
