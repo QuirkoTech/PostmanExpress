@@ -88,13 +88,13 @@ export const pastePickupPin = catchAsync(async (req, res, next) => {
 
             let parcelStatus = "en route to the pickup location";
             if (parcelObj.parcel_status === "prepared for delivery")
-                parcelStatus = " en route to the warehouse";
+                parcelStatus = "en route to the warehouse";
 
-            const updatedParcel = await client.query(
+            let updatedParcel = await client.query(
                 `UPDATE parcels
                 SET 
-                    status_timestamps = status_timestamps || jsonb_build_object('date', TO_CHAR( now(), 'DD.MM.YY'), 'time', TO_CHAR(now(), 'HH24:MI'), 'status', $1),
-                    parcel_status = $1,
+                    status_timestamps = status_timestamps || jsonb_build_object('date', TO_CHAR( now(), 'DD.MM.YY'), 'time', TO_CHAR(now(), 'HH24:MI'), 'status', $1::parcelstatus),
+                    parcel_status = $1::parcelstatus,
                     current_location = null,
                     pickup_pin = null,
                     delivery_pin = $2
@@ -103,15 +103,16 @@ export const pastePickupPin = catchAsync(async (req, res, next) => {
                 [parcelStatus, delivery_pin, parcelObj.parcel_id],
             );
 
+            updatedParcel.rows[0].ship_to = parcelShipTo;
+
             const response = await fetch(
                 `${process.env.DRIVER_API_URL}/parcels/notify`,
                 {
                     method: "PATCH",
-                    body: {
-                        parcel_info: JSON.stringify(updatedParcel.rows[0]),
+                    body: JSON.stringify({
+                        parcel_info: updatedParcel.rows[0],
                         title: "Parcel awaiting drop-off",
-                        ship_to: parcelShipTo,
-                    },
+                    }),
                     headers: {
                         "Content-type": "application/json",
                         "x-api-key": process.env.API_KEY,
@@ -225,6 +226,7 @@ export const pasteDeliveryPin = catchAsync(async (req, res, next) => {
                 `UPDATE 
                     parcels 
                 SET
+                    status_timestamps = status_timestamps || jsonb_build_object('date', TO_CHAR( now(), 'DD.MM.YY'), 'time', TO_CHAR(now(), 'HH24:MI'), 'status', 'prepared for delivery'),
                     parcel_status = 'prepared for delivery',
                     current_location = $1,
                     delivery_pin = null
@@ -243,6 +245,7 @@ export const pasteDeliveryPin = catchAsync(async (req, res, next) => {
                     `UPDATE 
                             parcels 
                         SET
+                            status_timestamps = status_timestamps || jsonb_build_object('date', TO_CHAR( now(), 'DD.MM.YY'), 'time', TO_CHAR(now(), 'HH24:MI'), 'status', 'ready for pickup'),
                             parcel_status = 'ready for pickup',
                             current_location = $1,
                             delivery_pin = null,
@@ -279,6 +282,7 @@ export const pasteDeliveryPin = catchAsync(async (req, res, next) => {
                     `UPDATE 
                         parcels 
                     SET
+                        status_timestamps = status_timestamps || jsonb_build_object('date', TO_CHAR( now(), 'DD.MM.YY'), 'time', TO_CHAR(now(), 'HH24:MI'), 'status', 'at warehouse'),
                         parcel_status = 'at warehouse',
                         current_location = $1,
                         delivery_pin = null,
@@ -293,7 +297,6 @@ export const pasteDeliveryPin = catchAsync(async (req, res, next) => {
                 );
             }
 
-            // 3. Request driver API to mark parcel as delivered
             const response = await fetch(
                 `${process.env.DRIVER_API_URL}/parcels/${parcelObj.parcel_id}`,
                 {

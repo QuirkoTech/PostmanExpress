@@ -12,12 +12,11 @@ import {
 const router = Router();
 
 router.route("/").get(protect, getAvailableParcels);
+router.route("/notify").patch(driverNotify);
 router
     .route("/:parcel_id")
     .get(protect, singleParcelInfo)
     .patch(protect, driverAcceptParcelSwitch)
     .delete(deliverParcel);
-
-router.route("/notify").patch(driverNotify);
 
 export default router;

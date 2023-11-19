@@ -446,6 +446,8 @@ export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
 
             if (updatedParcel.rows[0].current_location !== "warehouse") {
                 updatedParcel.rows[0].ship_to = "warehouse";
+            } else {
+                updatedParcel.rows[0].ship_from = "warehouse";
             }
 
             await client.query("COMMIT");
@@ -467,6 +469,7 @@ export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
             console.error("Parcel assing rollback failed: ", rollbackError);
         }
 
+        console.error(error);
         client.release();
         return next(
             new APIError(

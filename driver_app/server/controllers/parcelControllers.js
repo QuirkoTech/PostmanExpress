@@ -10,20 +10,22 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
     let loggedDriverAccepted = false;
 
     const parcelDriver = await pool.query(
-        "SELECT * FROM driver_parcels WHERE parcel_id = $1",
+        "SELECT * FROM driver_parcels WHERE parcel_id = $1 AND delivered = false",
         [parcel_id],
     );
 
     if (parcelDriver.rowCount !== 0) {
-        if (parcelDriver.rows[0].driver_id === req.driver.driver_id) {
+        const isDriverInParcels = parcelDriver.rows.some(
+            (parcel) => parcel.driver_id === req.driver.driver_id,
+        );
+        if (isDriverInParcels) {
             loggedDriverAccepted = true;
-        } else if (parcelDriver.rows[0].driver_id !== req.driver.driver_id) {
+        } else if (!isDriverInParcels) {
             return next(
-                new APIError("You are not allowed to this parcel info.", 403),
-            );
-        } else if (parcelDriver.rows[0].delivered === true) {
-            return next(
-                new APIError("Parcel you're looking for is delivered.", 403),
+                new APIError(
+                    "You are not allowed to this parcel info (driver).",
+                    403,
+                ),
             );
         }
     }
@@ -86,6 +88,7 @@ export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
             "INSERT INTO driver_parcels (driver_id, parcel_id) VALUES ($1, $2)",
             [req.driver.driver_id, parcel_id],
         );
+
         await sendEmail(
             req.driver.driver_email,
             "Parcel ready to be collected",
@@ -110,6 +113,7 @@ export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
         }
 
         headers["x-disassign"] = !disassign;
+        headers["x-driver-accepted"] = !loggedDriverAccepted;
 
         const disAssignResponse = await sendRequest(
             "PATCH",
@@ -121,7 +125,7 @@ export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
         await sendEmail(
             req.driver.driver_email,
             "Parcel disassigned due to server error",
-            assignResJSON.data.parcel_info,
+            disAssignResJSON.data.parcel_info,
             "driver",
         );
 
@@ -134,6 +138,7 @@ export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
             );
         }
 
+        console.error(error);
         client.release();
         return next(
             new APIError("Couldn't assign parcel, try again later.", 500),
@@ -168,7 +173,7 @@ export const driverNotify = catchAsync(async (req, res, next) => {
         req.body.title,
         req.body.parcel_info,
         "driver",
-        req.body.ship_to,
+        req.body.parcel_info.ship_to,
     );
 
     if (!emailSent) return next(new APIError("Couldn't notify driver.", 500));

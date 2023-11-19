@@ -18,7 +18,8 @@ if (
     !process.env.API_KEY ||
     !process.env.CONSUMER_APP_HEADER ||
     !process.env.DRIVER_APP_HEADER ||
-    !process.env.LOCKER_APP_HEADER
+    !process.env.LOCKER_APP_HEADER ||
+    !process.env.DRIVER_API_URL
 ) {
     console.error("Missing required environment variables. Exiting...");
     process.exit(1);

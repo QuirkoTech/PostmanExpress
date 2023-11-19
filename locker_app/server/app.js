@@ -7,7 +7,8 @@ if (
     !process.env.ENV ||
     !process.env.API_PROCESS_PORT ||
     !process.env.API_KEY ||
-    !process.env.APP_HEADER
+    !process.env.APP_HEADER ||
+    !process.env.ORGANIZATION_API_URL
 ) {
     console.error("Missing required environment variables. Exiting...");
     process.exit(1);
