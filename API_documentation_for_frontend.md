@@ -24,8 +24,8 @@
 
 -   [Locker application](#locker-application)
 
-    -   [Deliver]()
-    -   [Pick up]()
+    -   [Deliver](#deliver-the-parcel)
+    -   [Pick up](#pick-up-the-parcel)
 
 ## Consumer application
 
