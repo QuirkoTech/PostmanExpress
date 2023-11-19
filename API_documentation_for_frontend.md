@@ -15,11 +15,17 @@
     -   [Parcel history](#parcel-history)
 
 -   [Driver application](#driver-application)
+
     -   [Sign up](#sign-up-1)
     -   [Log in](#log-in-1)
     -   [Log out](#log-out-1)
     -   [Parcel info](#parcel-info-1)
     -   [Accept the parcel](#accept-the-parcel)
+
+-   [Locker application](#locker-application)
+
+    -   [Deliver]()
+    -   [Pick up]()
 
 ## Consumer application
 
@@ -671,6 +677,58 @@ If response is successfull:
     "data": {
         "pickup_pin": 28374
     }
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
+}
+```
+
+## Locker application
+
+### Deliver the parcel
+
+To deliver the parcel, make a POST request to "/cabinet/deliver" route in locker API
+
+If response is successfull:
+
+1. Object like this:
+
+```
+{
+    "status": "success"
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
+}
+```
+
+### Pick up the parcel
+
+To pick up the parcel, make a POST request to "/cabinet/pickup" route in locker API
+
+If response is successfull:
+
+1. Object like this:
+
+```
+{
+    "status": "success"
 }
 ```
 

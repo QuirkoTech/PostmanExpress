@@ -28,7 +28,7 @@ if (process.env.ENV === "dev") app.use(morgan("dev"));
 
 app.use(checkContentType);
 
-app.use("/pin", cabinetRoutes);
+app.use("/cabinet", cabinetRoutes);
 
 app.all("*", (req, res, next) => {
     next(new APIError(`Can't find ${req.originalUrl} on this server!`, 404));
