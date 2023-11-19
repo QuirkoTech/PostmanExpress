@@ -355,7 +355,8 @@ If response is successfull:
             "parcel_name": "Parcel",
             "ship_to": "helsinki",
             "ship_from": "oulu"
-        }
+        },
+        "authorized": true
     }
 }
 ```
@@ -393,7 +394,8 @@ If response is successfull:
             ],
             "ship_to": "helsinki",
             "ship_from": "oulu"
-        }
+        },
+        "authorized": false
     }
 }
 ```
