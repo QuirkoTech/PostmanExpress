@@ -476,3 +476,34 @@ export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
         );
     }
 });
+
+export const driverAvailableParcels = catchAsync(async (req, res, next) => {
+    const driverLocation = req.headers["x-driver-location"];
+
+    try {
+        const parcels = await pool.query(
+            `SELECT 
+                (status_timestamps[array_upper(status_timestamps, 1)]->>'date') as last_status_date, 
+                parcel_id, 
+                CASE 
+                    WHEN current_location != 'warehouse' THEN 'warehouse' 
+                    ELSE ship_to 
+                END as ship_to
+            FROM parcels 
+            WHERE driver_accepted = false 
+            AND (
+                (current_location = $1 AND current_location != ship_to) OR 
+                (current_location = 'warehouse' AND ship_to = $1)
+        );`,
+            [driverLocation],
+        );
+
+        res.status(200).json({
+            status: "success",
+            data: { parcels: parcels.rows },
+        });
+    } catch (error) {
+        console.error(error);
+        return next(new APIError("Couldn't get available parcels.", 500));
+    }
+});

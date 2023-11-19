@@ -50,7 +50,7 @@ app.use(
 
         const orgType = req.headers["x-application-type"];
         if (!orgType)
-            return next(new APIError("No organization header provided.", 400));
+            return next(new APIError("No application header provided.", 400));
 
         next();
     }),
