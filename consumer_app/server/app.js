@@ -1,8 +1,21 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
-import "./config.js";
 import cookieParser from "cookie-parser";
+import "./config.js";
+
+if (
+    !process.env.ENV ||
+    !process.env.API_PROCESS_PORT ||
+    !process.env.API_KEY ||
+    !process.env.ORGANIZATION_API_URL ||
+    !process.env.CONSUMER_APP_URL ||
+    !process.env.CONSUMER_APP_DOMAIN ||
+    !process.env.APP_HEADER
+) {
+    console.error("Missing required environment variables. Exiting...");
+    process.exit(1);
+}
 
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
