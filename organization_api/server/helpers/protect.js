@@ -27,7 +27,7 @@ const protect = catchAsync(async (req, res, next) => {
         [userId],
     );
 
-    if (user.rowCount === 0 || user.rows[0].user_email === null)
+    if (user.rowCount === 0 || user.rows[0].user_email === "Deleted")
         return next(new APIError("No user found.", 404));
 
     jwt.verify(
