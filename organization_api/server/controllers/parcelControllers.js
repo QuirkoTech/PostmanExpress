@@ -191,10 +191,7 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
             parcelSearchQuery = `
                                 SELECT 
                                     p.parcel_id,
-                                    CASE 
-                                        WHEN sender.user_email IS NULL THEN 'Deleted'
-                                        ELSE sender.user_name
-                                    END AS sender_name,
+                                    COALESCE(sender.user_name, p.parcel_sender_id::varchar) AS sender_name,
                                     COALESCE(receiver.user_name, p.parcel_receiver_email) AS receiver_name,
                                     p.parcel_status,
                                     p.status_timestamps,
