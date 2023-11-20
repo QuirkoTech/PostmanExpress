@@ -50,7 +50,7 @@ CREATE TABLE drivers (
 CREATE TABLE driver_parcels (
   id SERIAL PRIMARY KEY,
   driver_id UUID REFERENCES drivers(driver_id),
-  parcel_id UUID UNIQUE NOT NULL,
+  parcel_id UUID NOT NULL,
   delivered BOOLEAN DEFAULT FALSE
 );
 
