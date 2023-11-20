@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Button } from "../components/button";
+import { Button } from "../components";
 
 const Login = () => {
     return (
