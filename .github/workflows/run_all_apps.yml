@@ -28,6 +28,26 @@ jobs:
                   npm run build
               working-directory: ${{ matrix.app }}
 
+    test-apis:
+        runs-on: self-hosted
+        strategy:
+            matrix:
+                node-version: [20.x]
+                app: [consumer_app]
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v3
+              with:
+                  node-version: ${{ matrix.node-version }}
+
+            - name: Install Dependencies Test APIs
+              run: |
+                  npm install
+                  npm run test-consumer-api
+              working-directory: ${{ matrix.app }}
+
     deploy:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         needs: [check-frontend-build]
