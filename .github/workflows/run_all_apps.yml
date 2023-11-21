@@ -46,7 +46,7 @@ jobs:
             - name: Install Dependencies and Start Organization API for testing
               run: |
                   npm install
-                  npm run run-org-api-for-test
+                  npm run run-org-api-for-test &
               working-directory: ${{ matrix.app }}
 
     test-apis:
