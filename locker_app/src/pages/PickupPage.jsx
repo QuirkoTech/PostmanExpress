@@ -5,20 +5,31 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { ArrowLeftCircle } from "lucide-react";
-import { Keypad } from "../components";
+import { Keypad, Modal } from "../components";
 
 const PickupPage = ({ location, type }) => {
     // Backend URL for the locker app
     const LOCKER_URL = import.meta.env.VITE_LOCKER_BACKEND_URL;
 
+    // Handling the modal
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
     // Yup validation schema for form validation
     const schema = yup.object({
         pin: yup
-            .number()
-            .required("This field is required")
-            .min(5, "Pin must be 5 digits")
-            .max(5, "Pin must be 5 digits"),
-        location: yup.string().required("Location is required"),
+            .string()
+            .required("Please enter a 5 digit pin before submitting")
+            .min(5, "Please enter a 5 digit pin")
+            .max(5, "Please enter a 5 digit pin"),
+        cabinet_location: yup.string().required("Location is required"),
         type: yup
             .string()
             .required("Type is required")
@@ -33,7 +44,6 @@ const PickupPage = ({ location, type }) => {
         handleSubmit,
         setError,
         reset,
-        setValue,
         formState: { errors, isSubmitSuccessful, isSubmitting },
         setFocus,
     } = useForm({
@@ -56,9 +66,16 @@ const PickupPage = ({ location, type }) => {
         setPin("");
     };
 
+    // Used to reset the form
+    const resetForm = () => {
+        reset();
+        setPin("");
+    };
+
     // This is the function that is called when the form is submitted
     const submitHandler = async (data) => {
         try {
+            console.log(data);
             const response = await axios.post(
                 `${LOCKER_URL}/cabinet/pickup`,
                 data,
@@ -66,10 +83,26 @@ const PickupPage = ({ location, type }) => {
             const status = response.status;
 
             if (status === "success") {
-                reset();
-                setPin("");
+                // Open modal displaying a cabinet has opened
             }
-        } catch (error) {}
+        } catch (error) {
+            if (error.response) {
+                const message = error.response.data.message;
+                if (message === "No parcel found with this pin.") {
+                    setError("pin", {
+                        type: "manual",
+                        message: message.slice(0, -1),
+                    });
+
+                    openModal();
+                } else if (message.contains("You are in wrong location")) {
+                    setError("location", {
+                        type: "manual",
+                        message: message,
+                    });
+                }
+            }
+        }
     };
 
     return (
@@ -90,15 +123,18 @@ const PickupPage = ({ location, type }) => {
                 >
                     <input
                         type="text"
-                        onSubmit={(e) => {
-                            setPin(e.target.value); // Update local state
-                            setValue("pin", e.target.value); // Update form value using react-hook-form
-                        }}
                         readOnly
                         {...register("pin")}
                         value={pin}
-                        className="mb-10 w-1/3 self-center rounded-md border text-center text-xl text-black focus:outline-none"
+                        className="mb-1 w-1/3 self-center rounded-md border text-center text-xl text-black focus:outline-none"
                     />
+                    <span
+                        role="alert"
+                        className="text-danger-main mb-5 self-center text-sm"
+                    >
+                        {errors.pin?.message}
+                        {errors.type?.message}
+                    </span>
                     <input
                         type="text"
                         value={location}
@@ -120,6 +156,12 @@ const PickupPage = ({ location, type }) => {
                     />
                 </form>
             </div>
+            <Modal
+                closeModal={closeModal}
+                isOpen={isModalOpen}
+                resetForm={resetForm}
+                message={errors.pin?.message}
+            />
         </section>
     );
 };
