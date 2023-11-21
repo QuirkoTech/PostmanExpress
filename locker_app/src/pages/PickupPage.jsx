@@ -1,9 +1,30 @@
-import { Keypad } from "../components";
-import { ArrowLeftCircle } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { ArrowLeftCircle } from "lucide-react";
+import { Keypad } from "../components";
 
-const PickupPage = () => {
+const PickupPage = ({ location, type }) => {
+    // Backend URL for the locker app
+    const LOCKER_URL = import.meta.env.VITE_LCOKER_BACKEND_URL;
+
+    // Yup validation schema for form validation
+    const schema = yup.object();
+
+    const {
+        register,
+        handleSubmit,
+        setError,
+        reset,
+        formState: { errors, isSubmitSuccessful, isSubmitting },
+        setFocus,
+    } = useForm({
+        resolver: yupResolver(schema),
+    });
+
     const [pin, setPin] = useState("");
 
     const handleDigitClick = (digit) => {
@@ -14,37 +35,55 @@ const PickupPage = () => {
         setPin("");
     };
 
-    const handleSubmitClick = () => {
-        // Implement your logic to handle the submitted input
-        console.log("Submitted input:", pin);
+    const submitHandler = async (data) => {
+        try {
+            console.log(data);
+        } catch (error) {}
     };
 
     return (
         <section className="padding">
-            <div className="max-container ">
+            <div className="max-container">
                 <div className="flex justify-between text-white">
-                    <h2 className=" text-xl">PostmanExpress</h2>
-
+                    <h2 className="text-xl">PostmanExpress</h2>
                     <Link to="/">
-                        <ArrowLeftCircle size={28} />{" "}
+                        <ArrowLeftCircle size={28} />
                     </Link>
                 </div>
                 <h1 className="mt-10 text-center text-3xl text-white">
                     Pickup Parcel
                 </h1>
-                <div className="mt-10 flex flex-col">
+                <form
+                    onSubmit={handleSubmit(submitHandler)}
+                    className="mt-10 flex flex-col"
+                >
                     <input
                         type="text"
                         value={pin}
                         readOnly
-                        className="m mb-10 w-1/3 self-center rounded-md border text-center text-xl text-black focus:outline-none"
+                        {...register("pin")}
+                        className="mb-10 w-1/3 self-center rounded-md border text-center text-xl text-black focus:outline-none"
+                    />
+                    <input
+                        type="text"
+                        value={location}
+                        readOnly
+                        {...register("location")}
+                        className="hidden"
+                    />
+                    <input
+                        type="text"
+                        value={type}
+                        readOnly
+                        {...register("type")}
+                        className="hidden"
                     />
                     <Keypad
                         onDigitClick={handleDigitClick}
                         onClearClick={handleClearClick}
-                        onSubmitClick={handleSubmitClick}
+                        isSubmitting={isSubmitting}
                     />
-                </div>
+                </form>
             </div>
         </section>
     );
