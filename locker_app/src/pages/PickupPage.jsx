@@ -9,10 +9,24 @@ import { Keypad } from "../components";
 
 const PickupPage = ({ location, type }) => {
     // Backend URL for the locker app
-    const LOCKER_URL = import.meta.env.VITE_LCOKER_BACKEND_URL;
+    const LOCKER_URL = import.meta.env.VITE_LOCKER_BACKEND_URL;
 
     // Yup validation schema for form validation
-    const schema = yup.object();
+    const schema = yup.object({
+        pin: yup
+            .number()
+            .required("This field is required")
+            .min(5, "Pin must be 5 digits")
+            .max(5, "Pin must be 5 digits"),
+        location: yup.string().required("Location is required"),
+        type: yup
+            .string()
+            .required("Type is required")
+            .oneOf(
+                ["delivery", "pickup"],
+                "Type must be 'delivery' or 'pickup'",
+            ),
+    });
 
     const {
         register,
@@ -33,18 +47,28 @@ const PickupPage = ({ location, type }) => {
         setFocus("pin");
     }, [pin, setFocus]);
 
+    // Used to control the keypad
     const handleDigitClick = (digit) => {
         setPin((prevPin) => prevPin + digit);
     };
-
+    // Used to clear the Keypad
     const handleClearClick = () => {
         setPin("");
     };
 
+    // This is the function that is called when the form is submitted
     const submitHandler = async (data) => {
         try {
-            console.log(data);
-            console.log(pinWatch);
+            const response = await axios.post(
+                `${LOCKER_URL}/cabinet/pickup`,
+                data,
+            );
+            const status = response.status;
+
+            if (status === "success") {
+                reset();
+                setPin("");
+            }
         } catch (error) {}
     };
 
@@ -79,7 +103,7 @@ const PickupPage = ({ location, type }) => {
                         type="text"
                         value={location}
                         readOnly
-                        {...register("location")}
+                        {...register("cabinet_location")}
                         className="hidden"
                     />
                     <input
