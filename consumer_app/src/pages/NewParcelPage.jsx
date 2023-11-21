@@ -1,62 +1,77 @@
-import Layout from '../components/layout/Layout';
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { Button } from '../components';
+import Layout from "../components/layout/Layout";
+import { Button } from "../components";
 
 const ParcelAddNew = [
     {
         title: "Content",
         placeholder: "Package Name",
-        measure: "Optional"
+        measure: "Optional",
+        type: "text",
     },
     {
         title: "Recipient",
         placeholder: "Recipient's Email",
-        measure: ""
+        measure: "",
+        type: "text",
     },
     {
         title: "Weight",
         placeholder: "Input a number",
-        measure: "Kg"
+        measure: "Kg",
+        type: "text",
     },
     {
         title: "Height",
         placeholder: "Input a number",
-        measure: "m"
+        measure: "m",
+        type: "text",
     },
     {
         title: "Width",
         placeholder: "Input a number",
-        measure: "m"
+        measure: "m",
+        type: "text",
     },
     {
         title: "Length",
         placeholder: "Input a number",
-        measure: "m"
-    }
-]
+        measure: "m",
+        type: "text",
+    },
+];
 
 const NewParcelPage = () => {
     return (
-        <div className=" relative min-h-screen flex flex-col">
+        <div className=" relative flex min-h-screen flex-col">
             <Layout>
-                <div className='max-w-[600px] ml-20'>
-                    <div className='my-10'>
-                        <h1 className=' text-4xl font-normal text-white'>New Parcel</h1>
+                <div className="ml-20 max-w-[600px]">
+                    <div className="my-10">
+                        <h1 className=" text-4xl font-normal text-white">
+                            New Parcel
+                        </h1>
                     </div>
-                    <form className='flex flex-col'>
+                    <form className="flex flex-col">
                         {ParcelAddNew.map((field, index) => (
-                            <label key={index} htmlFor={`input-${index}`} className='grid grid-cols-3 items-center text-lg mb-6 ml-10'>
+                            <label
+                                key={index}
+                                htmlFor={`input-${index}`}
+                                className="mb-6 ml-10 grid grid-cols-3 items-center text-lg"
+                            >
                                 {field.title}:
-                                <input className=' bg-dark-secondary rounded-lg -ml-20 border-2 border-solid px-4 border-slate-blue' type="text" placeholder={field.placeholder} id={`input-${index}`}/>
-                                <span className='ml-4 text-xs'>{field.measure}</span>
+                                <input
+                                    className=" bg-dark-secondary border-slate-blue -ml-20 rounded-lg border-2 border-solid px-4"
+                                    type={field.type}
+                                    placeholder={field.placeholder}
+                                    id={`input-${index}`}
+                                />
+                                <span className="ml-4 text-xs">
+                                    {field.measure}
+                                </span>
                             </label>
                         ))}
 
-                    <Button className='mr-[188px] mt-4 mb-10'></Button>
+                        <Button className="mb-10 mr-[188px] mt-4"></Button>
                     </form>
-                    
-
                 </div>
             </Layout>
         </div>

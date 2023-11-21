@@ -60,6 +60,7 @@ export const logIn = catchAsync(async (req, res, next) => {
             console.error("Driver log in rollback failed: ", rollbackError);
         }
 
+        console.error(error);
         client.release();
         return next(
             new APIError("Couldn't perform log in, try again later.", 500),
@@ -87,7 +88,7 @@ export const signUp = catchAsync(async (req, res, next) => {
             [driver_email],
         );
 
-        if (driver.rows.length > 0) {
+        if (driver.rowCount > 0) {
             await client.query("ROLLBACK");
             client.release();
             return next(new APIError("Driver already exists.", 409));
@@ -123,9 +124,16 @@ export const signUp = catchAsync(async (req, res, next) => {
             console.error("Driver signup rollback failed: ", rollbackError);
         }
 
+        console.error(error);
         client.release();
         return next(
             new APIError("Couldn't perform sign up, try again later.", 500),
         );
     }
+});
+
+// eslint-disable-next-line no-unused-vars
+export const logOut = catchAsync(async (req, res, next) => {
+    res.clearCookie("access_token", cookieConfig);
+    res.status(201).json({ status: "success" });
 });

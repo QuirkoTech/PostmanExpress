@@ -1,7 +1,3 @@
-import Layout from '../components/layout/Layout';
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { Button } from '../components/button';
 import {  Info } from 'lucide-react';
 
 const ActiveParcel = [

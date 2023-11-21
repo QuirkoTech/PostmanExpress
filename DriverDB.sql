@@ -1,3 +1,4 @@
+-- Active: 1699102512752@@127.0.0.1@5432@postman_express_driver_db
 DROP DATABASE IF EXISTS postman_express_driver;
 
 CREATE DATABASE postman_express_driver;
@@ -50,7 +51,7 @@ CREATE TABLE drivers (
 CREATE TABLE driver_parcels (
   id SERIAL PRIMARY KEY,
   driver_id UUID REFERENCES drivers(driver_id),
-  parcel_id UUID UNIQUE NOT NULL,
+  parcel_id UUID NOT NULL,
   delivered BOOLEAN DEFAULT FALSE
 );
 
