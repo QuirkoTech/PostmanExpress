@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useForm } from "react-hook-form";
@@ -19,6 +19,7 @@ const PickupPage = ({ location, type }) => {
         handleSubmit,
         setError,
         reset,
+        setValue,
         formState: { errors, isSubmitSuccessful, isSubmitting },
         setFocus,
     } = useForm({
@@ -26,6 +27,11 @@ const PickupPage = ({ location, type }) => {
     });
 
     const [pin, setPin] = useState("");
+
+    // This line was needed to update the pin value in the form for some reason it wasnt updating
+    useEffect(() => {
+        setFocus("pin");
+    }, [pin, setFocus]);
 
     const handleDigitClick = (digit) => {
         setPin((prevPin) => prevPin + digit);
@@ -38,6 +44,7 @@ const PickupPage = ({ location, type }) => {
     const submitHandler = async (data) => {
         try {
             console.log(data);
+            console.log(pinWatch);
         } catch (error) {}
     };
 
@@ -59,9 +66,13 @@ const PickupPage = ({ location, type }) => {
                 >
                     <input
                         type="text"
-                        value={pin}
+                        onSubmit={(e) => {
+                            setPin(e.target.value); // Update local state
+                            setValue("pin", e.target.value); // Update form value using react-hook-form
+                        }}
                         readOnly
                         {...register("pin")}
+                        value={pin}
                         className="mb-10 w-1/3 self-center rounded-md border text-center text-xl text-black focus:outline-none"
                     />
                     <input
