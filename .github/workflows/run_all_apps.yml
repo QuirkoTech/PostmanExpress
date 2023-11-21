@@ -47,6 +47,8 @@ jobs:
               run: |
                   npm install
                   npm run run-org-api-for-test &
+                  echo "Started run-org-api-for-test with PID $!"
+                  ps -f -p $!
               working-directory: ${{ matrix.app }}
 
     test-apis:
@@ -63,6 +65,11 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version: ${{ matrix.node-version }}
+
+            - name: Install Dependencies for Organization API
+              run: |
+                  npm install
+              working-directory: organization_api
 
             - name: Install Dependencies and Test APIs
               run: |
