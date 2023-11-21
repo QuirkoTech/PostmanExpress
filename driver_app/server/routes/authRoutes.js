@@ -9,6 +9,4 @@ router.route("/login").post(logIn);
 router.route("/signup").post(signUp);
 router.route("/logout").post(protect, logOut);
 
-// router.route("/me").get(protect, consumerLoad);
-
 export default router;
