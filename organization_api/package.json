@@ -6,7 +6,7 @@
     "scripts": {
         "dev-api": "nodemon server/server.js",
         "run-org-api-for-test": "NODE_ENV=test node server/server.js",
-        "stop-org-api-for-test": "node test/stop_api.js"
+        "stop-org-api-for-test": "node test/stop_org_api.js"
     },
     "dependencies": {
         "bcrypt": "^5.1.1",
