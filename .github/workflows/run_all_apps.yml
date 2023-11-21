@@ -28,7 +28,29 @@ jobs:
                   npm run build
               working-directory: ${{ matrix.app }}
 
+    start-org-api:
+        needs: [check-frontend-build]
+        runs-on: self-hosted
+        strategy:
+            matrix:
+                node-version: [20.x]
+                app: [organization_api]
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v3
+              with:
+                  node-version: ${{ matrix.node-version }}
+
+            - name: Install Dependencies and Start Organization API for testing
+              run: |
+                  npm install
+                  npm run run-org-api-for-test
+              working-directory: ${{ matrix.app }}
+
     test-apis:
+        needs: [check-frontend-build, start-org-api]
         runs-on: self-hosted
         strategy:
             matrix:
@@ -42,15 +64,36 @@ jobs:
               with:
                   node-version: ${{ matrix.node-version }}
 
-            - name: Install Dependencies Test APIs
+            - name: Install Dependencies and Test APIs
               run: |
                   npm install
-                  npm run test-consumer-api
+                  npm run test-consumer-api-cloud
+              working-directory: ${{ matrix.app }}
+
+    stop-org-api:
+        needs: [check-frontend-build, start-org-api, test-apis]
+        runs-on: self-hosted
+        strategy:
+            matrix:
+                node-version: [20.x]
+                app: [organization_api]
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v3
+              with:
+                  node-version: ${{ matrix.node-version }}
+
+            - name: Install Dependencies and Stop Organization API for testing
+              run: |
+                  npm install
+                  npm run stop-org-api-for-test
               working-directory: ${{ matrix.app }}
 
     deploy:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        needs: [check-frontend-build]
+        needs: [check-frontend-build, start-org-api, test-apis, stop-org-api]
         runs-on: ubuntu-latest
 
         steps:

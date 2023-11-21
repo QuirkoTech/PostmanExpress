@@ -6,10 +6,13 @@ import dotenv from "dotenv";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const filePath = `${__dirname}/../.env`;
+let filePath = `${__dirname}/../.env`;
+
+if (process.env.NODE_ENV === "test")
+    filePath = `${__dirname}/../../../../../../env/postman.express-organization_api.env`;
 
 if (fs.existsSync(filePath)) {
-  dotenv.config({ path: `${__dirname}/../.env` });
+    dotenv.config({ path: `${__dirname}/../.env` });
 } else {
-  console.log('Enviroment file not found!');
+    console.log("Enviroment file not found!");
 }
