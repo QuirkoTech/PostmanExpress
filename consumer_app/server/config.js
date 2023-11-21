@@ -12,7 +12,7 @@ if (process.env.NODE_ENV === "test")
     filePath = `${__dirname}/../../../../../../env/postman.express-consumer_app.env`;
 
 if (fs.existsSync(filePath)) {
-    dotenv.config({ path: `${__dirname}/../.env` });
+    dotenv.config({ path: filePath });
 } else {
     console.log("Enviroment file not found!");
 }

@@ -9,7 +9,7 @@ const __dirname = dirname(__filename);
 const filePath = `${__dirname}/../.env`;
 
 if (fs.existsSync(filePath)) {
-  dotenv.config({ path: `${__dirname}/../.env` });
+    dotenv.config({ path: filePath });
 } else {
-  console.log('Enviroment file not found!');
+    console.log("Enviroment file not found!");
 }
