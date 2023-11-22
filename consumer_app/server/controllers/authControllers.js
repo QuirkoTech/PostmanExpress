@@ -19,7 +19,7 @@ export const signUp = catchAsync(async (req, res, next) => {
         return next(new APIError("Some required fields missing.", 400));
 
     if (password !== password_confirm)
-        return next(new APIError("Passwords dont match.", 400));
+        return next(new APIError("Passwords don't match.", 400));
 
     const hashedPwd = await hashPwd(password);
 

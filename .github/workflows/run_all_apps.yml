@@ -28,9 +28,38 @@ jobs:
                   npm run build
               working-directory: ${{ matrix.app }}
 
+    test-apis:
+        needs: [check-frontend-build]
+        runs-on: self-hosted
+        strategy:
+            matrix:
+                node-version: [20.x]
+                app: [consumer_app]
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v3
+              with:
+                  node-version: ${{ matrix.node-version }}
+
+            - name: Install Dependencies and Test APIs
+              run: |
+                  cd ../organization_api
+                  npm i
+                  npm run run-org-api-for-test &
+                  echo "Started run-org-api-for-test with PID $!"
+                  ps -f -p $!
+                  cd ../consumer_app
+                  npm install
+                  npm run test-consumer-api-cloud
+                  cd ../organization_api
+                  npm run stop-org-api-for-test
+              working-directory: ${{ matrix.app }}
+
     deploy:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        needs: [check-frontend-build]
+        needs: [check-frontend-build, test-apis]
         runs-on: ubuntu-latest
 
         steps:

@@ -1,4 +1,5 @@
 import express from "express";
+import fs from "fs";
 import cors from "cors";
 import morgan from "morgan";
 import "./config.js";
@@ -66,5 +67,9 @@ app.all("*", (req, res, next) => {
 });
 
 app.use(globalErrorHandler);
+
+if (process.env.NODE_ENV === "test") {
+    fs.writeFileSync("./test/org_api.pid", process.pid.toString());
+}
 
 export default app;

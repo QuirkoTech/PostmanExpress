@@ -1,23 +1,25 @@
 {
-  "name": "organization_api",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev-api": "nodemon server/server.js"
-  },
-  "dependencies": {
-    "bcrypt": "^5.1.1",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "fs": "^0.0.1-security",
-    "jsonwebtoken": "^9.0.2",
-    "morgan": "^1.10.0",
-    "node-fetch": "^3.3.2",
-    "nodemailer": "^6.9.7",
-    "nodemon": "^3.0.1",
-    "pg": "^8.11.3",
-    "uuid": "^9.0.1"
-  }
+    "name": "organization_api",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "dev-api": "nodemon server/server.js",
+        "run-org-api-for-test": "NODE_ENV=test node server/server.js",
+        "stop-org-api-for-test": "node test/stop_org_api.js"
+    },
+    "dependencies": {
+        "bcrypt": "^5.1.1",
+        "cors": "^2.8.5",
+        "dotenv": "^16.3.1",
+        "express": "^4.18.2",
+        "fs": "^0.0.1-security",
+        "jsonwebtoken": "^9.0.2",
+        "morgan": "^1.10.0",
+        "node-fetch": "^3.3.2",
+        "nodemailer": "^6.9.7",
+        "nodemon": "^3.0.1",
+        "pg": "^8.11.3",
+        "uuid": "^9.0.1"
+    }
 }
