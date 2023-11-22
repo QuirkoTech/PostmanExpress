@@ -8,7 +8,7 @@
     -   [Log in](#log-in)
     -   [Log out](#log-out)
     -   [Delete](#Delete)
-    -   [Consumer application load function](#consumer-application-load-function)
+    -   [Load function](#consumer-application-load-function)
     -   [User active parcels](#user-active-parcels)
     -   [Post new parcels](#post-new-parcels)
     -   [Parcel info](#parcel-info)
@@ -19,6 +19,9 @@
     -   [Sign up](#sign-up-1)
     -   [Log in](#log-in-1)
     -   [Log out](#log-out-1)
+    -   [Load function](#driver-application-load-function)
+    -   [Accepted parcels](#accepted-parcels)
+    -   [Available parcels](#available-parcels)
     -   [Parcel info](#parcel-info-1)
     -   [Accept the parcel](#accept-the-parcel)
 
@@ -568,6 +571,108 @@ If response is successfull:
 ```
 {
   "status": "success"
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
+}
+```
+
+### Driver application load function
+
+To load the driver into the application make a GET request to "/me" route
+
+-   NOTE: need to have "credentials": "include" in the request. This is needed to pass the access_token cookie to the API
+
+If response is successfull:
+
+1. Object like this:
+
+```
+{
+  "status": "success",
+  "data": {
+    "driver_name": "<driver_name>"
+  }
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
+}
+```
+
+### Accepted parcels
+
+To get driver accepted parcels make GET request to "/me/parcels" route in driver API
+
+-   NOTE: need to have "credentials": "include" in the request. This is needed to pass the access_token cookie to the API
+
+If response is successfull:
+
+1. Object like this:
+
+```
+{
+  "status": "success",
+  "data": {
+    "parcels": [
+      {
+        "last_status_date": "21.11.23",
+        "parcel_id": "2044b3bb-6855-4334-a82c-a77b55a413f3",
+        "ship_to": "warehouse"
+      }
+    ]
+  }
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
+}
+```
+
+### Available parcels
+
+To get driver available parcels make GET request to "/parcels" route in driver API
+
+-   NOTE: need to have "credentials": "include" in the request. This is needed to pass the access_token cookie to the API
+
+If response is successfull:
+
+1. Object like this:
+
+```
+{
+  "status": "success",
+  "data": {
+    "parcels": [
+      {
+        "last_status_date": "21.11.23",
+        "parcel_id": "2044b3bb-6855-4334-a82c-a77b55a413f3",
+        "ship_to": "warehouse"
+      }
+    ]
+  }
 }
 ```
 

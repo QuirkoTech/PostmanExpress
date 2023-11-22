@@ -535,24 +535,13 @@ export const driverParcels = catchAsync(async (req, res, next) => {
 
     try {
         const parcels = await pool.query(
-            "SELECT (status_timestamps[array_upper(status_timestamps, 1)]->>'date') as last_status_date, parcel_id, current_location, ship_from, ship_to FROM parcels WHERE parcel_id = ANY($1)",
+            "SELECT (status_timestamps[array_upper(status_timestamps, 1)]->>'date') as last_status_date, parcel_id, CASE WHEN current_location != 'warehouse' THEN 'warehouse' ELSE ship_to END as ship_to FROM parcels WHERE parcel_id = ANY($1)",
             [parcel_ids],
         );
 
-        const modifiedParcels = parcels.rows.map((parcel) => {
-            if (parcel.current_location === parcel.ship_from) {
-                parcel.ship_to = "warehouse";
-            } else if (parcel.current_location === "warehouse") {
-                parcel.ship_from = "warehouse";
-            }
-            delete parcel.current_location;
-
-            return parcel;
-        });
-
         res.status(200).json({
             status: "success",
-            data: { parcels: modifiedParcels },
+            data: { parcels: parcels.rows },
         });
     } catch (error) {
         console.log(error);
