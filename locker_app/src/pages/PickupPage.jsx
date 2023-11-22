@@ -44,7 +44,7 @@ const PickupPage = ({ location, type }) => {
         handleSubmit,
         setError,
         reset,
-        formState: { errors, isSubmitSuccessful, isSubmitting },
+        formState: { errors, isSubmitting },
         setFocus,
     } = useForm({
         resolver: yupResolver(schema),
@@ -75,15 +75,14 @@ const PickupPage = ({ location, type }) => {
     // This is the function that is called when the form is submitted
     const submitHandler = async (data) => {
         try {
-            console.log(data);
             const response = await axios.post(
                 `${LOCKER_URL}/cabinet/pickup`,
                 data,
             );
-            const status = response.status;
+            const status = response.data.status;
 
             if (status === "success") {
-                // Open modal displaying a cabinet has opened
+                openModal();
             }
         } catch (error) {
             if (error.response) {
@@ -93,14 +92,12 @@ const PickupPage = ({ location, type }) => {
                         type: "manual",
                         message: message.slice(0, -1),
                     });
-
-                    openModal();
-                } else if (message.includes("You are in wrong location,")) {
+                } else if (message.includes("You are in the wrong location.")) {
                     setError("location", {
                         type: "manual",
                         message: message,
                     });
-                    
+
                     openModal();
                 }
             }

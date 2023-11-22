@@ -2,7 +2,7 @@ const Modal = ({ isOpen, closeModal, message, resetForm }) => {
     if (!isOpen) return null;
 
     const defaultText =
-        "The locker containing your parcel has automatically opened. Please collect your parcel and close the door.";
+        "The cabinet containing your parcel has automatically opened. Please collect your parcel and close the door.";
 
     const handleClick = () => {
         closeModal();
@@ -18,7 +18,7 @@ const Modal = ({ isOpen, closeModal, message, resetForm }) => {
                     </h2>
                     <button
                         onClick={handleClick}
-                        className="rounded-mid  mx-auto mt-8  block bg-green-600 px-4 py-1 text-center text-lg text-white"
+                        className={`rounded-mid  mx-auto mt-8  block  px-4 py-1 text-center text-lg text-white ${message ? "bg-red-600" : "bg-green-600"}`}
                     >
                         {message ? "Close" : "Close door"}
                     </button>
