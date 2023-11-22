@@ -1,5 +1,11 @@
 import { Routes, Route } from "react-router-dom";
-import { Login, HomePage, NotFoundPage } from "./pages";
+import {
+    Login,
+    HomePage,
+    NotFoundPage,
+    ParcelInfoPage,
+    AvailableParcelPage,
+} from "./pages";
 
 function App() {
     return (
@@ -7,6 +13,11 @@ function App() {
             <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/" element={<HomePage />}></Route>
+                <Route
+                    path="/parcels/:parcel_id"
+                    element={<ParcelInfoPage />}
+                />
+                <Route path="/pending" element={<AvailableParcelPage />} />
                 <Route path="*" element={<NotFoundPage />}></Route>
             </Routes>
         </main>

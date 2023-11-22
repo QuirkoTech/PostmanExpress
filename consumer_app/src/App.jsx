@@ -1,7 +1,13 @@
 import { Routes, Route } from "react-router-dom";
-import { SignUp, Login, HomePage, NotFoundPage, NewParcelPage } from "./pages";
-
-import { AuthRoute, PrivateRoute, Authprovider } from "./components/auth";
+import {
+    SignUp,
+    Login,
+    HomePage,
+    NotFoundPage,
+    NewParcelPage,
+    ParcelInFoPage,
+} from "./pages";
+import { AuthRoute, Authprovider, PrivateRoute } from "./components/auth";
 
 function App() {
     return (
@@ -47,6 +53,10 @@ function App() {
 
                     {/* 404 */}
                     <Route path="*" element={<NotFoundPage />} />
+                    <Route
+                        path="/parcels/:parcel_id"
+                        element={<ParcelInFoPage />}
+                    />
                 </Routes>
             </Authprovider>
         </div>
