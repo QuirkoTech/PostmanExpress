@@ -162,6 +162,7 @@ const DeliveryPage = ({ location, type }) => {
                 isOpen={isModalOpen}
                 resetForm={resetForm}
                 message={errors.location?.message}
+                type={type}
             />
         </section>
     );
