@@ -204,7 +204,7 @@ export const consumerDelete = catchAsync(async (req, res, next) => {
 
     try {
         await client.query(
-            "UPDATE users SET user_name = null, user_email = null, refresh_token = null, password = null, user_location = null WHERE user_id = $1",
+            "UPDATE users SET user_name = 'Deleted', user_email = 'Deleted', refresh_token = 'Deleted', password = 'Deleted', user_location = 'Deleted' WHERE user_id = $1",
             [req.user.user_id],
         );
 

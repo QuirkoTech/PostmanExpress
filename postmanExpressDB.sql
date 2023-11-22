@@ -34,7 +34,8 @@ CREATE TYPE LOCATION AS ENUM (
   'helsinki', -- 15 cabinets
   'turku', -- 15 cabinets
   'tampere', -- 15 cabinets
-  'espoo' -- 15 cabinets
+  'espoo', -- 15 cabinets
+  'Deleted'
 );
 
 CREATE TYPE CABINETSTATUS AS ENUM (
@@ -62,11 +63,11 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE users (
   user_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-  user_name varchar(255),
-  user_email varchar(255) UNIQUE,
-  password varchar(255),
+  user_name varchar(255) NOT NULL,
+  user_email varchar(255) UNIQUE NOT NULL,
+  password varchar(255) NOT NULL,
   refresh_token varchar(255),
-  user_location LOCATION 
+  user_location LOCATION NOT NULL
 );
 
 CREATE TABLE parcels (

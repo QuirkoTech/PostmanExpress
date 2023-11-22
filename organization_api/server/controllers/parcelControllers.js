@@ -102,6 +102,7 @@ export const newParcel = catchAsync(async (req, res, next) => {
             data: {
                 message:
                     "Parcel created. Check your email for further instructions.",
+                delivery_pin,
             },
         });
     } catch (error) {
@@ -191,10 +192,7 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
             parcelSearchQuery = `
                                 SELECT 
                                     p.parcel_id,
-                                    CASE 
-                                        WHEN sender.user_email IS NULL THEN 'Deleted'
-                                        ELSE sender.user_name
-                                    END AS sender_name,
+                                    COALESCE(sender.user_name, p.parcel_sender_id::varchar) AS sender_name,
                                     COALESCE(receiver.user_name, p.parcel_receiver_email) AS receiver_name,
                                     p.parcel_status,
                                     p.status_timestamps,
@@ -529,5 +527,24 @@ export const driverAvailableParcels = catchAsync(async (req, res, next) => {
     } catch (error) {
         console.error(error);
         return next(new APIError("Couldn't get available parcels.", 500));
+    }
+});
+
+export const driverParcels = catchAsync(async (req, res, next) => {
+    const { parcel_ids } = req.body;
+
+    try {
+        const parcels = await pool.query(
+            "SELECT (status_timestamps[array_upper(status_timestamps, 1)]->>'date') as last_status_date, parcel_id, CASE WHEN current_location != 'warehouse' THEN 'warehouse' ELSE ship_to END as ship_to FROM parcels WHERE parcel_id = ANY($1)",
+            [parcel_ids],
+        );
+
+        res.status(200).json({
+            status: "success",
+            data: { parcels: parcels.rows },
+        });
+    } catch (error) {
+        console.log(error);
+        return next(new APIError("Something went wrong.", 500));
     }
 });

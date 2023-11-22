@@ -31,6 +31,7 @@ import globalErrorHandler from "./controllers/errorControllers.js";
 import APIError from "./helpers/APIError.js";
 import authRoutes from "./routes/authRoutes.js";
 import parcelRoutes from "./routes/parcelRoutes.js";
+import driverRoutes from "./routes/driverRoutes.js";
 import checkContentType from "./helpers/checkContentType.js";
 
 const app = express();
@@ -52,6 +53,7 @@ console.log("hello");
 
 app.use("/auth", authRoutes);
 app.use("/parcels", parcelRoutes);
+app.use("/me", driverRoutes);
 
 app.all("*", (req, res, next) => {
     next(

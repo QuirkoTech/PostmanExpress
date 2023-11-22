@@ -8,7 +8,7 @@
     -   [Log in](#log-in)
     -   [Log out](#log-out)
     -   [Delete](#Delete)
-    -   [Consumer application load function](#consumer-application-load-function)
+    -   [Load function](#consumer-application-load-function)
     -   [User active parcels](#user-active-parcels)
     -   [Post new parcels](#post-new-parcels)
     -   [Parcel info](#parcel-info)
@@ -19,6 +19,9 @@
     -   [Sign up](#sign-up-1)
     -   [Log in](#log-in-1)
     -   [Log out](#log-out-1)
+    -   [Load function](#driver-application-load-function)
+    -   [Accepted parcels](#accepted-parcels)
+    -   [Available parcels](#available-parcels)
     -   [Parcel info](#parcel-info-1)
     -   [Accept the parcel](#accept-the-parcel)
 
@@ -104,7 +107,182 @@ In respose from this endpoint you will get:
 
 If response is successfull:
 
-1. Access token cookie is set for a user
+1. Access toekn cookie is set for a user
+2. Object like this:
+
+```
+{
+  "status": "success"
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
+}
+```
+
+### Consumer application load function
+
+To load the user into the application make a GET request to "/me" route
+NOTE: need to have "credentials": "include" in the request, but i dont know if it has to be set in request headers. This is needed to pass the access_token cookie to the API
+
+Response object:
+
+```
+{
+ "status": "success",
+ "data": {
+  "username": "<username>",
+  "notifications": [
+    {
+      "title": "<notification_title>",
+      "parcel_id": "<parcel_id>",
+      "status": "<parcel_status>"
+    },...
+  ]
+ }
+}
+```
+
+### User active parcels
+
+To load user active parcels make a GET request to "/me/parcels" route
+NOTE: need to have "credentials": "include" in the request, but i dont know if it has to be set in request headers. This is needed to pass the access_token cookie to the API
+
+Response object:
+
+```
+{
+ "status": "success",
+ "data": {
+  "user_parcels": [
+    {
+      "last_status_date": "13.11.23",
+      "parcel_id": "f9a64037-2e16-40ec-95ec-10f64a1886d7",
+      "parcel_status": "prepared for delivery"
+    }
+  ]
+ }
+}
+```
+
+### Post new parcels
+
+To post new parcels make a POST request to "/parcels/new" route
+
+-   NOTE: need to have "credentials": "include" in the request, but i dont know if it has to be set in request headers. This is needed to pass the access_token cookie to the API
+-   NOTE: you can leave parcel_name field as an empty string when user submits the parcel, API will automatically replace empty string with "Parcel"
+
+Request body:
+
+```
+{
+  "parcel_name": "",
+  "recipient_email": "test@mail.com",
+  "ship_to": "helsinki",
+  "ship_from": "oulu",
+  "weight": "1",
+  "height": "3",
+  "width": "1",
+  "length": "1"
+}
+```
+
+Response object:
+
+```
+{
+ "status": "success",
+ "data": {
+   "message": "Parcel created. Check your email for further instructions."
+ }
+}
+```
+
+## Driver application
+
+### Sign up
+
+To sign up the driver, make a POST request to the driver API endpoint "/auth/signup"
+Requiremets:
+
+Request headers:
+
+```
+{
+  "Content-type": "application/json"
+}
+```
+
+Request body:
+
+```
+{
+    "driver_name": "string",
+    "driver_email": "string",
+    "password": "string",
+    "driver_location": "string",
+    "signup_key": "<key defined in .env file>"
+}
+```
+
+In respose from this endpoint you will get:
+
+If response is successfull:
+
+1. Access toekn cookie is set for a driver
+2. Object like this:
+
+```
+{
+  "status": "success"
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
+}
+```
+
+### Log in
+
+To log in the driver, make a POST request to the driver API endpoint "/auth/login"
+Requiremets:
+
+Request headers:
+
+```
+{
+  "Content-type": "application/json"
+}
+```
+
+Request body:
+
+```
+{
+    "driver_email": "string",
+    "password": "string",
+}
+```
+
+In respose from this endpoint you will get:
+
+If response is successfull:
+
+1. Access toekn cookie is set for a driver
 2. Object like this:
 
 ```
@@ -568,6 +746,108 @@ If response is successfull:
 ```
 {
   "status": "success"
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
+}
+```
+
+### Driver application load function
+
+To load the driver into the application make a GET request to "/me" route
+
+-   NOTE: need to have "credentials": "include" in the request. This is needed to pass the access_token cookie to the API
+
+If response is successfull:
+
+1. Object like this:
+
+```
+{
+  "status": "success",
+  "data": {
+    "driver_name": "<driver_name>"
+  }
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
+}
+```
+
+### Accepted parcels
+
+To get driver accepted parcels make GET request to "/me/parcels" route in driver API
+
+-   NOTE: need to have "credentials": "include" in the request. This is needed to pass the access_token cookie to the API
+
+If response is successfull:
+
+1. Object like this:
+
+```
+{
+  "status": "success",
+  "data": {
+    "parcels": [
+      {
+        "last_status_date": "21.11.23",
+        "parcel_id": "2044b3bb-6855-4334-a82c-a77b55a413f3",
+        "ship_to": "warehouse"
+      }
+    ]
+  }
+}
+```
+
+If response failed:
+
+1. Object like this:
+
+```
+{
+  "status": "<fail or error>",
+  "message": "<response message>"
+}
+```
+
+### Available parcels
+
+To get driver available parcels make GET request to "/parcels" route in driver API
+
+-   NOTE: need to have "credentials": "include" in the request. This is needed to pass the access_token cookie to the API
+
+If response is successfull:
+
+1. Object like this:
+
+```
+{
+  "status": "success",
+  "data": {
+    "parcels": [
+      {
+        "last_status_date": "21.11.23",
+        "parcel_id": "2044b3bb-6855-4334-a82c-a77b55a413f3",
+        "ship_to": "warehouse"
+      }
+    ]
+  }
 }
 ```
 
