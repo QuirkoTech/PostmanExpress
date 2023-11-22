@@ -102,6 +102,7 @@ export const newParcel = catchAsync(async (req, res, next) => {
             data: {
                 message:
                     "Parcel created. Check your email for further instructions.",
+                delivery_pin,
             },
         });
     } catch (error) {
@@ -526,5 +527,24 @@ export const driverAvailableParcels = catchAsync(async (req, res, next) => {
     } catch (error) {
         console.error(error);
         return next(new APIError("Couldn't get available parcels.", 500));
+    }
+});
+
+export const driverParcels = catchAsync(async (req, res, next) => {
+    const { parcel_ids } = req.body;
+
+    try {
+        const parcels = await pool.query(
+            "SELECT (status_timestamps[array_upper(status_timestamps, 1)]->>'date') as last_status_date, parcel_id, CASE WHEN current_location != 'warehouse' THEN 'warehouse' ELSE ship_to END as ship_to FROM parcels WHERE parcel_id = ANY($1)",
+            [parcel_ids],
+        );
+
+        res.status(200).json({
+            status: "success",
+            data: { parcels: parcels.rows },
+        });
+    } catch (error) {
+        console.log(error);
+        return next(new APIError("Something went wrong.", 500));
     }
 });
