@@ -18,7 +18,7 @@ const ParcelInfoPage = () => {
                             Parcel Info
                         </h1>
                     </div>
-                    <div className="mb-10 h-[444px] w-full rounded-2xl bg-dark-secondary text-lg">
+                    <div className="bg-dark-secondary border-slate-blue mb-10 h-[444px] w-full rounded-2xl border border-solid text-lg shadow-xl">
                         <div className="grid grid-cols-2">
                             <div className="m-8">
                                 <div className="flex flex-row gap-8">

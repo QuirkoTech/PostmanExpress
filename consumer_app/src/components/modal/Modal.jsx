@@ -43,7 +43,9 @@ function Modal({ isOpen, closeModal, name, menuLinks, className }) {
             <div className={`modal-container ${className}`}>
                 <ul className="border-b-2 border-solid border-[#494844]">
                     <li className="mb-4 w-full border-b-2 border-solid border-[#494844] pb-5 text-lg font-medium text-white">
-                        {name}
+                        <div className="w-40 overflow-hidden overflow-ellipsis whitespace-nowrap">
+                            {name}
+                        </div>
                         <button
                             onClick={closeModal}
                             className="absolute right-2 top-4 cursor-pointer border-none bg-transparent p-2 px-4 text-white transition-all hover:border-none hover:text-red-500 focus:outline-none"

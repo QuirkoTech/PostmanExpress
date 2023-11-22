@@ -56,7 +56,7 @@ const NewParcelPage = () => {
                     {ActiveParcel.map((parcel) => (
                         <div
                             key={parcel.id}
-                            className="bg-dark-secondary hover:border-slate-blue mb-10 h-[116px] w-[440px] cursor-pointer rounded-2xl border-2 border-solid border-transparent px-5 py-5 shadow-lg shadow-black/40"
+                            className="bg-dark-secondary border-slate-blue mb-10 h-[116px] w-[440px] cursor-pointer rounded-2xl border border-solid px-5 py-5 shadow-lg shadow-black/40"
                             onClick={() => handleParcelClick(parcel.id)}
                         >
                             <div className="flex flex-row justify-between gap-x-10 text-lg">

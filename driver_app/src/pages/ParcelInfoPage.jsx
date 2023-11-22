@@ -15,7 +15,7 @@ const ParcelInfoPage = () => {
                             Parcel Info
                         </h1>
                     </div>
-                    <div className="bg-dark-secondary mb-10 h-[444px] w-full rounded-2xl text-lg">
+                    <div className="bg-dark-secondary border-slate-blue mb-10 h-[444px] w-full rounded-2xl border-2 border-solid text-lg">
                         <div className="grid grid-cols-2">
                             <div className="m-8">
                                 <div className="flex flex-row gap-8">
@@ -26,11 +26,11 @@ const ParcelInfoPage = () => {
                                         <div>From:</div>
                                         <div>To:</div>
                                     </div>
-                                    {/* <div className="flex flex-col gap-4">
+                                    <div className="flex flex-col gap-4">
                                         <div>12345679</div>
                                         <div>Keyboard</div>
                                         <div>Keyboard</div>
-                                    </div> */}
+                                    </div>
                                 </div>
                             </div>
                             <div className="m-8">
