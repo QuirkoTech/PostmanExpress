@@ -87,7 +87,7 @@ const PickupPage = ({ location, type }) => {
         } catch (error) {
             if (error.response) {
                 const message = error.response.data.message;
-                if (message === "No parcel found with this pin.") {
+                if (message.includes("No parcel found")) {
                     setError("pin", {
                         type: "manual",
                         message: message.slice(0, -1),
@@ -100,6 +100,11 @@ const PickupPage = ({ location, type }) => {
 
                     openModal();
                 }
+            } else {
+                setError("type", {
+                    type: "manual",
+                    message: "Error connecting to server, try again later",
+                });
             }
         }
     };

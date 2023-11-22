@@ -1,3 +1,5 @@
+import { Spinner} from "./"
+
 const Keypad = ({ onDigitClick, onClearClick, isSubmitting }) => {
     const digits = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
 
@@ -25,11 +27,13 @@ const Keypad = ({ onDigitClick, onClearClick, isSubmitting }) => {
                 Clear
             </button>
             <button
-                className="rounded-md bg-green-600 text-xl text-white shadow-md shadow-transparent"
+                className="rounded-md bg-green-600 text-xl text-white shadow-md shadow-transparent flex justify-center items-center"
                 disabled={isSubmitting}
                 type="submit"
             >
-                Submit
+                {isSubmitting ? <Spinner/> : "Submit"}
+             
+
             </button>
         </div>
     );

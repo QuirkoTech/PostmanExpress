@@ -19,7 +19,7 @@ export const pastePickupPin = catchAsync(async (req, res, next) => {
         );
 
         if (parcel.rowCount === 0)
-            return next(new APIError("No parcel found with this pin.", 404));
+            return next(new APIError("No parcel found with this pickup pin.", 404));
 
         const parcelObj = parcel.rows[0];
 
@@ -162,7 +162,7 @@ export const pasteDeliveryPin = catchAsync(async (req, res, next) => {
         );
 
         if (parcel.rowCount === 0)
-            return next(new APIError("No parcel found with this pin.", 404));
+            return next(new APIError("No parcel found with this delivery pin.", 404));
 
         const parcelObj = parcel.rows[0];
 

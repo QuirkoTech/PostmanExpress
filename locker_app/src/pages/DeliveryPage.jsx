@@ -74,7 +74,6 @@ const DeliveryPage = ({ location, type }) => {
 
     // This is the function that is called when the form is submitted
     const submitHandler = async (data) => {
-        console.log(data);
         try {
             const response = await axios.post(
                 `${LOCKER_URL}/cabinet/deliver`,
@@ -88,7 +87,7 @@ const DeliveryPage = ({ location, type }) => {
         } catch (error) {
             if (error.response) {
                 const message = error.response.data.message;
-                if (message === "No parcel found with this pin.") {
+                if (message.includes("No parcel found")) {
                     setError("pin", {
                         type: "manual",
                         message: message.slice(0, -1),
@@ -101,6 +100,11 @@ const DeliveryPage = ({ location, type }) => {
 
                     openModal();
                 }
+            } else {
+                setError("type", {
+                    type: "manual",
+                    message: "Error connecting to server, try again later",
+                });
             }
         }
     };
