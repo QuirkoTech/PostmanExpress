@@ -15,6 +15,18 @@ const ParcelAddNew = [
         type: "text",
     },
     {
+        title: "From",
+        placeholder: "Sender's Address",
+        measure: "",
+        type: "text",
+    },
+    {
+        title: "To",
+        placeholder: "Recipient's Address",
+        measure: "",
+        type: "text",
+    },
+    {
         title: "Weight",
         placeholder: "Input a number",
         measure: "Kg",

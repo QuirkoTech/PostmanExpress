@@ -94,7 +94,7 @@ const Header = () => {
                             onClick={handleModalClick}
                         >
                             <div
-                                className="bg-dark-secondary ml-auto h-full w-1/6 rounded-r-lg rounded-br-none rounded-tr-none border-l-2 border-solid border-l-white/5 p-6 shadow-lg"
+                                className="bg-dark-secondary relative ml-auto h-full w-1/6 rounded-r-lg rounded-br-none rounded-tr-none border-l-2 border-solid border-l-white/5 p-6 shadow-lg"
                                 ref={modalRef}
                             >
                                 <Modal
