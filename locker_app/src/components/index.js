@@ -1,4 +1,4 @@
 import Keypad from "./Keypad";
 import Modal from "./Modal";
-
-export { Keypad, Modal };
+import Spinner from "./Spinner";
+export { Keypad, Modal, Spinner };

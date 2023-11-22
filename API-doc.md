@@ -198,7 +198,7 @@ Request body:
 {
   "type": "<either 'delivery' or 'pickup'>",
   "pin": 12345,
-  "location": "helsinki"
+  "cabinet_location": "helsinki"
 }
 ```
 

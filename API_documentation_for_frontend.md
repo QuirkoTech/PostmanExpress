@@ -979,6 +979,15 @@ If response failed:
 
 To deliver the parcel, make a POST request to "/cabinet/deliver" route in locker API
 
+expected request body
+```
+{
+  "type": "delivery",
+  "pin": 12345,
+  "cabinet_location": "helsinki"
+}
+```
+
 If response is successfull:
 
 1. Object like this:
@@ -1003,6 +1012,16 @@ If response failed:
 ### Pick up the parcel
 
 To pick up the parcel, make a POST request to "/cabinet/pickup" route in locker API
+
+expected request body
+
+```
+{
+  "type": "pickup",
+  "pin": 12345,
+  "cabinet_location": "helsinki"
+}
+```
 
 If response is successfull:
 
