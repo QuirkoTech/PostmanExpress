@@ -95,11 +95,13 @@ const PickupPage = ({ location, type }) => {
                     });
 
                     openModal();
-                } else if (message.contains("You are in wrong location")) {
+                } else if (message.includes("You are in wrong location,")) {
                     setError("location", {
                         type: "manual",
                         message: message,
                     });
+                    
+                    openModal();
                 }
             }
         }
@@ -160,7 +162,7 @@ const PickupPage = ({ location, type }) => {
                 closeModal={closeModal}
                 isOpen={isModalOpen}
                 resetForm={resetForm}
-                message={errors.pin?.message}
+                message={errors.location?.message}
             />
         </section>
     );

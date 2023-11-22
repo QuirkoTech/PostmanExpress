@@ -26,7 +26,7 @@ export const pastePickupPin = catchAsync(async (req, res, next) => {
         if (parcelObj.current_location !== cabinet_location)
             return next(
                 new APIError(
-                    `You are in wrong location, parcel is in ${
+                    `You are in the wrong location. The parcel is in ${
                         parcelObj.current_location.charAt(0).toUpperCase() +
                         parcelObj.current_location.slice(1)
                     }`,
@@ -172,7 +172,7 @@ export const pasteDeliveryPin = catchAsync(async (req, res, next) => {
         )
             return next(
                 new APIError(
-                    `You are in wrong location, deliver the parcel to ${
+                    `You are in the wrong location, deliver the parcel to ${
                         parcelObj.ship_from.charAt(0).toUpperCase() +
                         parcelObj.ship_from.slice(1)
                     }`,
@@ -185,7 +185,7 @@ export const pasteDeliveryPin = catchAsync(async (req, res, next) => {
         )
             return next(
                 new APIError(
-                    `You are in wrong location, deliver the parcel to Warehouse`,
+                    `You are in the wrong location, deliver the parcel to Warehouse`,
                     400,
                 ),
             );
@@ -195,7 +195,7 @@ export const pasteDeliveryPin = catchAsync(async (req, res, next) => {
         )
             return next(
                 new APIError(
-                    `You are in wrong location, deliver the parcel to ${
+                    `You are in the wrong location, deliver the parcel to ${
                         parcelObj.ship_to.charAt(0).toUpperCase() +
                         parcelObj.ship_to.slice(1)
                     }`,
@@ -317,7 +317,7 @@ export const pasteDeliveryPin = catchAsync(async (req, res, next) => {
             await client.query("ROLLBACK");
             client.release();
             return next(
-                new APIError("Seems like you are in a wrong location.", 400),
+                new APIError("Seems like you are in the wrong location.", 400),
             );
         }
 
