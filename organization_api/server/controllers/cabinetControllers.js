@@ -26,7 +26,7 @@ export const pastePickupPin = catchAsync(async (req, res, next) => {
         if (parcelObj.current_location !== cabinet_location)
             return next(
                 new APIError(
-                    `You are in the wrong location. The parcel is in ${
+                    `You are in the wrong location. The parcel is available for pickup in ${
                         parcelObj.current_location.charAt(0).toUpperCase() +
                         parcelObj.current_location.slice(1)
                     }`,
@@ -172,7 +172,7 @@ export const pasteDeliveryPin = catchAsync(async (req, res, next) => {
         )
             return next(
                 new APIError(
-                    `You are in the wrong location, deliver the parcel to ${
+                    `You are in the wrong location. Please deliver the parcel to ${
                         parcelObj.ship_from.charAt(0).toUpperCase() +
                         parcelObj.ship_from.slice(1)
                     }`,
@@ -185,7 +185,7 @@ export const pasteDeliveryPin = catchAsync(async (req, res, next) => {
         )
             return next(
                 new APIError(
-                    `You are in the wrong location, deliver the parcel to Warehouse`,
+                    `You are in the wrong location. Please deliver the parcel to the Warehouse`,
                     400,
                 ),
             );
@@ -195,7 +195,7 @@ export const pasteDeliveryPin = catchAsync(async (req, res, next) => {
         )
             return next(
                 new APIError(
-                    `You are in the wrong location, deliver the parcel to ${
+                    `You are in the wrong location. Please deliver the parcel to ${
                         parcelObj.ship_to.charAt(0).toUpperCase() +
                         parcelObj.ship_to.slice(1)
                     }`,
