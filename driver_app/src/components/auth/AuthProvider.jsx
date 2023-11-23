@@ -5,7 +5,7 @@ import { AuthContext } from "./";
 const AuthProvider = ({ children }) => {
     const DRIVER_URL = import.meta.env.VITE_DRIVER_BACKEND_URL;
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [userName, setUserName] = useState("");
+    const [driverName, setDriverName] = useState("");
     const [isLoading, setIsLoading] = useState(true);
 
     const fetchDriver = async () => {
@@ -19,7 +19,7 @@ const AuthProvider = ({ children }) => {
 
             if (status === "success") {
                 setIsAuthenticated(true);
-                setUserName(data.username);
+                setDriverName(data.driver_name);
             }
         } catch (error) {
             const message = error.response.data.status;
@@ -35,11 +35,11 @@ const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         fetchDriver();
-    }, []);
+    }, [DRIVER_URL]);
 
     const value = {
         isAuthenticated,
-        userName,
+        driverName,
         isLoading,
         fetchDriver,
     };
