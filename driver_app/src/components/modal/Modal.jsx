@@ -1,8 +1,38 @@
-import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
+import { useContext } from "react";
+import { AuthContext } from "../auth";
 
 function Modal({ isOpen, closeModal, name, menuLinks, className }) {
+    const DRIVER_URL = import.meta.env.VITE_DRIVER_BACKEND_URL;
+
+    const { fetchDriver } = useContext(AuthContext);
+
+    //Signout function
+    const handleSignOut = async () => {
+        try {
+            const response = await axios.post(
+                `${DRIVER_URL}/auth/logout`,
+                {},
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    withCredentials: true,
+                },
+            );
+
+            const message = response.data.status;
+
+            if (message === "success") {
+                fetchDriver();
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     if (!isOpen) {
         return null;
     }
@@ -38,7 +68,7 @@ function Modal({ isOpen, closeModal, name, menuLinks, className }) {
                 </ul>
                 <div className="flex flex-col">
                     <button
-                        // onClick={handleSignOut}
+                        onClick={handleSignOut}
                         className="my-5 mr-auto cursor-pointer border-none bg-transparent p-0 text-lg font-medium text-[#C55B5B] transition-all hover:border-none focus:outline-none"
                     >
                         Log Out
