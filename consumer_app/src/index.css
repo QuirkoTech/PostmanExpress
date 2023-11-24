@@ -43,6 +43,10 @@
 
 @layer utilities {
     .padding {
-        @apply px-8 py-12 sm:px-20 sm:py-24;
+        @apply px-8 py-12 sm:px-20 sm:py-20;
+    }
+
+    .margin-x {
+        @apply mx-[5.5rem];
     }
 }
