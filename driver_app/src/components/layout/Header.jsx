@@ -1,20 +1,22 @@
-import Modal from '../modal/Modal';
-import React, { useRef, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useContext, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import Modal from "../modal/Modal";
+import { AuthContext } from "../auth";
 
 const menuLinks = [
     {
-        url: '/',
-        title: 'Accepted Parcels',
+        url: "/",
+        title: "Accepted Parcels",
     },
     {
-        url: '/pending',
-        title: 'Available Parcel',
+        url: "/pending",
+        title: "Available Parcel",
     },
-    
 ];
 
 const Header = () => {
+    const { driverName } = useContext(AuthContext);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const modalRef = useRef();
 
@@ -33,35 +35,28 @@ const Header = () => {
     };
 
     return (
-        <div className={`shadow-lg z-50 bg-dark-secondary`}>
-            <div className=" flex items-center w-full h-[72px] py-5 px-0 transition-transform duration-1000">
-                <NavLink to="/">
-                    <h1 className="text-2xl ml-10 text-white">PostmanExpress</h1>
-                </NavLink>
-                <div className="ml-auto">
-                    <button className="z-1 relative bg-transparent border-none text-white text-2xl mr-10" onClick={openModal}>
-                        Menu
-                    </button>
-                    {isModalOpen && (
-                        <div
-                            className="fixed top-0 left-0 w-full h-full bg-black/60 flex justify-center items-center z-50"
-                            onClick={handleModalClick}
-                        >
-                            <div
-                                className="ml-auto w-1/6 h-full bg-dark-secondary border-l-2 border-l-white/5 rounded-tr-none rounded-br-none border-solid p-6 rounded-r-lg shadow-lg"
-                                ref={modalRef}
-                            >
-                                <Modal
-                                    className=""
-                                    isOpen={isModalOpen}
-                                    closeModal={closeModal}
-                                    name="Dang Hoang Ha"
-                                    menuLinks={menuLinks}
-                                />
-                            </div>
-                        </div>
-                    )}
-                </div>
+        <div
+            className={`bg-dark-secondary relative z-50 flex  h-[72px] w-full items-center px-10 py-5 shadow-lg`}
+        >
+            <Link to="/" className="text-2xl text-white">
+                PostmanExpress
+            </Link>
+            <div className="ml-auto">
+                <button
+                    className="z-1 relative ml-auto border-none bg-transparent text-2xl transition-all duration-300 hover:text-white "
+                    onClick={openModal}
+                >
+                    Menu
+                </button>
+
+                <Modal
+                    isOpen={isModalOpen}
+                    closeModal={closeModal}
+                    name={driverName}
+                    menuLinks={menuLinks}
+                    handleModalClick={handleModalClick}
+                    modalRef={modalRef}
+                />
             </div>
         </div>
     );

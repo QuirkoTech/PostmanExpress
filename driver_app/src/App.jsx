@@ -6,21 +6,47 @@ import {
     ParcelInfoPage,
     AvailableParcelPage,
 } from "./pages";
+import { AuthProvider, PrivateRoute, AuthRoute } from "./components/auth";
 
 function App() {
     return (
-        <main className="bg-dark-main text-slate-gray relative min-h-screen">
-            <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/" element={<HomePage />}></Route>
-                <Route
-                    path="/parcels/:parcel_id"
-                    element={<ParcelInfoPage />}
-                />
-                <Route path="/pending" element={<AvailableParcelPage />} />
-                <Route path="*" element={<NotFoundPage />}></Route>
-            </Routes>
-        </main>
+        <div className="bg-dark-main text-slate-gray relative min-h-screen">
+            <AuthProvider>
+                <Routes>
+                    <Route
+                        path="/login"
+                        element={
+                            <AuthRoute>
+                                <Login />
+                            </AuthRoute>
+                        }
+                    />
+                    <Route
+                        path="/"
+                        element={
+                            <PrivateRoute>
+                                <HomePage />
+                            </PrivateRoute>
+                        }
+                    ></Route>
+
+                    <Route
+                        path="/pending"
+                        element={
+                            <PrivateRoute>
+                                <AvailableParcelPage />{" "}
+                            </PrivateRoute>
+                        }
+                    />
+
+                    <Route
+                        path="/parcels/:parcel_id"
+                        element={<ParcelInfoPage />}
+                    />
+                    <Route path="*" element={<NotFoundPage />} />
+                </Routes>
+            </AuthProvider>
+        </div>
     );
 }
 

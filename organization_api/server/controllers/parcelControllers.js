@@ -80,7 +80,7 @@ export const newParcel = catchAsync(async (req, res, next) => {
                 cabinets.cabinet_id = selected_cabinet.cabinet_id",
             [req.user.user_location],
         );
-
+        console.log(req.user.user_email);
         const emailSent = await sendEmail(
             req.user.user_email,
             "Parcel awaiting drop-off",

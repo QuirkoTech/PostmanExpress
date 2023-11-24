@@ -1,3 +1,4 @@
+-- Active: 1699102512752@@127.0.0.1@5432@postman_express_db
 DROP DATABASE IF EXISTS postman_express_db;
 
 CREATE DATABASE postman_express_db;
@@ -64,11 +65,16 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE users (
   user_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   user_name varchar(255) NOT NULL,
-  user_email varchar(255) UNIQUE NOT NULL,
+  user_email varchar(255) NOT NULL,
   password varchar(255) NOT NULL,
   refresh_token varchar(255),
   user_location LOCATION NOT NULL
 );
+
+-- Creating a partial unique index to exclude 'deleted_user@example.com'
+CREATE UNIQUE INDEX idx_unique_email_except_deleted
+ON users (user_email)
+WHERE user_email != 'Deleted';
 
 CREATE TABLE parcels (
   parcel_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
