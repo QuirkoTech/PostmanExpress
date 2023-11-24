@@ -4,6 +4,7 @@ import axios from "axios";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../auth";
+import { useNavigate } from "react-router-dom";
 
 function Modal({
     isOpen,
@@ -17,7 +18,7 @@ function Modal({
 
     // Backend URL for the consumer app
     const CONSUMER_URL = import.meta.env.VITE_CONSUMER_BACKEND_URL;
-
+    const navigate = useNavigate();
     //Signout function
     const handleSignOut = async () => {
         try {
@@ -36,6 +37,8 @@ function Modal({
 
             if (message === "success") {
                 fetchUser();
+                // When it log out successfully, it need to navigate to /login or /signup, if there's no navigate, it'll occur a bug, I don't know why
+                navigate("/login");
             }
         } catch (error) {
             console.log(error);
@@ -105,21 +108,21 @@ function Modal({
                         </li>
                     ))}
                 </ul>
-
-                <button
-                    onClick={handleSignOut}
-                    className="text-danger-main hover:text-danger-secondary my-5 mr-auto cursor-pointer border-none bg-transparent text-lg font-medium transition-all
-                        duration-300 hover:border-none"
-                >
-                    Log Out
-                </button>
-                <button
-                    onClick={handleDeleteAccount}
-                    className="text-danger-main hover:text-danger-secondary mb-6 mr-auto mt-auto cursor-pointer border-none bg-transparent text-lg font-medium
+                <div className="flex flex-col ">
+                    <button
+                        onClick={handleSignOut}
+                        className="my-5 mr-auto cursor-pointer border-none bg-transparent p-0 text-lg font-medium text-[#C55B5B] transition-all hover:border-none focus:outline-none"
+                    >
+                        Log Out
+                    </button>
+                    <button
+                        onClick={handleDeleteAccount}
+                        className="text-danger-main hover:text-danger-secondary mb-6 mr-auto mt-auto cursor-pointer border-none bg-transparent text-lg font-medium
                         transition-all duration-300 hover:border-none"
-                >
-                    Delete Account
-                </button>
+                    >
+                        Delete Account
+                    </button>
+                </div>
             </nav>
         </div>
     );
