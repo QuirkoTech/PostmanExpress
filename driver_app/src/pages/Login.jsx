@@ -1,14 +1,18 @@
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Button, Input } from "../components";
 import axios from "axios";
+import { AuthContext } from "../components/auth";
 
 const Login = () => {
     // Backend URL for the driver app
     const DRIVER_URL = import.meta.env.VITE_DRIVER_BACKEND_URL;
+
+    // Function to fetch user data from the backend
+    const { fetchDriver } = useContext(AuthContext);
 
     // Yup validation schema for form validation
     const schema = yup.object({
@@ -85,10 +89,10 @@ const Login = () => {
     const navigate = useNavigate();
     useEffect(() => {
         if (isSubmitSuccessful) {
-            navigate("/", { replace: true });
             reset();
+            fetchDriver();
         }
-    }, [isSubmitSuccessful, reset, navigate]);
+    }, [isSubmitSuccessful, reset, navigate, fetchDriver]);
 
     return (
         <section className="padding">
