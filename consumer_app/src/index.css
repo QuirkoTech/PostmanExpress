@@ -46,6 +46,14 @@
         @apply px-8 py-12 sm:px-20 sm:py-20;
     }
 
+    .padding-x {
+        @apply px-8 sm:px-20;
+    }
+
+    .padding-y {
+        @apply py-12 sm:py-20;
+    }
+
     .margin-x {
         @apply mx-[5.5rem];
     }
