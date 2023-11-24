@@ -46,3 +46,25 @@
         @apply px-8 py-12 sm:px-20 sm:py-24;
     }
 }
+
+.Toastify__toast {
+    border-radius: 8px;
+    font-family: "Barlow";
+}
+
+.Toastify__toast-body {
+    padding: 8px;
+    color: #213547;
+}
+
+/* .Toastify__toast--success {
+    background-color: #07bc0c;
+}
+
+.Toastify__toast-body {
+    color: #ffffff;
+} 
+
+.Toastify__toast--success .Toastify__toast-body::before {
+    color: red;
+} */
