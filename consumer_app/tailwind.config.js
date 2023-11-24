@@ -1,6 +1,14 @@
 /** @type {import('tailwindcss').Config} */
 export default {
     content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+    safelist: [
+        "bg-status-green",
+        "bg-status-blue",
+        "bg-status-orange",
+        "bg-status-white",
+        "bg-status-yellow",
+        "bg-status-gray",
+    ],
     theme: {
         extend: {
             colors: {
