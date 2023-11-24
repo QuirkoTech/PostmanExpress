@@ -44,15 +44,12 @@ function Modal({
 
     const handleDeleteAccount = async () => {
         try {
-            const response = await axios.delete(
-                `${CONSUMER_URL}/me`,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    withCredentials: true,
+            const response = await axios.delete(`${CONSUMER_URL}/me`, {
+                headers: {
+                    "Content-Type": "application/json",
                 },
-            );
+                withCredentials: true,
+            });
 
             const message = response.data.status;
 
@@ -118,8 +115,8 @@ function Modal({
                 </button>
                 <button
                     onClick={handleDeleteAccount}
-                    className="text-danger-main hover:text-danger-secondary mr-auto mt-auto cursor-pointer border-none bg-transparent text-lg font-medium transition-all
-                        duration-300 hover:border-none mb-6"
+                    className="text-danger-main hover:text-danger-secondary mb-6 mr-auto mt-auto cursor-pointer border-none bg-transparent text-lg font-medium
+                        transition-all duration-300 hover:border-none"
                 >
                     Delete Account
                 </button>
