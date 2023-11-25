@@ -61,7 +61,7 @@ app.use(
 
 app.use((req, res, next) => {
     const traffic = req.headers["x-traffic"];
-    if (traffic !== "internal") app.use(defaultLimiter);
+    if (traffic !== "internal") return defaultLimiter(req, res, next);
 
     next();
 });
