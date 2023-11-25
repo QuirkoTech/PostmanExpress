@@ -36,6 +36,7 @@ import {
     protectConsumer,
     protectLocker,
 } from "./helpers/protectAppFocusedRoutes.js";
+import { defaultLimiter } from "./helpers/limiters.js";
 
 const app = express();
 
@@ -57,6 +58,13 @@ app.use(
         next();
     }),
 );
+
+app.use((req, res, next) => {
+    const traffic = req.headers["x-traffic"];
+    if (traffic !== "internal") app.use(defaultLimiter);
+
+    next();
+});
 
 app.use(`/consumer`, protectConsumer, consumerRoutes);
 app.use(`/parcels`, parcelRoutes);
