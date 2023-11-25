@@ -8,8 +8,8 @@ const message = (sec) => {
 };
 
 export const defaultLimiter = rateLimit({
-    windowMs: 20 * 1000,
-    max: 5,
+    windowMs: 30 * 1000,
+    max: 10,
     message: message(20),
 });
 
