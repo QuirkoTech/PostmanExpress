@@ -16,5 +16,8 @@ export const defaultLimiter = rateLimit({
 export const strictLimiter = rateLimit({
     windowMs: 60 * 1000,
     max: 1,
-    message: message(60),
+    message: {
+        status: "fail",
+        messsage: `You can create parcels every 1 minute`,
+    },
 });
