@@ -367,6 +367,8 @@ export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
             parcel.rows[0].driver_accepted &&
             loggedDriverAccepted === "false"
         ) {
+            await client.query("ROLLBACK");
+            client.release();
             return next(
                 new APIError("Parcel accepted by another driver.", 409),
             );
@@ -374,6 +376,8 @@ export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
             !parcel.rows[0].driver_accepted &&
             loggedDriverAccepted === "true"
         ) {
+            await client.query("ROLLBACK");
+            client.release();
             return next(
                 new APIError(
                     "Conflict, header 'driver-accepted' is set to true, while parcel is not accepted by any driver.",
@@ -432,13 +436,16 @@ export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
                 "SELECT cabinet_id FROM cabinets WHERE cabinet_status = 'empty' AND cabinet_location = $1",
                 [shipToParcelLocation],
             );
-            if (freeDestinationLockers.rowCount === 0)
+            if (freeDestinationLockers.rowCount === 0) {
+                await client.query("ROLLBACK");
+                client.release();
                 return next(
                     new APIError(
                         "No free cabinets to deliver the parcel to.",
                         404,
                     ),
                 );
+            }
 
             await client.query(
                 "WITH selected_cabinet AS \
