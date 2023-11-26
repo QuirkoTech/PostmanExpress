@@ -35,9 +35,7 @@ const Header = () => {
     };
 
     return (
-        <div
-            className={`bg-dark-secondary relative z-50 flex  h-[72px] w-full items-center px-10 py-5 shadow-lg`}
-        >
+        <div className="bg-dark-secondary relative z-50 flex  h-[72px] w-full items-center px-10 py-5 shadow-lg">
             <Link to="/" className="text-2xl text-white">
                 PostmanExpress
             </Link>

@@ -63,8 +63,8 @@ const ActiveParcelPage = () => {
                 {ActiveParcel.map((parcel) => (
                     <div
                         key={parcel.id}
-                        className="bg-dark-secondary border-slate-blue h-[116px] w-[440px] cursor-pointer 
-                            rounded-2xl border border-solid px-5 py-5 shadow-lg shadow-black/40
+                        className="bg-dark-secondary border-slate-blue rounded-max h-[116px] w-[440px] 
+                            cursor-pointer border-2 px-5 py-5 shadow-lg shadow-black/40
                             transition-all duration-300 hover:scale-105"
                         onClick={() => handleParcelClick(parcel.id)}
                     >
@@ -84,7 +84,7 @@ const ActiveParcelPage = () => {
                                 <span className="mb-5">
                                     Last Update: {parcel.lastUpdate}
                                 </span>
-                                <span className="flex flex-row items-center hover:text-white transition-all duration-300">
+                                <span className="flex flex-row items-center transition-all duration-300 hover:text-white">
                                     <span className="mr-1 ">More Info</span>
                                     <Info size={12} />
                                 </span>
