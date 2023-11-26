@@ -7,6 +7,9 @@ const dbConfig = {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     database: process.env.DB_DATABASE,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+    max: 20,
 };
 
 const pool = new pg.Pool(dbConfig);

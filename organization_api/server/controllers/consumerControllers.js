@@ -60,6 +60,8 @@ export const consumerSignup = catchAsync(async (req, res, next) => {
 export const consumerLogin = catchAsync(async (req, res, next) => {
     const { password, user_email } = req.body;
 
+    console.log("hello1");
+
     if (!password || !user_email)
         return next(new APIError("Some required fields missing.", 400));
 
@@ -68,6 +70,7 @@ export const consumerLogin = catchAsync(async (req, res, next) => {
     try {
         await client.query("BEGIN");
 
+        console.log("hello2");
         const user = await client.query(
             "SELECT * FROM users WHERE user_email = $1",
             [user_email],
@@ -81,16 +84,20 @@ export const consumerLogin = catchAsync(async (req, res, next) => {
         if (isMatch === false) {
             return next(new APIError("Invalid credentials.", 403));
         }
+        console.log("hello3");
 
         const { accessToken, refreshToken } = signTokens(
             "consumer",
             user.rows[0].user_id,
         );
 
+        console.log("hello4");
+
         await client.query(
             "UPDATE users SET refresh_token = $1 WHERE user_id = $2",
             [refreshToken, user.rows[0].user_id],
         );
+        console.log("hello5");
 
         await client.query("COMMIT");
         client.release();
