@@ -1,6 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useForm } from "react-hook-form";
 import Layout from "../components/layout/Layout";
 import { Button } from "../components";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -81,79 +84,68 @@ const ParcelAddNew = [
     },
 ];
 
-const convertToSnakeCase = (camelCaseString) => {
-    return camelCaseString.replace(
-        /([A-Z])/g,
-        (match) => `_${match.toLowerCase()}`,
-    );
-};
+const schema = yup.object().shape({
+    parcel_name: yup.string().required("Package Name is required"),
+    recipient_email: yup
+        .string()
+        .email("Invalid email format")
+        .required("Recipient's Email is required"),
+    ship_to: yup.string().required("Sender's Address is required"),
+    ship_from: yup.string().required("Recipient's Address is required"),
+    weight: yup.number().required("Weight is required"),
+    height: yup.number().required("Height is required"),
+    width: yup.number().required("Width is required"),
+    length: yup.number().required("Length is required"),
+});
 
 const NewParcelPage = () => {
     const CONSUMER_URL = import.meta.env.VITE_CONSUMER_BACKEND_URL;
 
-    const [formData, setFormData] = useState({
-        parcel_name: "",
-        recipient_email: "",
-        ship_to: "",
-        ship_from: "",
-        weight: "",
-        height: "",
-        width: "",
-        length: "",
-    });
+    const {
+        register,
+        handleSubmit,
+        control,
+        formState: { errors },
+    } = useForm({ resolver: yupResolver(schema) });
 
-    const handleInputChange = (fieldName, value) => {
-        // Chuyển đổi tên trường để đảm bảo chúng khớp với định dạng của server (snake_case)
-        const serverFieldName = convertToSnakeCase(fieldName);
-
-        setFormData({ ...formData, [serverFieldName]: value.toLowerCase() });
-    };
-
-    const handleFormSubmit = async (event) => {
-        event.preventDefault();
-        const lowercaseShipFrom = formData.ship_from.toLowerCase();
-        const lowercaseShipTo = formData.ship_to.toLowerCase();
-
-        const validShipFrom = ParcelAddNew.find(
-            (field) => field.fieldName === "ship_from",
-        )
-            ?.options.map((option) => option.toLowerCase())
-            .includes(lowercaseShipFrom);
-
-        const validShipTo = ParcelAddNew.find(
-            (field) => field.fieldName === "ship_to",
-        )
-            ?.options.map((option) => option.toLowerCase())
-            .includes(lowercaseShipTo);
-
-        console.log("Valid Ship From:", validShipFrom);
-        console.log("Valid Ship To:", validShipTo);
-
-        if (!validShipFrom || !validShipTo) {
-            console.error("Invalid value for ship_from or ship_to");
-            console.log("Form Data:", formData);
-            return;
+    const selectOptionsMap = ParcelAddNew.reduce((map, field) => {
+        if (field.type === "select" && field.options) {
+            map[field.fieldName] = field.options;
         }
+        return map;
+    }, {});
+
+    const handleFormSubmit = async (data) => {
+        const convertToLowerCase = (data) => {
+            return {
+                ...data,
+                ship_to: data.ship_to.toLowerCase(),
+                ship_from: data.ship_from.toLowerCase(),
+            };
+        };
+
+        data = convertToLowerCase(data);
+
+        console.log("Form Data:", data);
+
         try {
             const response = await axios.post(
                 `${CONSUMER_URL}/parcels/new`,
-                formData,
+                data,
                 {
                     withCredentials: true,
                 },
             );
 
-            // Handle the response as needed
             console.log(response.data);
             toast.success(
                 "Parcel created. Check your email for further instructions.",
             );
         } catch (error) {
-            // Handle errors
             console.error("Error creating parcel:", error.response.data);
             toast.error(
-                error.response.data.message ||
-                    "An error occurred while creating the parcel.",
+                error.response.data.message,
+                // "An error occurred while creating the parcel.",
             );
         }
     };
@@ -167,7 +159,10 @@ const NewParcelPage = () => {
                             New Parcel
                         </h1>
                     </div>
-                    <form className="flex flex-col" onSubmit={handleFormSubmit}>
+                    <form
+                        className="flex flex-col"
+                        onSubmit={handleSubmit(handleFormSubmit)}
+                    >
                         {ParcelAddNew.map((field, index) => (
                             <label
                                 key={index}
@@ -177,50 +172,49 @@ const NewParcelPage = () => {
                                 {field.title}:
                                 {field.type === "select" ? (
                                     <select
-                                        className="bg-dark-secondary border-slate-blue -ml-20 rounded-lg border-2 border-solid px-4"
-                                        id={`input-${index}`}
-                                        onChange={(e) =>
-                                            handleInputChange(
-                                                field.fieldName,
-                                                e.target.value,
-                                            )
-                                        }
-                                        defaultValue={
-                                            formData.ship_from ||
-                                            formData.ship_to
-                                        }
+                                        className={`bg-dark-secondary border-slate-blue -ml-20 rounded-lg border-2 border-solid px-4 ${
+                                            errors[field.fieldName]
+                                                ? "border-red-500"
+                                                : ""
+                                        }`}
+                                        {...register(field.fieldName)}
                                     >
-                                        <option value="" disabled selected>
-                                            Select destination
+                                        <option value="" disabled>
+                                            {`Select ${field.title.toLowerCase()}`}
                                         </option>
-                                        {field.options.map(
-                                            (option, optionIndex) => (
-                                                <option
-                                                    key={optionIndex}
-                                                    value={option}
-                                                >
-                                                    {option}
-                                                </option>
-                                            ),
-                                        )}
+                                        {(
+                                            selectOptionsMap[field.fieldName] ||
+                                            []
+                                        ).map((option, optionIndex) => (
+                                            <option
+                                                key={optionIndex}
+                                                value={option}
+                                            >
+                                                {option}
+                                            </option>
+                                        ))}
                                     </select>
                                 ) : (
                                     <input
-                                        className="bg-dark-secondary border-slate-blue -ml-20 rounded-lg border-2 border-solid px-4"
+                                        className={`bg-dark-secondary border-slate-blue -ml-20 rounded-lg border-2 border-solid px-4 ${
+                                            errors[field.fieldName]
+                                                ? "border-red-500"
+                                                : ""
+                                        }`}
                                         type={field.type}
                                         placeholder={field.placeholder}
                                         id={`input-${index}`}
-                                        onChange={(e) =>
-                                            handleInputChange(
-                                                field.fieldName,
-                                                e.target.value,
-                                            )
-                                        }
+                                        {...register(field.fieldName)}
                                     />
                                 )}
                                 <span className="ml-4 text-xs">
                                     {field.measure}
                                 </span>
+                                {errors[field.fieldName] && (
+                                    <p className="mt-1 text-xs text-red-500">
+                                        {errors[field.fieldName]?.message}
+                                    </p>
+                                )}
                             </label>
                         ))}
 
