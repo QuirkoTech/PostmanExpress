@@ -196,12 +196,15 @@ export const deliverParcel = catchAsync(async (req, res, next) => {
             [parcel_id],
         );
 
-        if (driverParcel.rowCount === 0)
+        if (driverParcel.rowCount === 0) {
+            await client.query("ROLLBACK");
+            client.release();
             return next(
                 new APIError(
                     `No driver accepted parcel with this ID: ${parcel_id}.`,
                 ),
             );
+        }
 
         await client.query(
             "UPDATE driver_parcels SET delivered = true WHERE parcel_id = $1",

@@ -33,6 +33,7 @@ import authRoutes from "./routes/authRoutes.js";
 import parcelRoutes from "./routes/parcelRoutes.js";
 import driverRoutes from "./routes/driverRoutes.js";
 import checkContentType from "./helpers/checkContentType.js";
+import { defaultLimiter } from "./helpers/limiters.js";
 
 const app = express();
 
@@ -44,12 +45,9 @@ app.use(
 );
 app.use(cookieParser());
 app.use(express.json());
-
 if (process.env.ENV === "dev") app.use(morgan("dev"));
-
 app.use(checkContentType);
-
-console.log("hello");
+app.use(defaultLimiter);
 
 app.use("/auth", authRoutes);
 app.use("/parcels", parcelRoutes);
