@@ -30,6 +30,7 @@ const Footer = () => {
                         href="https://github.com/QuirkoTech/PostmanExpress"
                         className="mb-1 transition-all duration-300 hover:text-white"
                     >
+                        {/* eslint-disable-next-line react/no-unescaped-entities */}
                         Project's Github
                     </a>
                     <span className="flex flex-row items-center">

@@ -7,7 +7,7 @@ const HomePage = ({ selectedLocation, updateLocation }) => {
         updateLocation(location);
     };
 
-    const locations = ["oulu", "helsinki", "tampere", "turku", "espoo"];
+    const locations = ["oulu", "helsinki", "tampere", "turku", "espoo", "warehouse"];
 
     return (
         <section className="padding">
