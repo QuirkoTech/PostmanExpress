@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Layout from "../components/layout/Layout";
 import { Button } from "../components";
@@ -6,6 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 const ParcelAddNew = [
     {
@@ -28,15 +29,7 @@ const ParcelAddNew = [
         placeholder: "Sender's Address",
         measure: "",
         type: "select",
-        options: [
-            "Warehouse",
-            "Oulu",
-            "Helsinki",
-            "Turku",
-            "Tampere",
-            "Espoo",
-            "Deleted",
-        ],
+        options: ["Warehouse", "Oulu", "Helsinki", "Turku", "Tampere", "Espoo"],
     },
     {
         fieldName: "ship_from",
@@ -44,15 +37,7 @@ const ParcelAddNew = [
         placeholder: "Recipient's Address",
         measure: "",
         type: "select",
-        options: [
-            "Warehouse",
-            "Oulu",
-            "Helsinki",
-            "Turku",
-            "Tampere",
-            "Espoo",
-            "Deleted",
-        ],
+        options: ["Warehouse", "Oulu", "Helsinki", "Turku", "Tampere", "Espoo"],
     },
     {
         fieldName: "weight",
@@ -85,7 +70,7 @@ const ParcelAddNew = [
 ];
 
 const schema = yup.object().shape({
-    parcel_name: yup.string().required("Package Name is required"),
+    parcel_name: yup.string(),
     recipient_email: yup
         .string()
         .email("Invalid email format")
@@ -101,12 +86,11 @@ const schema = yup.object().shape({
 const NewParcelPage = () => {
     const CONSUMER_URL = import.meta.env.VITE_CONSUMER_BACKEND_URL;
 
-    const {
-        register,
-        handleSubmit,
-        control,
-        formState: { errors },
-    } = useForm({ resolver: yupResolver(schema) });
+    const [isIconOpen, setIconOpen] = useState(true);
+
+    const toggleIcon = () => {
+        setIconOpen((prev) => !prev);
+    };
 
     const selectOptionsMap = ParcelAddNew.reduce((map, field) => {
         if (field.type === "select" && field.options) {
@@ -114,6 +98,19 @@ const NewParcelPage = () => {
         }
         return map;
     }, {});
+
+    const {
+        register,
+        handleSubmit,
+        setValue,
+        reset,
+        formState: { errors },
+    } = useForm({ resolver: yupResolver(schema) });
+
+    useEffect(() => {
+        setValue("To", "Select Destination");
+        setValue("From", "Select Destination");
+    }, [setValue]);
 
     const handleFormSubmit = async (data) => {
         const convertToLowerCase = (data) => {
@@ -141,6 +138,7 @@ const NewParcelPage = () => {
             toast.success(
                 "Parcel created. Check your email for further instructions.",
             );
+            reset();
         } catch (error) {
             console.error("Error creating parcel:", error.response.data);
             toast.error(
@@ -171,32 +169,53 @@ const NewParcelPage = () => {
                             >
                                 {field.title}:
                                 {field.type === "select" ? (
-                                    <select
-                                        className={`bg-dark-secondary border-slate-blue -ml-20 rounded-lg border-2 border-solid px-4 ${
-                                            errors[field.fieldName]
-                                                ? "border-red-500"
-                                                : ""
-                                        }`}
-                                        {...register(field.fieldName)}
-                                    >
-                                        <option value="" disabled>
-                                            {`Select ${field.title.toLowerCase()}`}
-                                        </option>
-                                        {(
-                                            selectOptionsMap[field.fieldName] ||
-                                            []
-                                        ).map((option, optionIndex) => (
-                                            <option
-                                                key={optionIndex}
-                                                value={option}
-                                            >
-                                                {option}
+                                    <div className="relative right-20">
+                                        <select
+                                            className={`bg-dark-secondary border-slate-blue w-[268px] cursor-pointer select-none appearance-none rounded-lg border-2 border-solid pl-4 pr-8 focus:outline-none focus:ring-1 ${
+                                                errors[field.fieldName]
+                                                    ? "border-red-500"
+                                                    : ""
+                                            }`}
+                                            {...register(field.fieldName, {
+                                                value: "",
+                                                placeholder:
+                                                    "Select Destination",
+                                            })}
+                                        >
+                                            <option value="" disabled selected>
+                                                Select Destination
                                             </option>
-                                        ))}
-                                    </select>
+                                            {(
+                                                selectOptionsMap[
+                                                    field.fieldName
+                                                ] || []
+                                            ).map((option, optionIndex) => (
+                                                <option
+                                                    key={optionIndex}
+                                                    value={option}
+                                                    className="cursor-pointer border-b-2 border-gray-300"
+                                                >
+                                                    {option}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <div className="text-slate-blue absolute inset-y-0 -right-20 flex cursor-pointer items-center px-2">
+                                            {isIconOpen ? (
+                                                <ChevronDown
+                                                    size={24}
+                                                    onClick={toggleIcon}
+                                                />
+                                            ) : (
+                                                <ChevronUp
+                                                    size={24}
+                                                    onClick={toggleIcon}
+                                                />
+                                            )}
+                                        </div>
+                                    </div>
                                 ) : (
                                     <input
-                                        className={`bg-dark-secondary border-slate-blue -ml-20 rounded-lg border-2 border-solid px-4 ${
+                                        className={`bg-dark-secondary border-slate-blue -ml-20 appearance-none rounded-lg border-2 border-solid px-4 focus:outline-none focus:ring-1 ${
                                             errors[field.fieldName]
                                                 ? "border-red-500"
                                                 : ""
