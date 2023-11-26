@@ -60,58 +60,38 @@ export const consumerSignup = catchAsync(async (req, res, next) => {
 export const consumerLogin = catchAsync(async (req, res, next) => {
     const { password, user_email } = req.body;
 
-    console.log("hello1");
-
     if (!password || !user_email)
         return next(new APIError("Some required fields missing.", 400));
 
-    const client = await pool.connect();
-
     try {
-        await client.query("BEGIN");
-
-        console.log("hello2");
-        const user = await client.query(
+        const user = await pool.query(
             "SELECT * FROM users WHERE user_email = $1",
             [user_email],
         );
 
-        if (user.rowCount === 0)
+        if (user.rowCount === 0) {
             return next(new APIError("No user found with this email.", 404));
+        }
 
         const isMatch = await bcrypt.compare(password, user.rows[0].password);
 
         if (isMatch === false) {
             return next(new APIError("Invalid credentials.", 403));
         }
-        console.log("hello3");
 
         const { accessToken, refreshToken } = signTokens(
             "consumer",
             user.rows[0].user_id,
         );
 
-        console.log("hello4");
-
-        await client.query(
+        await pool.query(
             "UPDATE users SET refresh_token = $1 WHERE user_id = $2",
             [refreshToken, user.rows[0].user_id],
         );
-        console.log("hello5");
-
-        await client.query("COMMIT");
-        client.release();
 
         res.status(201).json({ status: "success", access_token: accessToken });
     } catch (error) {
-        try {
-            await client.query("ROLLBACK");
-        } catch (rollbackError) {
-            console.error("User log in rollback failed: ", rollbackError);
-        }
-
         console.error(error);
-        client.release();
         return next(
             new APIError("Couldn't perform log in, try again later.", 500),
         );
