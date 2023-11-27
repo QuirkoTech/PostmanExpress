@@ -4,6 +4,7 @@ import axios from "axios";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../auth";
+import { useNavigate } from "react-router-dom";
 
 function Modal({
     isOpen,
@@ -17,7 +18,7 @@ function Modal({
 
     // Backend URL for the consumer app
     const CONSUMER_URL = import.meta.env.VITE_CONSUMER_BACKEND_URL;
-
+    const navigate = useNavigate();
     //Signout function
     const handleSignOut = async () => {
         try {
@@ -36,6 +37,8 @@ function Modal({
 
             if (message === "success") {
                 fetchUser();
+                // When it log out successfully, it need to navigate to /login or /signup, if there's no navigate, it'll occur a bug, I don't know why
+                navigate("/login");
             }
         } catch (error) {
             console.log(error);
