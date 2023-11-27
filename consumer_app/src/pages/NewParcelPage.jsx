@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Layout from "../components/layout/Layout";
 import { Button } from "../components";
@@ -29,7 +29,7 @@ const ParcelAddNew = [
         placeholder: "Sender's Address",
         measure: "",
         type: "select",
-        options: ["Warehouse", "Oulu", "Helsinki", "Turku", "Tampere", "Espoo"],
+        options: ["Oulu", "Helsinki", "Turku", "Tampere", "Espoo"],
     },
     {
         fieldName: "ship_from",
@@ -37,7 +37,7 @@ const ParcelAddNew = [
         placeholder: "Recipient's Address",
         measure: "",
         type: "select",
-        options: ["Warehouse", "Oulu", "Helsinki", "Turku", "Tampere", "Espoo"],
+        options: ["Oulu", "Helsinki", "Turku", "Tampere", "Espoo"],
     },
     {
         fieldName: "weight",
@@ -77,10 +77,13 @@ const schema = yup.object().shape({
         .required("Recipient's Email is required"),
     ship_to: yup.string().required("Sender's Address is required"),
     ship_from: yup.string().required("Recipient's Address is required"),
-    weight: yup.number().required("Weight is required"),
-    height: yup.number().required("Height is required"),
-    width: yup.number().required("Width is required"),
-    length: yup.number().required("Length is required"),
+    weight: yup
+        .number()
+        .typeError("Valid must be of type number")
+        .required("Weight is required"),
+    height: yup.number().typeError("Valid must be of type number").required("Height is required"),
+    width: yup.number().typeError("Valid must be of type number").required("Width is required"),
+    length: yup.number().typeError("Valid must be of type number").required("Length is required"),
 });
 
 const NewParcelPage = () => {
@@ -182,7 +185,12 @@ const NewParcelPage = () => {
                                                     "Select Destination",
                                             })}
                                         >
-                                            <option value="" disabled selected>
+                                            <option
+                                                value=""
+                                                disabled
+                                                selected
+                                                hidden
+                                            >
                                                 Select Destination
                                             </option>
                                             {(
@@ -215,7 +223,7 @@ const NewParcelPage = () => {
                                     </div>
                                 ) : (
                                     <input
-                                        className={`bg-dark-secondary border-slate-blue -ml-20 appearance-none rounded-lg border-2 border-solid px-4 focus:outline-none focus:ring-1 ${
+                                        className={`bg-dark-secondary  border-slate-blue -ml-20 appearance-none rounded-lg border-2 border-solid px-4 focus:outline-none focus:ring-1 ${
                                             errors[field.fieldName]
                                                 ? "border-red-500"
                                                 : ""
@@ -230,7 +238,7 @@ const NewParcelPage = () => {
                                     {field.measure}
                                 </span>
                                 {errors[field.fieldName] && (
-                                    <p className="mt-1 text-xs text-red-500">
+                                    <p className="text-danger-main col-start-2 -ml-20 mt-1 text-xs">
                                         {errors[field.fieldName]?.message}
                                     </p>
                                 )}
