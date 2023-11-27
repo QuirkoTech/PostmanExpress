@@ -33,6 +33,15 @@ function App() {
                         }
                     />
 
+                    <Route
+                        path="/parcels/:parcel_id"
+                        element={
+                            <PrivateRoute>
+                                <ParcelInFoPage />{" "}
+                            </PrivateRoute>
+                        }
+                    />
+
                     {/* Auth routes */}
                     <Route
                         path="/signup"
@@ -53,10 +62,6 @@ function App() {
 
                     {/* 404 */}
                     <Route path="*" element={<NotFoundPage />} />
-                    <Route
-                        path="/parcels/:parcel_id"
-                        element={<ParcelInFoPage />}
-                    />
                 </Routes>
             </Authprovider>
         </div>
