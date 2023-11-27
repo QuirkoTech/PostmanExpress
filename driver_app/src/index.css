@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -9,9 +9,7 @@
     padding: 0;
     box-sizing: border-box;
     scroll-behavior: smooth;
-    
 }
-
 
 @media (prefers-color-scheme: light) {
     :root {
@@ -35,7 +33,7 @@
 
 @layer base {
     html {
-        font-family: 'Barlow';
+        font-family: "Barlow";
     }
 }
 
@@ -48,6 +46,18 @@
 
 @layer utilities {
     .padding {
-        @apply px-8 py-12 sm:px-20 sm:py-24;
+        @apply px-8 py-12 sm:px-20 sm:py-20;
+    }
+
+    .padding-x {
+        @apply px-8 sm:px-20;
+    }
+
+    .padding-y {
+        @apply py-12 sm:py-20;
+    }
+
+    .margin-x {
+        @apply mx-[5.5rem];
     }
 }
