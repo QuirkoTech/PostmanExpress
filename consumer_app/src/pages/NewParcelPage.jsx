@@ -126,7 +126,7 @@ const NewParcelPage = () => {
 
         data = convertToLowerCase(data);
 
-        console.log("Form Data:", data);
+    
 
         try {
             const response = await axios.post(
@@ -137,7 +137,6 @@ const NewParcelPage = () => {
                 },
             );
 
-            console.log(response.data);
             toast.success(
                 "Parcel created. Check your email for further instructions.",
             );
