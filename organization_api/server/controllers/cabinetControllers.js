@@ -18,12 +18,19 @@ export const pastePickupPin = catchAsync(async (req, res, next) => {
             [pin],
         );
 
-        if (parcel.rowCount === 0)
-            return next(new APIError("No parcel found with this pickup pin.", 404));
+        if (parcel.rowCount === 0) {
+            await client.query("ROLLBACK");
+            client.release();
+            return next(
+                new APIError("No parcel found with this pickup pin.", 404),
+            );
+        }
 
         const parcelObj = parcel.rows[0];
 
-        if (parcelObj.current_location !== cabinet_location)
+        if (parcelObj.current_location !== cabinet_location) {
+            await client.query("ROLLBACK");
+            client.release();
             return next(
                 new APIError(
                     `You are in the wrong location. The parcel is available for pickup in ${
@@ -33,6 +40,7 @@ export const pastePickupPin = catchAsync(async (req, res, next) => {
                     400,
                 ),
             );
+        }
 
         await client.query(
             "WITH selected_cabinet AS \
@@ -161,15 +169,22 @@ export const pasteDeliveryPin = catchAsync(async (req, res, next) => {
             [pin],
         );
 
-        if (parcel.rowCount === 0)
-            return next(new APIError("No parcel found with this delivery pin.", 404));
+        if (parcel.rowCount === 0) {
+            await client.query("ROLLBACK");
+            client.release();
+            return next(
+                new APIError("No parcel found with this delivery pin.", 404),
+            );
+        }
 
         const parcelObj = parcel.rows[0];
 
         if (
             parcelObj.parcel_status === "awaiting drop-off" &&
             parcelObj.ship_from !== cabinet_location
-        )
+        ) {
+            await client.query("ROLLBACK");
+            client.release();
             return next(
                 new APIError(
                     `You are in the wrong location. Please deliver the parcel to ${
@@ -179,20 +194,26 @@ export const pasteDeliveryPin = catchAsync(async (req, res, next) => {
                     400,
                 ),
             );
+        }
         if (
             parcelObj.parcel_status === "en route to the warehouse" &&
             cabinet_location !== "warehouse"
-        )
+        ) {
+            await client.query("ROLLBACK");
+            client.release();
             return next(
                 new APIError(
                     `You are in the wrong location. Please deliver the parcel to the Warehouse`,
                     400,
                 ),
             );
+        }
         if (
             parcelObj.parcel_status === "en route to the pickup location" &&
             parcelObj.ship_to !== cabinet_location
-        )
+        ) {
+            await client.query("ROLLBACK");
+            client.release();
             return next(
                 new APIError(
                     `You are in the wrong location. Please deliver the parcel to ${
@@ -202,6 +223,7 @@ export const pasteDeliveryPin = catchAsync(async (req, res, next) => {
                     400,
                 ),
             );
+        }
 
         await client.query(
             "WITH selected_cabinet AS \

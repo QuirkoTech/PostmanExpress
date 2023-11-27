@@ -58,3 +58,27 @@
         @apply mx-[5.5rem];
     }
 }
+
+.Toastify__toast {
+    background-color: #373637;
+    border: 1px solid #373637;
+    border-radius: 8px;
+    font-family: "Barlow";
+}
+
+.Toastify__toast-body {
+    padding: 8px;
+    color: white;
+    background-color: #373637;
+    border: none;
+}
+
+/* .Toastify__toast--success {
+    background-color: #07bc0c;
+}
+
+
+
+.Toastify__toast--success .Toastify__toast-body::before {
+    color: red;
+} */
