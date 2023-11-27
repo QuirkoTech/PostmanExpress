@@ -1,53 +1,33 @@
-// ActiveParcelPage.js
-
 import { useNavigate } from "react-router-dom";
 import { Info } from "lucide-react";
 import axios from "axios";
+import { useEffect, useState } from "react";
 
-const colorMapping = {
-    "In Route": "status-orange",
-    "Awaiting drop-off": "status-gray",
-    Delivered: "status-green",
-    "Prepared for Delivery": "status-yellow",
-    "At warehouse": "status-white",
-    "Ready for pick up": "status-blue",
-};
-
-const ActiveParcel = [
-    {
-        id: "12345678",
-        lastUpdate: "14.04",
-        status: "In Route",
-    },
-    {
-        id: "12345679",
-        lastUpdate: "14.04",
-        status: "Awaiting drop-off",
-    },
-    {
-        id: "12345677",
-        lastUpdate: "14.04",
-        status: "Delivered",
-    },
-    {
-        id: "12345676",
-        lastUpdate: "14.04",
-        status: "Prepared for Delivery",
-    },
-    {
-        id: "12345675",
-        lastUpdate: "14.04",
-        status: "At warehouse",
-    },
-    {
-        id: "12345678",
-        lastUpdate: "14.04",
-        status: "Ready for pick up",
-    },
-];
+import { statusMap, simpleStatusColorMap } from "../constants";
 
 const ActiveParcelPage = () => {
+    const CONSUMER_URL = import.meta.env.VITE_CONSUMER_BACKEND_URL;
     const navigate = useNavigate();
+    const [activeParcels, setActiveParcels] = useState([]);
+
+    useEffect(() => {
+        const fetchUserParcels = async () => {
+            try {
+                const response = await axios.get(`${CONSUMER_URL}/me/parcels`, {
+                    withCredentials: true,
+                });
+                const { status, data } = response.data;
+
+                if (status === "success") {
+                    setActiveParcels(data.user_parcels);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchUserParcels();
+    }, [CONSUMER_URL]);
 
     const handleParcelClick = (parcelId) => {
         // Navigate to the parcel details page
@@ -61,29 +41,35 @@ const ActiveParcelPage = () => {
             </h1>
 
             <div className="margin-x grid grid-cols-2 gap-x-20 gap-y-10">
-                {ActiveParcel.map((parcel) => (
+                {activeParcels.map((parcel) => (
                     <div
-                        key={parcel.id}
+                        key={parcel.parcel_id}
                         className="bg-dark-secondary border-slate-blue rounded-max h-[116px] w-[440px] 
                             cursor-pointer border-2 px-5 py-5 shadow-lg shadow-black/40
                             transition-all duration-300 hover:scale-105"
-                        onClick={() => handleParcelClick(parcel.id)}
+                        onClick={() => handleParcelClick(parcel.parcel_id)}
                     >
                         <div className="flex flex-row justify-between gap-x-10 text-lg">
                             <div className="flex flex-col items-start">
-                                <span className="mb-5">ID: {parcel.id}</span>
+                                <span className="mb-5 w-32 overflow-hidden text-ellipsis whitespace-nowrap ">
+                                    {parcel.parcel_name}dsads dsadsadsadads
+                                </span>
                                 <span className="flex flex-row items-center">
                                     <div
                                         className={`mr-2 h-2 w-2 rounded-full ${`bg-${
-                                            colorMapping[parcel.status]
+                                            simpleStatusColorMap[
+                                                parcel.parcel_status
+                                            ]
                                         }`}`}
                                     ></div>
-                                    <span>{parcel.status}</span>
+                                    <span>
+                                        {statusMap[parcel.parcel_status]}
+                                    </span>
                                 </span>
                             </div>
                             <div className="flex flex-col items-end">
                                 <span className="mb-5">
-                                    Last Update: {parcel.lastUpdate}
+                                    Updated: {parcel.last_status_date}
                                 </span>
                                 <span className="flex flex-row items-center transition-all duration-300 hover:text-white">
                                     <span className="mr-1 ">More Info</span>
