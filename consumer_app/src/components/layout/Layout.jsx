@@ -30,6 +30,7 @@ const Layout = ({ children }) => {
                     position="top-right"
                     autoClose={5000}
                     hideProgressBar
+                    theme="dark"
                 />
             </section>
             <Footer />

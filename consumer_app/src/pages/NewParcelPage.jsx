@@ -6,7 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronsUpDown } from "lucide-react";
 
 const ParcelAddNew = [
     {
@@ -25,7 +25,7 @@ const ParcelAddNew = [
     },
     {
         fieldName: "ship_to",
-        title: "To",
+        title: "Deliver to",
         placeholder: "Sender's Address",
         measure: "",
         type: "select",
@@ -79,21 +79,24 @@ const schema = yup.object().shape({
     ship_from: yup.string().required("Recipient's Address is required"),
     weight: yup
         .number()
-        .typeError("Valid must be of type number")
+        .typeError("Value must be a number")
         .required("Weight is required"),
-    height: yup.number().typeError("Valid must be of type number").required("Height is required"),
-    width: yup.number().typeError("Valid must be of type number").required("Width is required"),
-    length: yup.number().typeError("Valid must be of type number").required("Length is required"),
+    height: yup
+        .number()
+        .typeError("Value must be a number")
+        .required("Height is required"),
+    width: yup
+        .number()
+        .typeError("Value must be a number")
+        .required("Width is required"),
+    length: yup
+        .number()
+        .typeError("Value must be a number")
+        .required("Length is required"),
 });
 
 const NewParcelPage = () => {
     const CONSUMER_URL = import.meta.env.VITE_CONSUMER_BACKEND_URL;
-
-    const [isIconOpen, setIconOpen] = useState(true);
-
-    const toggleIcon = () => {
-        setIconOpen((prev) => !prev);
-    };
 
     const selectOptionsMap = ParcelAddNew.reduce((map, field) => {
         if (field.type === "select" && field.options) {
@@ -108,7 +111,7 @@ const NewParcelPage = () => {
         setValue,
         reset,
         formState: { errors },
-    } = useForm({ resolver: yupResolver(schema) });
+    } = useForm({ resolver: yupResolver(schema), mode: "onTouched" });
 
     useEffect(() => {
         setValue("To", "Select Destination");
@@ -125,8 +128,6 @@ const NewParcelPage = () => {
         };
 
         data = convertToLowerCase(data);
-
-    
 
         try {
             const response = await axios.post(
@@ -151,106 +152,88 @@ const NewParcelPage = () => {
     };
 
     return (
-        <div className="relative flex min-h-screen flex-col">
-            <Layout>
-                <div className="ml-20 max-w-[600px]">
-                    <div className="my-10">
-                        <h1 className="text-4xl font-normal text-white">
-                            New Parcel
-                        </h1>
-                    </div>
-                    <form
-                        className="flex flex-col"
-                        onSubmit={handleSubmit(handleFormSubmit)}
-                    >
-                        {ParcelAddNew.map((field, index) => (
-                            <label
-                                key={index}
-                                htmlFor={`input-${index}`}
-                                className="mb-6 ml-10 grid grid-cols-3 items-center text-lg"
-                            >
-                                {field.title}:
-                                {field.type === "select" ? (
-                                    <div className="relative right-20">
-                                        <select
-                                            className={`bg-dark-secondary border-slate-blue w-[268px] cursor-pointer select-none appearance-none rounded-lg border-2 border-solid pl-4 pr-8 focus:outline-none focus:ring-1 ${
-                                                errors[field.fieldName]
-                                                    ? "border-red-500"
-                                                    : ""
-                                            }`}
-                                            {...register(field.fieldName, {
-                                                value: "",
-                                                placeholder:
-                                                    "Select Destination",
-                                            })}
-                                        >
-                                            <option
-                                                value=""
-                                                disabled
-                                                selected
-                                                hidden
-                                            >
-                                                Select Destination
-                                            </option>
-                                            {(
-                                                selectOptionsMap[
-                                                    field.fieldName
-                                                ] || []
-                                            ).map((option, optionIndex) => (
-                                                <option
-                                                    key={optionIndex}
-                                                    value={option}
-                                                    className="cursor-pointer border-b-2 border-gray-300"
-                                                >
-                                                    {option}
-                                                </option>
-                                            ))}
-                                        </select>
-                                        <div className="text-slate-blue absolute inset-y-0 -right-20 flex cursor-pointer items-center px-2">
-                                            {isIconOpen ? (
-                                                <ChevronDown
-                                                    size={24}
-                                                    onClick={toggleIcon}
-                                                />
-                                            ) : (
-                                                <ChevronUp
-                                                    size={24}
-                                                    onClick={toggleIcon}
-                                                />
-                                            )}
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <input
-                                        className={`bg-dark-secondary  border-slate-blue -ml-20 appearance-none rounded-lg border-2 border-solid px-4 focus:outline-none focus:ring-1 ${
+        <Layout>
+            <div>
+                <h1 className="mb-9 pl-9 text-4xl font-normal text-white">
+                    New Parcel
+                </h1>
+
+                <form
+                    className="margin-x flex flex-col"
+                    onSubmit={handleSubmit(handleFormSubmit)}
+                >
+                    {ParcelAddNew.map((field, index) => (
+                        <label
+                            key={index}
+                            htmlFor={`input-${index}`}
+                            className="mb-6 grid grid-cols-5 items-center gap-x-4 text-lg"
+                        >
+                            {field.title}:
+                            {field.type === "select" ? (
+                                <div className="relative col-span-3">
+                                    <select
+                                        className={`bg-dark-secondary border-slate-blue w-full cursor-pointer select-none appearance-none rounded-lg border-2 border-solid 
+                                        pl-4 focus:outline-none focus:ring-1 ${
                                             errors[field.fieldName]
                                                 ? "border-red-500"
                                                 : ""
-                                        }`}
-                                        type={field.type}
-                                        placeholder={field.placeholder}
-                                        id={`input-${index}`}
-                                        {...register(field.fieldName)}
-                                    />
-                                )}
-                                <span className="ml-4 text-xs">
-                                    {field.measure}
-                                </span>
-                                {errors[field.fieldName] && (
-                                    <p className="text-danger-main col-start-2 -ml-20 mt-1 text-xs">
-                                        {errors[field.fieldName]?.message}
-                                    </p>
-                                )}
-                            </label>
-                        ))}
+                                        } `}
+                                        {...register(field.fieldName, {
+                                            value: "",
+                                            placeholder: "Select Destination",
+                                        })}
+                                    >
+                                        <option
+                                            value=""
+                                            disabled
+                                            selected
+                                            hidden
+                                        >
+                                            Select Destination
+                                        </option>
+                                        {(
+                                            selectOptionsMap[field.fieldName] ||
+                                            []
+                                        ).map((option, optionIndex) => (
+                                            <option
+                                                key={optionIndex}
+                                                value={option}
+                                                className=""
+                                            >
+                                                {option}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <ChevronsUpDown className="stroke-slate-blue absolute right-2 top-1" />
+                                </div>
+                            ) : (
+                                <input
+                                    className={`bg-dark-secondary border-slate-blue col-span-3 appearance-none rounded-lg border-2 border-solid px-4 focus:outline-none focus:ring-1 ${
+                                        errors[field.fieldName]
+                                            ? "border-red-500"
+                                            : ""
+                                    }`}
+                                    type={field.type}
+                                    placeholder={field.placeholder}
+                                    id={`input-${index}`}
+                                    {...register(field.fieldName)}
+                                />
+                            )}
+                            <span className="text-xs">{field.measure}</span>
+                            {errors[field.fieldName] && (
+                                <p className="text-danger-main col-span-2 col-start-2 mt-1 text-xs">
+                                    {errors[field.fieldName]?.message}
+                                </p>
+                            )}
+                        </label>
+                    ))}
 
-                        <Button type="submit" className="mb-10 mr-[188px] mt-4">
-                            Apply
-                        </Button>
-                    </form>
-                </div>
-            </Layout>
-        </div>
+                    <Button type="submit" className="mr-[87px] mt-4">
+                        Apply
+                    </Button>
+                </form>
+            </div>
+        </Layout>
     );
 };
 

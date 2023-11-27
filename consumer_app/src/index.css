@@ -37,7 +37,7 @@
     }
 
     .custom-select {
-        @apply bg-dark-secondary rounded-low border-slate-blue font-barlow w-full appearance-none border-2 px-5 py-1 focus:outline-none focus:ring-1;
+        @apply bg-dark-secondary rounded-low border-slate-blue font-barlow w-full appearance-none border-2 px-5 py-1 focus:outline-none focus:ring-1 hover:cursor-pointer;
     }
 }
 
@@ -61,7 +61,7 @@
 
 .Toastify__toast {
     background-color: #373637;
-    border: 1px solid #373637;
+    border: 2px solid #373637;
     border-radius: 8px;
     font-family: "Barlow";
 }
