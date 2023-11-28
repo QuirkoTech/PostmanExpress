@@ -1,13 +1,16 @@
 const compareDriverAndParcelLocations = (
     currentParcelLocation,
     shipToParcelLocation,
+    shipFromParcelLocation,
     driverLocation,
 ) => {
     if (
-        (currentParcelLocation === driverLocation &&
-            shipToParcelLocation !== currentParcelLocation) ||
-        (currentParcelLocation === "warehouse" &&
-            shipToParcelLocation === driverLocation)
+        (shipFromParcelLocation === driverLocation &&
+            currentParcelLocation !== "warehouse" &&
+            currentParcelLocation !== null &&
+            currentParcelLocation !== shipToParcelLocation) ||
+        (shipToParcelLocation === driverLocation &&
+            shipToParcelLocation !== currentParcelLocation)
     ) {
         return true;
     }

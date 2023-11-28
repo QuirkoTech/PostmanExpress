@@ -223,6 +223,7 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
         const driverCanGetInfo = compareDriverAndParcelLocations(
             parcelObj.current_location,
             parcelObj.ship_to,
+            parcelObj.ship_from,
             driverLocation,
         );
 
@@ -334,6 +335,7 @@ export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
     const parcelDisassign = req.headers["x-disassign"];
     let currentParcelLocation = parcel.rows[0].current_location;
     let shipToParcelLocation = parcel.rows[0].ship_to;
+    let shipFromParcelLocation = parcel.rows[0].ship_from;
 
     if (loggedDriverAccepted !== "true" && loggedDriverAccepted !== "false")
         return next(
@@ -346,6 +348,7 @@ export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
     const driverCanAcceptParcel = compareDriverAndParcelLocations(
         currentParcelLocation,
         shipToParcelLocation,
+        shipFromParcelLocation,
         driverLocation,
     );
 
@@ -551,7 +554,7 @@ export const driverParcels = catchAsync(async (req, res, next) => {
             data: { parcels: parcels.rows },
         });
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return next(new APIError("Something went wrong.", 500));
     }
 });
