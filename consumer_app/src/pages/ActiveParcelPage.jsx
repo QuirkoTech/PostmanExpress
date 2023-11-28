@@ -52,7 +52,7 @@ const ActiveParcelPage = () => {
                         <div className="flex flex-row justify-between gap-x-10 text-lg">
                             <div className="flex flex-col items-start">
                                 <span className="mb-5 w-32 overflow-hidden text-ellipsis whitespace-nowrap ">
-                                    {parcel.parcel_name}dsads dsadsadsadads
+                                    {parcel.parcel_name}
                                 </span>
                                 <span className="flex flex-row items-center">
                                     <div
