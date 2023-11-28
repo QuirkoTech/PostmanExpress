@@ -70,7 +70,14 @@ const ParcelInfoPage = () => {
                                     <div>Status:</div>
                                 </div>
                                 <div className="flex flex-col gap-4">
-                                    <div>{parcelInfo.parcel_id}</div>
+                                    <div className="w-60 overflow-hidden">
+                                        <span
+                                            className="line-clamp-1"
+                                            title={`${parcelInfo.parcel_id}`}
+                                        >
+                                            {parcelInfo.parcel_id}
+                                        </span>
+                                    </div>
                                     <div>{parcelInfo.parcel_name}</div>
                                     <div className=" flex flex-row">
                                         <div

@@ -230,7 +230,7 @@ const NewParcelPage = () => {
                         </label>
                     ))}
 
-                    <Button type="submit" className="mr-[87px] mt-4">
+                    <Button type="submit" className="mr-[100px] mt-4">
                         Apply
                     </Button>
                 </form>
