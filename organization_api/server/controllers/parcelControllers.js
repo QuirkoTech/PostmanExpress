@@ -6,7 +6,7 @@ import checkFreeCabinets from "../helpers/checkFreeCabinets.js";
 import { v4 } from "uuid";
 import generateUniquePin from "../helpers/generateUniquePin.js";
 import jwt from "jsonwebtoken";
-import compareDriverAndParcelLocations from "../helpers/compareDriverAndParcelLocations.js";
+import driverCanAcceptParcel from "../helpers/driverCanAcceptParcel.js";
 
 export const newParcel = catchAsync(async (req, res, next) => {
     const {
@@ -124,7 +124,7 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
     const { parcel_id } = req.params;
 
     const parcel = await pool.query(
-        "SELECT current_location, ship_to, ship_from, parcel_sender_id, parcel_receiver_email FROM parcels WHERE parcel_id = $1",
+        "SELECT current_location, ship_to, ship_from, parcel_sender_id, parcel_receiver_email, driver_accepted FROM parcels WHERE parcel_id = $1",
         [parcel_id],
     );
 
@@ -168,7 +168,7 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
             [userId],
         );
 
-        if (user.rowCount === 0 || user.rows[0].user_email === null)
+        if (user.rowCount === 0 || user.rows[0].user_email === "Deleted")
             return next(new APIError("No user found.", 404));
 
         jwt.verify(
@@ -212,6 +212,8 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
                                 WHERE 
                                     p.parcel_id = $1;
                             `;
+        } else {
+            parcelSearchQuery = `SELECT parcel_id, parcel_status, status_timestamps, ship_to, ship_from FROM parcels WHERE parcel_id = $1`;
         }
     } else if (
         appType === process.env.DRIVER_APP_HEADER &&
@@ -219,40 +221,39 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
     ) {
         const driverLocation = req.headers["x-driver-location"];
         const loggedDriverAccepted = req.headers["x-driver-accepted"];
-
-        const driverCanGetInfo = compareDriverAndParcelLocations(
-            parcelObj.current_location,
-            parcelObj.ship_to,
-            parcelObj.ship_from,
+        const driverCanAccept = driverCanAcceptParcel(
+            parcelObj,
             driverLocation,
+            loggedDriverAccepted,
         );
 
-        if (!driverCanGetInfo)
-            return next(
-                new APIError("You are not allowed to this parcel info.", 400),
-            );
-
-        if (loggedDriverAccepted === "true") {
+        if (
+            (parcelObj.current_location === null ||
+                parcelObj.current_location === parcelObj.ship_from ||
+                parcelObj.current_location === "warehouse") &&
+            parcelObj.driver_accepted &&
+            loggedDriverAccepted === "true"
+        ) {
             parcelSearchQuery = `
-                                SELECT 
+                                SELECT
                                     parcel_id,
                                     ship_to,
                                     current_location,
                                     pickup_pin,
-                                    delivery_pin, 
+                                    delivery_pin,
                                     length,
                                     height,
                                     width,
                                     weight,
                                     driver_accepted
-                                FROM 
+                                FROM
                                     parcels
-                                WHERE 
+                                WHERE
                                     parcel_id = $1;
                                 `;
-        } else if (loggedDriverAccepted === "false") {
+        } else if (driverCanAccept) {
             parcelSearchQuery = `
-                SELECT 
+                SELECT
                     parcel_id,
                     ship_to,
                     current_location,
@@ -261,25 +262,18 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
                     width,
                     weight,
                     driver_accepted
-                FROM 
+                FROM
                     parcels
-                WHERE 
+                WHERE
                     parcel_id = $1;
                 `;
+        } else {
+            return next(
+                new APIError("You are not allowed this parcel info.", 403),
+            );
         }
     } else {
-        parcelSearchQuery = `
-                            SELECT 
-                                parcel_id,
-                                parcel_status,
-                                status_timestamps,
-                                ship_to,
-                                ship_from
-                            FROM 
-                                parcels
-                            WHERE 
-                                parcel_id = $1;
-                        `;
+        parcelSearchQuery = `SELECT parcel_id, parcel_status, status_timestamps, ship_to, ship_from FROM parcels WHERE parcel_id = $1`;
     }
 
     const parcelInfo = await pool.query(parcelSearchQuery, [parcel_id]);
@@ -287,27 +281,18 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
     if (
         appType === process.env.DRIVER_APP_HEADER &&
         req.headers["x-driver-location"] &&
-        parcelObj.current_location !== "warehouse"
+        parcelObj.current_location !== "warehouse" &&
+        parcelObj.current_location !== null
     ) {
         parcelInfo.rows[0].ship_to = "warehouse";
     }
 
     let data = { parcel_info: parcelInfo.rows[0] };
+
     if (
         appType === process.env.CONSUMER_APP_HEADER &&
         parcelSearchQuery ===
-            `
-    SELECT 
-        parcel_id,
-        parcel_status,
-        status_timestamps,
-        ship_to,
-        ship_from
-    FROM 
-        parcels
-    WHERE 
-        parcel_id = $1;
-`
+            `SELECT parcel_id, parcel_status, status_timestamps, ship_to, ship_from FROM parcels WHERE parcel_id = $1`
     ) {
         data.authorized = false;
     } else if (appType === process.env.CONSUMER_APP_HEADER) {
@@ -327,15 +312,14 @@ export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
         [parcel_id],
     );
 
+    let parcelObj = parcel.rows[0];
+
     if (parcel.rowCount === 0)
         return next(new APIError("No parcel found.", 404));
 
     const driverLocation = req.headers["x-driver-location"];
     const loggedDriverAccepted = req.headers["x-driver-accepted"];
     const parcelDisassign = req.headers["x-disassign"];
-    let currentParcelLocation = parcel.rows[0].current_location;
-    let shipToParcelLocation = parcel.rows[0].ship_to;
-    let shipFromParcelLocation = parcel.rows[0].ship_from;
 
     if (loggedDriverAccepted !== "true" && loggedDriverAccepted !== "false")
         return next(
@@ -345,38 +329,34 @@ export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
     if (parcelDisassign !== "true" && parcelDisassign !== "false")
         return next(new APIError("Invalid 'disassign' header value.", 400));
 
-    const driverCanAcceptParcel = compareDriverAndParcelLocations(
-        currentParcelLocation,
-        shipToParcelLocation,
-        shipFromParcelLocation,
+    const driverCanAccept = driverCanAcceptParcel(
+        parcelObj,
         driverLocation,
+        loggedDriverAccepted,
     );
 
-    if (!driverCanAcceptParcel)
+    if (!driverCanAccept)
         return next(
-            new APIError("You can't perfom any action with this parcel.", 400),
+            new APIError("You can't perfom any action with this parcel.", 403),
         );
 
     const client = await pool.connect();
 
-    if (currentParcelLocation !== "warehouse") {
-        shipToParcelLocation = "warehouse";
+    if (parcelObj.current_location !== "warehouse") {
+        parcelObj.ship_to = "warehouse";
     }
 
     try {
         await client.query("BEGIN");
 
-        if (
-            parcel.rows[0].driver_accepted &&
-            loggedDriverAccepted === "false"
-        ) {
+        if (parcelObj.driver_accepted && loggedDriverAccepted === "false") {
             await client.query("ROLLBACK");
             client.release();
             return next(
                 new APIError("Parcel accepted by another driver.", 409),
             );
         } else if (
-            !parcel.rows[0].driver_accepted &&
+            !parcelObj.driver_accepted &&
             loggedDriverAccepted === "true"
         ) {
             await client.query("ROLLBACK");
@@ -388,7 +368,7 @@ export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
                 ),
             );
         } else if (
-            parcel.rows[0].driver_accepted &&
+            parcelObj.driver_accepted &&
             loggedDriverAccepted === "true"
         ) {
             if (parcelDisassign === "true") {
@@ -406,7 +386,7 @@ export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
                    FROM selected_cabinet \
                    WHERE \
                    cabinets.cabinet_id = selected_cabinet.cabinet_id",
-                    [shipToParcelLocation],
+                    [parcelObj.ship_to],
                 );
 
                 const updatedParcel = await client.query(
@@ -432,12 +412,12 @@ export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
                 );
             }
         } else if (
-            !parcel.rows[0].driver_accepted &&
+            !parcelObj.driver_accepted &&
             loggedDriverAccepted === "false"
         ) {
             const freeDestinationLockers = await client.query(
                 "SELECT cabinet_id FROM cabinets WHERE cabinet_status = 'empty' AND cabinet_location = $1",
-                [shipToParcelLocation],
+                [parcelObj.ship_to],
             );
             if (freeDestinationLockers.rowCount === 0) {
                 await client.query("ROLLBACK");
@@ -464,7 +444,7 @@ export const driverAcceptParcelSwitch = catchAsync(async (req, res, next) => {
                FROM selected_cabinet \
                WHERE \
                cabinets.cabinet_id = selected_cabinet.cabinet_id",
-                [shipToParcelLocation],
+                [parcelObj.ship_to],
             );
 
             const pickup_pin = await generateUniquePin("pickup");
