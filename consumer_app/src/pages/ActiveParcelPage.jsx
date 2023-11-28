@@ -3,7 +3,7 @@ import { Info } from "lucide-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-import { statusMap, simpleStatusColorMap } from "../constants";
+import { statusMap, statusColorMap } from "../constants";
 
 const ActiveParcelPage = () => {
     const CONSUMER_URL = import.meta.env.VITE_CONSUMER_BACKEND_URL;
@@ -52,14 +52,12 @@ const ActiveParcelPage = () => {
                         <div className="flex flex-row justify-between gap-x-10 text-lg">
                             <div className="flex flex-col items-start">
                                 <span className="mb-5 w-32 overflow-hidden text-ellipsis whitespace-nowrap ">
-                                    {parcel.parcel_name}dsads dsadsadsadads
+                                    {parcel.parcel_name}
                                 </span>
                                 <span className="flex flex-row items-center">
                                     <div
                                         className={`mr-2 h-2 w-2 rounded-full ${`bg-${
-                                            simpleStatusColorMap[
-                                                parcel.parcel_status
-                                            ]
+                                            statusColorMap[parcel.parcel_status]
                                         }`}`}
                                     ></div>
                                     <span>

@@ -138,6 +138,7 @@ const NewParcelPage = () => {
                 },
             );
 
+            console.log(response.data);
             toast.success(
                 "Parcel created. Check your email for further instructions.",
             );
@@ -145,9 +146,10 @@ const NewParcelPage = () => {
         } catch (error) {
             console.error("Error creating parcel:", error.response.data);
             toast.error(
-                error.response.data.message,
+                error.response.data.messsage,
                 // "An error occurred while creating the parcel.",
             );
+            console.log(error.response.data.messsage);
         }
     };
 
