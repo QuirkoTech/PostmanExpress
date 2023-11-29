@@ -204,7 +204,7 @@ export const consumerDelete = catchAsync(async (req, res, next) => {
         } catch (rollbackError) {
             console.error("User delete rollback failed: ", rollbackError);
         }
-        console.log(error);
+        console.error(error);
 
         client.release();
         return next(

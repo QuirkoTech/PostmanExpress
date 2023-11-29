@@ -30,7 +30,6 @@ describe("Account actions", () => {
         password_confirm: "testtest",
         location: "hello",
     };
-    // lets add nothing and see if test succeeds
     it("Should sign up the user with correct inputs:", async () => {
         const response = await request
             .post("/auth/signup")
@@ -67,6 +66,7 @@ describe("Account actions", () => {
         );
     });
 
+    // Блядь, заебало
     it("Should log in the user with correct credentials:", async () => {
         const response = await request
             .post("/auth/login")
