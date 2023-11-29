@@ -3,7 +3,7 @@ import rateLimit from "express-rate-limit";
 const message = (sec) => {
     return {
         status: "fail",
-        messsage: `Too many requests, please try again after ${sec} seconds`,
+        message: `Too many requests, please try again after ${sec} seconds`,
     };
 };
 
