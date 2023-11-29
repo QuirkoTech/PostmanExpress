@@ -146,10 +146,10 @@ const NewParcelPage = () => {
         } catch (error) {
             console.error("Error creating parcel:", error.response.data);
             toast.error(
-                error.response.data.messsage,
+                error.response.data.message,
                 // "An error occurred while creating the parcel.",
             );
-            console.log(error.response.data.messsage);
+            console.log(error.response.data.message);
         }
     };
 

@@ -3,7 +3,7 @@ import rateLimit from "express-rate-limit";
 const message = (sec) => {
     return {
         status: "fail",
-        messsage: `Too many requests, please try again after ${sec} seconds`,
+        message: `Too many requests, please try again after ${sec} seconds`,
     };
 };
 
@@ -18,6 +18,6 @@ export const strictLimiter = rateLimit({
     max: 1,
     message: {
         status: "fail",
-        messsage: `You can create parcels every 1 minute`,
+        message: `You can create parcels every 1 minute`,
     },
 });
