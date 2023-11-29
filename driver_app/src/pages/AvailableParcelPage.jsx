@@ -3,39 +3,40 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Info } from "lucide-react";
 import Layout from "../components/layout/Layout";
+import { capitalizeFirstLetter } from "../utils";
 
-const availableParcelsDummy = [
-    {
-        parcel_id: "9b52e4de-47bd-4acb-9ea6-f4f2182ab41a",
-        last_status_date: "14.04",
-        ship_to: "Helsinki",
-    },
-    {
-        parcel_id: "9b52e4de-47bd-4acb-9ea6-f4f2182ab41b",
-        last_status_date: "14.04",
-        ship_to: "Tampere",
-    },
-    {
-        parcel_id: "9b52e4de-47bd-4acb-9ea6-f4f2182ab41c",
-        last_status_date: "14.04",
-        ship_to: "Oulu",
-    },
-    {
-        parcel_id: "9b52e4de-47bd-4acb-9ea6-f4f2182ab41d",
-        last_status_date: "14.04",
-        ship_to: "Espoo",
-    },
-    {
-        parcel_id: "9b52e4de-47bd-4acb-9ea6-f4f2182ab41e",
-        last_status_date: "14.04",
-        ship_to: "Turku",
-    },
-    {
-        parcel_id: "9b52e4de-47bd-4acb-9ea6-f4f2182ab41f",
-        last_status_date: "14.04",
-        ship_to: "Rovaniemi",
-    },
-];
+// const availableParcelsDummy = [
+//     {
+//         parcel_id: "9b52e4de-47bd-4acb-9ea6-f4f2182ab41a",
+//         last_status_date: "14.04",
+//         ship_to: "Helsinki",
+//     },
+//     {
+//         parcel_id: "9b52e4de-47bd-4acb-9ea6-f4f2182ab41b",
+//         last_status_date: "14.04",
+//         ship_to: "Tampere",
+//     },
+//     {
+//         parcel_id: "9b52e4de-47bd-4acb-9ea6-f4f2182ab41c",
+//         last_status_date: "14.04",
+//         ship_to: "Oulu",
+//     },
+//     {
+//         parcel_id: "9b52e4de-47bd-4acb-9ea6-f4f2182ab41d",
+//         last_status_date: "14.04",
+//         ship_to: "Espoo",
+//     },
+//     {
+//         parcel_id: "9b52e4de-47bd-4acb-9ea6-f4f2182ab41e",
+//         last_status_date: "14.04",
+//         ship_to: "Turku",
+//     },
+//     {
+//         parcel_id: "9b52e4de-47bd-4acb-9ea6-f4f2182ab41f",
+//         last_status_date: "14.04",
+//         ship_to: "Rovaniemi",
+//     },
+// ];
 
 const NewParcelPage = () => {
     const DRIVER_URL = import.meta.env.VITE_DRIVER_BACKEND_URL;
@@ -87,7 +88,9 @@ const NewParcelPage = () => {
                                 <span className="mb-5 w-28 overflow-hidden text-ellipsis whitespace-nowrap">
                                     ID: {parcel.parcel_id}
                                 </span>
-                                <span>To: {parcel.ship_to}</span>
+                                <span>
+                                    To: {capitalizeFirstLetter(parcel.ship_to)}
+                                </span>
                             </div>
                             <div className="flex flex-col items-end">
                                 <span className="mb-5">

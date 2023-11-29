@@ -42,6 +42,9 @@ export default {
             fontFamily: {
                 barlow: ['Barlow', 'sans-serif'],
             },
+            animation: {
+                'spin-slow': 'spin 1.3s linear infinite',
+            },
         },
     },
     plugins: [],

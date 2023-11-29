@@ -61,3 +61,7 @@
         @apply mx-10;
     }
 }
+
+.Toastify__close-button {
+    @apply hover:text-danger-secondary transition-all duration-300 active:scale-90;
+}

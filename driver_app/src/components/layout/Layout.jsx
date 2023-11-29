@@ -1,6 +1,8 @@
 import { Fragment, useEffect, useState } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // This is a custom hook that returns the height of the header.
 //  It is used to set the main section to always screen height - header height.
@@ -24,7 +26,16 @@ const Layout = ({ children }) => {
                 className="padding"
                 style={{ minHeight: `calc(100vh - ${headerHeight}px)` }}
             >
-                <div className="max-container">{children}</div>
+                <div className="max-container">
+                    {children}
+                    <ToastContainer
+                        toastClassName="text-white bg-dark-secondary rounded-mid border-2 border-slate-blue"
+                        position="top-right"
+                        autoClose={5000}
+                        hideProgressBar
+                        theme="dark"
+                    />
+                </div>
             </section>
             <Footer></Footer>
         </Fragment>

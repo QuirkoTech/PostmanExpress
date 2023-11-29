@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Info } from "lucide-react";
+import { capitalizeFirstLetter } from "../utils";
 
 // const activeParcelsDummy = [
 //     {
@@ -87,9 +88,7 @@ const NewParcelPage = () => {
                                     ID: {parcel.parcel_id}
                                 </span>
                                 <span>
-                                    To:{" "}
-                                    {parcel.ship_to.charAt(0).toUpperCase() +
-                                        parcel.ship_to.slice(1)}
+                                    To: {capitalizeFirstLetter(parcel.ship_to)}
                                 </span>
                             </div>
                             <div className="flex flex-col items-end">
