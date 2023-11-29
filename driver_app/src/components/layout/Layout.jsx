@@ -7,7 +7,6 @@ import Footer from "./Footer";
 // This leads to footer being hidden at the bottom of the page
 
 const Layout = ({ children }) => {
-    
     const [headerHeight, setHeaderHeight] = useState(0);
     useEffect(() => {
         const header = document.querySelector("header");
@@ -20,11 +19,12 @@ const Layout = ({ children }) => {
     return (
         <Fragment>
             <Header></Header>
+
             <section
-                className="padding max-container"
+                className="padding"
                 style={{ minHeight: `calc(100vh - ${headerHeight}px)` }}
             >
-                {children}
+                <div className="max-container">{children}</div>
             </section>
             <Footer></Footer>
         </Fragment>

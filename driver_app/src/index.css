@@ -58,6 +58,6 @@
     }
 
     .margin-x {
-        @apply mx-[5.5rem];
+        @apply mx-10;
     }
 }

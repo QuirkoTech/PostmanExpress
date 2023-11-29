@@ -69,11 +69,11 @@ const NewParcelPage = () => {
     };
     return (
         <Layout>
-            <h1 className="mb-9 pl-9 text-4xl font-normal text-white">
+            <h1 className="mb-9 text-4xl font-normal text-white">
                 Available Parcels
             </h1>
 
-            <div className="margin-x grid grid-cols-2 gap-x-20 gap-y-10">
+            <div className="mx-10 grid grid-cols-2 justify-items-center gap-x-20 gap-y-10">
                 {availableParcels.map((parcel) => (
                     <div
                         key={parcel.parcel_id}
