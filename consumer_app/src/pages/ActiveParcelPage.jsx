@@ -1,5 +1,5 @@
-import { Link, useNavigate } from "react-router-dom";
-import { ChevronRight, Info } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Info } from "lucide-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -33,47 +33,18 @@ const ActiveParcelPage = () => {
         // Navigate to the parcel details page
         navigate(`/parcels/${parcelId}`);
     };
-    console.log(activeParcels.length);
 
     return (
-        <div className="flex flex-col items-center justify-center">
-            <h1 className="mb-9 items-center text-4xl font-normal text-white">
+        <div>
+            <h1 className="mb-9 pl-9 text-4xl font-normal text-white">
                 Active Parcel
             </h1>
-            {activeParcels.length === 0 ? (
-                <div className="flex flex-col items-center justify-center">
-                    <img
-                        className="h-2/5 w-2/5"
-                        src="/noParcel.png"
-                        alt="No Parcels"
-                    />
-                    <h1 className="text-2xl font-semibold">
-                        You don't have any parcels in the past 14 days
-                    </h1>
-                    <p className="mt-4 flex flex-row" to="/new">
-                        Add new parcel
-                        <Link
-                            to="/new"
-                            className="mx-1 underline hover:text-green-500"
-                        >
-                            here
-                        </Link>
-                        to get real time updates
-                    </p>
-                    <Link
-                        className="text-green-active mt-10 flex flex-row items-center hover:text-green-500"
-                        to="/history"
-                    >
-                        <p className="text-xl">View past shipments</p>
-                        <ChevronRight size={20} className="ml-1" />
-                    </Link>
-                </div>
-            ) : (
-                <div className="my-4 grid grid-cols-2 gap-x-20 gap-y-10">
-                    {activeParcels.map((parcel) => (
-                        <div
-                            key={parcel.parcel_id}
-                            className="bg-dark-secondary border-slate-blue rounded-max h-[116px] w-[440px] 
+
+            <div className="margin-x grid grid-cols-2 gap-x-20 gap-y-10">
+                {activeParcels.map((parcel) => (
+                    <div
+                        key={parcel.parcel_id}
+                        className="bg-dark-secondary border-slate-blue rounded-max h-[116px] w-[440px] 
                             cursor-pointer border-2 px-5 py-5 shadow-lg shadow-black/40
                             transition-all duration-300 hover:scale-105"
                         onClick={() => handleParcelClick(parcel.parcel_id)}
