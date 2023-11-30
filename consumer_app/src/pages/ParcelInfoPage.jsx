@@ -9,11 +9,13 @@ const ParcelInfoPage = () => {
 
     const [parcelInfo, setParcelInfo] = useState({});
     const [isTableVisible, setTableVisible] = useState(true);
-    const [currentStatusIndex, setCurrentStatusIndex] = useState(-1);
+    const [defaultStatus, setDefaultStatus] = useState("awaiting drop-off");
 
-    const toggleTableVisibility = (index) => {
+    // State để kiểm tra xem status đã thay đổi hay chưa
+    const [isStatusChanged, setStatusChanged] = useState(false);
+
+    const toggleTableVisibility = () => {
         setTableVisible(!isTableVisible);
-        setCurrentStatusIndex(index);
     };
 
     const capitalizeFirstLetter = (string) => {
@@ -39,24 +41,14 @@ const ParcelInfoPage = () => {
 
                 if (status === "success") {
                     setParcelInfo((prevParcelInfo) => {
-                        const newParcelInfo = {
-                            ...prevParcelInfo,
-                            ...data.parcel_info,
-                        };
-
-                        // Add a new status entry to the status_timestamps array
-                        const newStatusTimestamp = {
-                            status: newParcelInfo.parcel_status,
-                            time: new Date().toLocaleTimeString(), // Set current time
-                            date: new Date().toLocaleDateString(), // Set current date
-                        };
-                        newParcelInfo.status_timestamps = [
-                            newStatusTimestamp,
-                            ...newParcelInfo.status_timestamps,
-                        ];
-
-                        return newParcelInfo;
+                        return { ...prevParcelInfo, ...data.parcel_info };
                     });
+
+                    if (data.parcel_info.parcel_status !== defaultStatus) {
+                        setStatusChanged(true);
+                    } else {
+                        setStatusChanged(false);
+                    }
                 } else {
                     console.error("Fetch parcel info failed:", data.message);
                 }
@@ -137,17 +129,23 @@ const ParcelInfoPage = () => {
                                         {parcelInfo.status_timestamps &&
                                             parcelInfo.status_timestamps.map(
                                                 (status, index) => (
-                                                    <div key={index}>
-                                                        <div className="relative ml-8 flex">
+                                                    <div
+                                                        key={index}
+                                                        className="relative ml-8 flex flex-col"
+                                                    >
+                                                        {index === 0 && (
+                                                            <div className="absolute bottom-[24px] left-1 -ml-[1px] h-[52px] w-[2px] border-l-2 border-[#494844]"></div>
+                                                        )}
+
+                                                        <div className="relative flex">
                                                             <div
-                                                                className={`mr-2 mt-3 h-2 w-2 rounded-full bg-${statusColor}`}
+                                                                className={`mr-2 mt-3 h-2 w-2 rounded-full bg-${statusColorMap[defaultStatus]}`}
                                                             ></div>
                                                             <div className="ml-4 flex flex-col">
                                                                 <h1>
                                                                     {
                                                                         statusMap[
-                                                                            parcelInfo
-                                                                                .parcel_status
+                                                                            defaultStatus
                                                                         ]
                                                                     }
                                                                 </h1>
@@ -162,15 +160,42 @@ const ParcelInfoPage = () => {
                                                                     }
                                                                 </p>
                                                             </div>
-
-                                                            {index !==
-                                                                parcelInfo
-                                                                    .status_timestamps
-                                                                    .length -
-                                                                    1 && (
-                                                                <div className=" absolute left-1 top-[20px] -ml-[1px] h-[52px] w-[2px] border-l-2 border-[#494844]"></div>
-                                                            )}
                                                         </div>
+
+                                                        {/* Additional status if the parcel status changes */}
+                                                        {index <
+                                                            parcelInfo
+                                                                .status_timestamps
+                                                                .length -
+                                                                0 &&
+                                                            parcelInfo.parcel_status !==
+                                                                defaultStatus && (
+                                                                <div className="relative mt-2 flex">
+                                                                    <div
+                                                                        className={`mr-2 mt-3 h-2 w-2 rounded-full bg-${statusColor}`}
+                                                                    ></div>
+                                                                    <div className="ml-4 flex flex-col">
+                                                                        <h1>
+                                                                            {
+                                                                                statusMap[
+                                                                                    parcelInfo
+                                                                                        .parcel_status
+                                                                                ]
+                                                                            }
+                                                                        </h1>
+                                                                        <p className="text-xs opacity-75">
+                                                                            at{" "}
+                                                                            {
+                                                                                status.time
+                                                                            }{" "}
+                                                                            on{" "}
+                                                                            {
+                                                                                status.date
+                                                                            }
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                            )}
                                                     </div>
                                                 ),
                                             )}

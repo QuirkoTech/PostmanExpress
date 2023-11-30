@@ -15,13 +15,14 @@ export const statusMap = {
     "at warehouse": "On the way",
     "en route to the pickup location": "On the way",
     "ready for pickup": "Ready for pick up",
+    delivered: "Delivered",
 };
 
 // In depth colormapping for detailed parcel page
 export const statusColorMap = {
     "awaiting drop-off": "status-gray", // show status
     "prepared for delivery": "status-yellow", // show status
-    "en Route to the warehouse": "status-orange", // on the way
+    "en route to the warehouse": "status-orange", // on the way
     "at warehouse": "status-white", // on the way
     "en route to the pickup location": "status-orange", // on the way
     "ready for pickup": "status-blue", // show status
