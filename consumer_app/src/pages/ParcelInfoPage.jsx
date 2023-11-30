@@ -9,9 +9,11 @@ const ParcelInfoPage = () => {
 
     const [parcelInfo, setParcelInfo] = useState({});
     const [isTableVisible, setTableVisible] = useState(true);
+    const [currentStatusIndex, setCurrentStatusIndex] = useState(-1);
 
-    const toggleTableVisibility = () => {
+    const toggleTableVisibility = (index) => {
         setTableVisible(!isTableVisible);
+        setCurrentStatusIndex(index);
     };
 
     const capitalizeFirstLetter = (string) => {
@@ -36,7 +38,25 @@ const ParcelInfoPage = () => {
                 const { status, data } = response.data;
 
                 if (status === "success") {
-                    setParcelInfo(data.parcel_info);
+                    setParcelInfo((prevParcelInfo) => {
+                        const newParcelInfo = {
+                            ...prevParcelInfo,
+                            ...data.parcel_info,
+                        };
+
+                        // Add a new status entry to the status_timestamps array
+                        const newStatusTimestamp = {
+                            status: newParcelInfo.parcel_status,
+                            time: new Date().toLocaleTimeString(), // Set current time
+                            date: new Date().toLocaleDateString(), // Set current date
+                        };
+                        newParcelInfo.status_timestamps = [
+                            newStatusTimestamp,
+                            ...newParcelInfo.status_timestamps,
+                        ];
+
+                        return newParcelInfo;
+                    });
                 } else {
                     console.error("Fetch parcel info failed:", data.message);
                 }
@@ -70,14 +90,13 @@ const ParcelInfoPage = () => {
                                     <div>Status:</div>
                                 </div>
                                 <div className="flex flex-col gap-4">
-                                    <div className="w-60 overflow-hidden">
-                                        <span
-                                            className="line-clamp-1"
-                                            title={`${parcelInfo.parcel_id}`}
-                                        >
-                                            {parcelInfo.parcel_id}
-                                        </span>
-                                    </div>
+                                    <span
+                                        className="line-clamp-1"
+                                        title={`${parcelInfo.parcel_id}`}
+                                    >
+                                        {parcelInfo.parcel_id}
+                                    </span>
+
                                     <div>{parcelInfo.parcel_name}</div>
                                     <div className=" flex flex-row">
                                         <div
