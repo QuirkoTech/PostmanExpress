@@ -27,6 +27,6 @@ export const statusColorMap = {
   "en Route to the warehouse": "status-orange", // on the way
   "at warehouse": "status-white", // on the way
   "en route to the pickup location": "status-orange", // on the way
-  "ready for pick up": "status-blue", // show status
+  "ready for pickup": "status-blue", // show status
   delivered: "status-green", // not available on this page
 };
