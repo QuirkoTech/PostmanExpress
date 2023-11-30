@@ -4,11 +4,10 @@ import {
     singleParcelInfo,
 } from "../controllers/parcelControllers.js";
 import protect from "../helpers/protect.js";
-import { defaultLimiter } from "../helpers/limiters.js";
 
 const router = Router();
 
-router.route("/new").post(defaultLimiter, protect, newParcel);
-router.route("/:parcel_id").get(defaultLimiter, singleParcelInfo);
+router.route("/new").post(protect, newParcel);
+router.route("/:parcel_id").get(singleParcelInfo);
 
 export default router;
