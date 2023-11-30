@@ -18,7 +18,6 @@ import globalErrorHandler from "./controllers/errorControllers.js";
 import APIError from "./helpers/APIError.js";
 import checkContentType from "./helpers/checkContentType.js";
 import cabinetRoutes from "./routes/cabinetRoutes.js";
-import { defaultLimiter } from "./helpers/limiters.js";
 
 const app = express();
 
@@ -26,7 +25,6 @@ app.use(cors());
 app.use(express.json());
 if (process.env.ENV === "dev") app.use(morgan("dev"));
 app.use(checkContentType);
-app.use(defaultLimiter);
 
 app.use("/cabinet", cabinetRoutes);
 
