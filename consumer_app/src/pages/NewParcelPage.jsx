@@ -138,6 +138,7 @@ const NewParcelPage = () => {
                 },
             );
 
+            console.log(response.data);
             toast.success(
                 "Parcel created. Check your email for further instructions.",
             );
@@ -148,6 +149,7 @@ const NewParcelPage = () => {
                 error.response.data.message,
                 // "An error occurred while creating the parcel.",
             );
+            console.log(error.response.data.message);
         }
     };
 
@@ -228,7 +230,7 @@ const NewParcelPage = () => {
                         </label>
                     ))}
 
-                    <Button type="submit" className="mr-[87px] mt-4">
+                    <Button type="submit" className="mr-[100px] mt-4">
                         Apply
                     </Button>
                 </form>

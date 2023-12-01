@@ -37,7 +37,7 @@ function App() {
                         path="/parcels/:parcel_id"
                         element={
                             <PrivateRoute>
-                                <ParcelInFoPage />{" "}
+                                <ParcelInFoPage />
                             </PrivateRoute>
                         }
                     />
