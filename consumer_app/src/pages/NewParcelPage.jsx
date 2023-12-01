@@ -155,86 +155,76 @@ const NewParcelPage = () => {
 
     return (
         <Layout>
-            <div>
-                <h1 className="mb-9 pl-9 text-4xl font-normal text-white">
-                    New Parcel
-                </h1>
+            <h1 className="mb-9 text-4xl font-normal text-white">New Parcel</h1>
 
-                <form
-                    className="margin-x flex flex-col"
-                    onSubmit={handleSubmit(handleFormSubmit)}
-                >
-                    {ParcelAddNew.map((field, index) => (
-                        <label
-                            key={index}
-                            htmlFor={`input-${index}`}
-                            className="mb-6 grid grid-cols-5 items-center gap-x-4 text-lg"
-                        >
-                            {field.title}:
-                            {field.type === "select" ? (
-                                <div className="relative col-span-3">
-                                    <select
-                                        className={`bg-dark-secondary border-slate-blue w-full cursor-pointer select-none appearance-none rounded-lg border-2 border-solid 
-                                        pl-4 focus:outline-none focus:ring-1 ${
+            <form
+                className="mx-10 flex w-3/4 flex-col"
+                onSubmit={handleSubmit(handleFormSubmit)}
+            >
+                {ParcelAddNew.map((field, index) => (
+                    <label
+                        key={index}
+                        htmlFor={`input-${index}`}
+                        className="mb-6 grid grid-cols-5 items-center gap-x-4 text-lg"
+                    >
+                        {field.title}:
+                        {field.type === "select" ? (
+                            <div className="relative col-span-3">
+                                <select
+                                    className={`bg-dark-secondary border-slate-blue w-full cursor-pointer select-none appearance-none rounded-lg border-2 border-solid 
+                                        px-4 py-1 focus:outline-none focus:ring-1 ${
                                             errors[field.fieldName]
                                                 ? "border-red-500"
                                                 : ""
                                         } `}
-                                        {...register(field.fieldName, {
-                                            value: "",
-                                            placeholder: "Select Destination",
-                                        })}
-                                    >
+                                    {...register(field.fieldName, {
+                                        value: "",
+                                        placeholder: "Select Destination",
+                                    })}
+                                >
+                                    <option value="" disabled selected hidden>
+                                        Select Destination
+                                    </option>
+                                    {(
+                                        selectOptionsMap[field.fieldName] || []
+                                    ).map((option, optionIndex) => (
                                         <option
-                                            value=""
-                                            disabled
-                                            selected
-                                            hidden
+                                            key={optionIndex}
+                                            value={option}
+                                            className=""
                                         >
-                                            Select Destination
+                                            {option}
                                         </option>
-                                        {(
-                                            selectOptionsMap[field.fieldName] ||
-                                            []
-                                        ).map((option, optionIndex) => (
-                                            <option
-                                                key={optionIndex}
-                                                value={option}
-                                                className=""
-                                            >
-                                                {option}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <ChevronsUpDown className="stroke-slate-blue absolute right-2 top-1" />
-                                </div>
-                            ) : (
-                                <input
-                                    className={`bg-dark-secondary border-slate-blue col-span-3 appearance-none rounded-lg border-2 border-solid px-4 focus:outline-none focus:ring-1 ${
-                                        errors[field.fieldName]
-                                            ? "border-red-500"
-                                            : ""
-                                    }`}
-                                    type={field.type}
-                                    placeholder={field.placeholder}
-                                    id={`input-${index}`}
-                                    {...register(field.fieldName)}
-                                />
-                            )}
-                            <span className="text-xs">{field.measure}</span>
-                            {errors[field.fieldName] && (
-                                <p className="text-danger-main col-span-2 col-start-2 mt-1 text-xs">
-                                    {errors[field.fieldName]?.message}
-                                </p>
-                            )}
-                        </label>
-                    ))}
+                                    ))}
+                                </select>
+                                <ChevronsUpDown className="stroke-slate-blue absolute right-2 top-1" />
+                            </div>
+                        ) : (
+                            <input
+                                className={`bg-dark-secondary border-slate-blue col-span-3 appearance-none rounded-lg border-2 border-solid px-4 py-1 focus:outline-none focus:ring-1 ${
+                                    errors[field.fieldName]
+                                        ? "border-red-500"
+                                        : ""
+                                }`}
+                                type={field.type}
+                                placeholder={field.placeholder}
+                                id={`input-${index}`}
+                                {...register(field.fieldName)}
+                            />
+                        )}
+                        <span className="text-xs">{field.measure}</span>
+                        {errors[field.fieldName] && (
+                            <p className="text-danger-main col-span-2 col-start-2 mt-1 text-xs">
+                                {errors[field.fieldName]?.message}
+                            </p>
+                        )}
+                    </label>
+                ))}
 
-                    <Button type="submit" className="mr-[100px] mt-4">
-                        Apply
-                    </Button>
-                </form>
-            </div>
+                <Button type="submit" className="mr-[150px] mt-4">
+                    Apply
+                </Button>
+            </form>
         </Layout>
     );
 };
