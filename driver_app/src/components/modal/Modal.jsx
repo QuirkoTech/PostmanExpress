@@ -51,22 +51,22 @@ function Modal({
             onClick={handleModalClick}
         >
             <nav
-                className="bg-dark-secondary ml-auto flex h-full w-1/6 flex-col
-                    border-l-2 border-solid border-l-white/5 p-6 shadow-lg"
+                className="bg-dark-secondary xl-max:w-3/12 md-max:w-4/12 sm-max:w-5/12 sm-max:px-3 sm-max:text-base ml-auto flex h-full
+                    w-1/6 flex-col border-l-2 border-solid border-l-white/5 p-6 text-lg shadow-lg"
                 ref={modalRef}
             >
                 <ul className="border-b-2 border-solid border-[#494844]">
-                    <li className="mb-4 w-full border-b-2 border-solid border-[#494844] pb-5 text-lg font-medium text-white">
+                    <li className="mb-4 w-full border-b-2 border-solid border-[#494844] pb-5 font-medium text-white">
                         <div className="w-40 overflow-hidden overflow-ellipsis whitespace-nowrap">
                             {name}
                         </div>
                         <button
                             onClick={closeModal}
-                            className="absolute right-2 top-4 cursor-pointer border-none bg-transparent p-2 px-4 text-white transition-all 
+                            className="absolute right-2 top-[25px] cursor-pointer border-none bg-transparent px-4 text-white transition-all 
                                 duration-300 hover:border-none hover:text-red-500 active:scale-90"
                         >
                             <FontAwesomeIcon
-                                className="h-5 w-5"
+                                className="h-5 sm-max:h-4 w-5 sm-max:w-4"
                                 icon={faXmark}
                             />
                         </button>
@@ -74,7 +74,7 @@ function Modal({
                     {menuLinks.map((link, index) => (
                         <li
                             key={index}
-                            className="my-5 text-lg font-normal text-white"
+                            className="sm-max:my-4 my-5 font-normal text-white"
                         >
                             <Link
                                 className="text-slate-gray transition-all duration-300 hover:text-white"
@@ -88,7 +88,7 @@ function Modal({
 
                 <button
                     onClick={handleSignOut}
-                    className="text-danger-main hover:text-danger-secondary my-5 mr-auto cursor-pointer border-none bg-transparent text-lg font-medium transition-all
+                    className="text-danger-main hover:text-danger-secondary sm-max:my-4 my-5 mr-auto cursor-pointer border-none bg-transparent font-medium transition-all
                         duration-300 hover:border-none"
                 >
                     Log Out

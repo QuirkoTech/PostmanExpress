@@ -10,7 +10,7 @@ const FooterArray = [
 const Footer = () => {
     return (
         <footer className="padding-x">
-            <div className="max-container relative flex w-full justify-between py-8">
+            <div className="max-container relative flex w-full justify-between py-8 sm-max:py-5">
                 <div className="absolute left-1/2 top-0 w-[95%] -translate-x-1/2 border-t border-solid border-[#494844]"></div>
                 <div className="">
                     {FooterArray.map((item, index) => (
