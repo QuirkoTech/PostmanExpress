@@ -21,17 +21,19 @@ const Layout = ({ children }) => {
         <Fragment>
             <Header />
             <section
-                className="padding max-container"
+                className="padding"
                 style={{ minHeight: `calc(100vh - ${headerHeight}px)` }}
             >
-                {children}
+                <div className="max-container">
+                    {children}
 
-                <ToastContainer
-                    position="top-right"
-                    autoClose={5000}
-                    hideProgressBar
-                    theme="dark"
-                />
+                    <ToastContainer
+                        position="top-right"
+                        autoClose={5000}
+                        hideProgressBar
+                        theme="dark"
+                    />
+                </div>
             </section>
             <Footer />
         </Fragment>

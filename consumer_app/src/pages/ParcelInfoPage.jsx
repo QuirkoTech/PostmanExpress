@@ -67,12 +67,12 @@ const ParcelInfoPage = () => {
 
     return (
         <Layout>
-            <div>
-                <h1 className="mb-9 pl-9 text-4xl font-normal text-white">
+          
+                <h1 className="mb-9 text-4xl font-normal text-white">
                     Parcel Info
                 </h1>
 
-                <div className="bg-dark-secondary border-slate-blue margin-x min-w-[800px] rounded-2xl border border-solid text-lg shadow-xl">
+                <div className="bg-dark-secondary border-slate-blue mx-10 min-w-[800px] rounded-2xl border border-solid text-lg shadow-xl">
                     <div className="grid grid-cols-2">
                         <div className="m-8">
                             <div className="flex flex-row gap-4">
@@ -226,7 +226,7 @@ const ParcelInfoPage = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            
         </Layout>
     );
 };
