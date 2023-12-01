@@ -176,12 +176,9 @@ const ParcelInfoPage = () => {
                                                                     ></div>
                                                                     <div className="ml-4 flex flex-col">
                                                                         <h1>
-                                                                            {
-                                                                                statusMap[
-                                                                                    parcelInfo
-                                                                                        .parcel_status
-                                                                                ]
-                                                                            }
+                                                                            {capitalizeFirstLetter(
+                                                                                parcelInfo.parcel_status,
+                                                                            )}
                                                                         </h1>
                                                                         <p className="text-xs opacity-75">
                                                                             at{" "}
