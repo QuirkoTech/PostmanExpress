@@ -1,8 +1,8 @@
-import { Link, useNavigate } from "react-router-dom";
-import { ChevronRight, Info, PackagePlus, PackageX } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Info } from "lucide-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
-
+import { NoParcelData } from "../components";
 import { statusMap, simpleStatusColorMap } from "../constants";
 import Layout from "../components/layout/Layout";
 
@@ -56,34 +56,16 @@ const ParcelHistoryPage = () => {
 
     return (
         <Layout>
-            <div className="container mx-auto p-4">
-                <h1 className="mb-12 text-4xl font-normal text-white">
-                    Delivered Parcels
+            <div className="container mx-auto">
+                <h1 className="sm-max:text-2xl sm-max:mb-6 mb-9 text-4xl font-normal text-white">
+                    Parcels History
                 </h1>
 
                 {deliveredParcels.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center">
-                        {isSmallScreen ? (
-                            <PackageX size={100} strokeWidth="1px" />
-                        ) : (
-                            <PackageX size={200} strokeWidth="0.5px" />
-                        )}
-                        <h1 className="mt-8 w-3/4 text-center text-2xl font-semibold">
-                            No parcels here yet
-                        </h1>
-
-                        <Link
-                            to="/new"
-                            className="mx-1 mt-4 flex flex-row hover:text-green-500"
-                        >
-                            <p className="mr-2">Create new parcel</p>
-                            <PackagePlus
-                                className="items-center"
-                                size={20}
-                                strokeWidth={2}
-                            />
-                        </Link>
-                    </div>
+                    <NoParcelData
+                        isSmallScreen={isSmallScreen}
+                        message={"No parcel history found"}
+                    />
                 ) : (
                     <div className="xl-max:grid-cols-1 sm-max:mx-0 sm-max:gap-y-6 mx-10 grid grid-cols-2 justify-items-center gap-x-20 gap-y-10">
                         {deliveredParcels.map((parcel) => (

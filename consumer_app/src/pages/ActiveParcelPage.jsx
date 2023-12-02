@@ -1,8 +1,8 @@
-import { Link, useNavigate } from "react-router-dom";
-import { ChevronRight, Info, PackagePlus, PackageX } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Info } from "lucide-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
-
+import { NoParcelData } from "../components";
 import { statusMap, simpleStatusColorMap } from "../constants";
 
 const ActiveParcelPage = () => {
@@ -36,6 +36,7 @@ const ActiveParcelPage = () => {
 
     // Media query
     const [isSmallScreen, setIsSmallScreen] = useState(false);
+    const [isSmallScreen2, setIsSmallScreen2] = useState(false);
 
     useEffect(() => {
         function handleResize() {
@@ -50,45 +51,30 @@ const ActiveParcelPage = () => {
         };
     }, []);
 
+    useEffect(() => {
+        function handleResize() {
+            setIsSmallScreen2(window.innerWidth <= 640);
+        }
+
+        window.addEventListener("resize", handleResize);
+        handleResize();
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
+
     return (
         <div>
             <h1 className="sm-max:text-2xl sm-max:mb-6 mb-9 text-4xl font-normal text-white">
-                Active Parcel
+                Active Parcels
             </h1>
             {activeParcels.length === 0 ? (
-                <div className="flex flex-col items-center justify-center">
-                    {isSmallScreen ? (
-                        <PackageX size={100} strokeWidth="1px" />
-                    ) : (
-                        <PackageX size={200} strokeWidth="0.5px" />
-                    )}
-                    <h1 className="mt-8 w-3/4 text-center text-2xl font-semibold">
-                        No parcels here yet
-                    </h1>
-
-                    <Link
-                        to="/new"
-                        className="mx-1 mt-4 flex flex-row hover:text-green-500"
-                    >
-                        <p className="mr-2">Create new parcel</p>
-                        <PackagePlus
-                            className="items-center"
-                            size={20}
-                            strokeWidth={2}
-                        />
-                    </Link>
-                    <Link
-                        to="/history"
-                        className="text-green-active mx-1 mt-8 flex flex-row items-center hover:text-green-500"
-                    >
-                        <p className="mr-1">See past shipments</p>
-                        <ChevronRight
-                            className="items-center"
-                            size={20}
-                            strokeWidth={2}
-                        />
-                    </Link>
-                </div>
+                <NoParcelData
+                    message={"No active parcels"}
+                    linkHistory={true}
+                    isSmallScreen={isSmallScreen2}
+                />
             ) : (
                 <div className="xl-max:grid-cols-1 sm-max:mx-0 sm-max:gap-y-6 mx-10 grid grid-cols-2 justify-items-center gap-x-20 gap-y-10">
                     {activeParcels.map((parcel) => (
