@@ -138,7 +138,7 @@ const NewParcelPage = () => {
                 },
             );
 
-            console.log(response.data);
+            console.log(response.data.data.delivery_pin);
             toast.success(
                 "Parcel created. Check your email for further instructions.",
             );

@@ -100,7 +100,6 @@ const ParcelInfoPage = () => {
                                 <div>ID:</div>
                                 <div>Content:</div>
                                 <div>Status:</div>
-                                <div>Delivery Pin</div>
                             </div>
                             <div className="flex flex-col gap-4">
                                 <span
@@ -119,7 +118,6 @@ const ParcelInfoPage = () => {
                                         {statusMap[parcelInfo.parcel_status]}
                                     </div>
                                 </div>
-                                <div></div>
                             </div>
                         </div>
                         <div className="mt-4">
