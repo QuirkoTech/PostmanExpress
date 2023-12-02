@@ -90,7 +90,7 @@ const NewParcelPage = () => {
                 Accepted Parcels
             </h1>
 
-            <div className="xl-max:grid-cols-1 sm-max:mx-0 mx-10 grid grid-cols-2 justify-items-center gap-x-20 gap-y-10 sm-max:gap-y-6">
+            <div className="xl-max:grid-cols-1 sm-max:mx-0 sm-max:gap-y-6 mx-10 grid grid-cols-2 justify-items-center gap-x-20 gap-y-10">
                 {activeParcels.map((parcel) => (
                     <div
                         key={parcel.parcel_id}
