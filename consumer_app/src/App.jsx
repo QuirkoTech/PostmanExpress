@@ -6,6 +6,7 @@ import {
     NotFoundPage,
     NewParcelPage,
     ParcelInFoPage,
+    ParcelHistoryPage,
 } from "./pages";
 import { AuthRoute, Authprovider, PrivateRoute } from "./components/auth";
 
@@ -38,6 +39,14 @@ function App() {
                         element={
                             <PrivateRoute>
                                 <ParcelInFoPage />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/history"
+                        element={
+                            <PrivateRoute>
+                                <ParcelHistoryPage />
                             </PrivateRoute>
                         }
                     />

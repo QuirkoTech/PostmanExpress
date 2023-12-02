@@ -6,6 +6,7 @@ export const simpleStatusColorMap = {
     "at warehouse": "status-orange", // on the way
     "en route to the pickup location": "status-orange", // on the way
     "ready for pickup": "status-blue", // show status
+    delivered: "status-green",
 };
 
 export const statusMap = {
