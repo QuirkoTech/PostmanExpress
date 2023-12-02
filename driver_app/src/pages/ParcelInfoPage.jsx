@@ -114,7 +114,7 @@ const ParcelInfoPage = () => {
                     {delivery_pin ? (
                         <div className="flex">
                             <p className=" w-36 ">Delivery pin:</p>
-                            <p className="text-white">43245</p>
+                            <p className="text-white">{delivery_pin}</p>
                         </div>
                     ) : null}
                     <div className="flex">

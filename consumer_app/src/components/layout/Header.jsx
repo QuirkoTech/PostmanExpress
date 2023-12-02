@@ -74,13 +74,13 @@ const Header = () => {
     };
 
     return (
-        <header className="bg-dark-secondary relative z-50 flex  h-[72px] w-full items-center px-10 py-5 shadow-lg">
-            <Link to="/" className="text-2xl text-white">
+        <header className="bg-dark-secondary sm-max:px-2 sm-max:py-4 sm-max:text-xl  relative z-50 flex h-[72px] w-full items-center px-10 py-5 text-2xl shadow-lg">
+            <Link to="/" className="text-white">
                 PostmanExpress
             </Link>
 
             <button
-                className="z-1 relative ml-auto border-none bg-transparent text-2xl transition-all duration-300 hover:text-white "
+                className="z-1 relative ml-auto border-none bg-transparent transition-all duration-300 hover:text-white"
                 onClick={openModal}
             >
                 Menu
