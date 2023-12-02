@@ -10,8 +10,8 @@ export const checkPinLength = catchAsync(async (req, res, next) => {
 
     if (!pin) return next(new APIError("No pin provided.", 400));
 
-    const isFiveDigits = /^\d{5}$/.test(pin);
-    if (!isFiveDigits) return next(new APIError("Invalid pin.", 400));
+    const isFourDigits = /^\d{4}$/.test(pin);
+    if (!isFourDigits) return next(new APIError("Invalid pin.", 400));
 
     next();
 });
