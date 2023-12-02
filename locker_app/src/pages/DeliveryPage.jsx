@@ -26,9 +26,9 @@ const DeliveryPage = ({ location, type }) => {
     const schema = yup.object({
         pin: yup
             .string()
-            .required("Please enter a 5 digit pin before submitting")
-            .min(5, "Please enter a 5 digit pin")
-            .max(5, "Please enter a 5 digit pin"),
+            .required("Please enter a 4 digit pin before submitting")
+            .min(4, "Please enter a 4 digit pin")
+            .max(4, "Please enter a 4 digit pin"),
         cabinet_location: yup.string().required("Location is required"),
         type: yup
             .string()

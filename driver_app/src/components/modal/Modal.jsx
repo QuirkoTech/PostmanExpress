@@ -55,7 +55,7 @@ function Modal({
             onClick={handleModalClick}
         >
             <nav
-                className={`bg-dark-secondary xl-max:w-3/12 md-max:w-4/12 sm-max:w-5/12 sm-max:px-3 sm-max:text-base ml-auto flex h-full
+                className={`bg-dark-secondary xl-max:w-3/12 md-max:w-4/12 sm-max:w-[44%] sm-max:px-3 sm-max:text-base ml-auto flex h-full
                     w-1/6 flex-col border-l-2 border-solid border-l-white/5 p-6 text-lg shadow-lg transition-transform duration-300 ease-linear ${
                         isOpen
                             ? "translate-x-0 transform"

@@ -5,6 +5,7 @@ import Layout from "../components/layout/Layout";
 import { toast } from "react-toastify";
 import { Button } from "../components";
 import { capitalizeFirstLetter } from "../utils";
+import { EyeOff, Eye } from "lucide-react";
 
 const ParcelInfoPage = () => {
     const DRIVER_URL = import.meta.env.VITE_DRIVER_BACKEND_URL;
@@ -76,30 +77,68 @@ const ParcelInfoPage = () => {
         }
     };
 
+    // Media query
+    const [isSmallScreen, setIsSmallScreen] = useState(false);
+    const [isLongText, setIsLongText] = useState(false);
+
+    useEffect(() => {
+        function handleResize() {
+            setIsSmallScreen(window.innerWidth <= 622);
+        }
+
+        window.addEventListener("resize", handleResize);
+        handleResize();
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
+
     return (
         <Layout>
-            <h1 className="mb-9 text-4xl font-normal text-white">
+            <h1 className="sm-max:text-2xl sm-max:mb-6 mb-9 text-4xl font-normal text-white">
                 Parcel Info
             </h1>
 
             <div
-                className="bg-dark-secondary border-slate-blue relative mx-10  
-                      rounded-2xl border-2 border-solid px-8 py-8 text-lg "
+                className="bg-dark-secondary border-slate-blue md-max:mx-2 sm-max:mx-0 md-max:p-7 sm-max:p-4 
+                      sm-max:text-base relative mx-10 rounded-2xl border-2 border-solid p-8 text-lg "
             >
-                <div className="flex flex-col  gap-3 lg:h-[13rem] lg:flex-wrap">
-                    <div className="flex">
-                        <p className="w-36">ID:</p>
-                        <p className="text-white">{parcel_id}</p>
+                <div className="lg-max:h-auto flex h-[13rem] flex-col gap-3 lg:flex-wrap">
+                    <div className="relative flex">
+                        <p className="md-max:w-24 w-32">ID:</p>
+                        <p
+                            className={`md-max:whitespace-nowrap sm-max:w-2/4 relative overflow-hidden text-ellipsis text-white ${
+                                isLongText ? "sm-max:whitespace-normal" : ""
+                            }`}
+                            title={parcel_id}
+                        >
+                            {parcel_id}
+                        </p>
+                        {isSmallScreen && (
+                            <button
+                                className="ml-2 text-white border-none"
+                                onClick={() =>
+                                    setIsLongText((prevState) => !prevState)
+                                }
+                            >
+                                {isLongText ? (
+                                    <Eye className="w-4" />
+                                ) : (
+                                    <EyeOff className="w-4" />
+                                )}
+                            </button>
+                        )}
                     </div>
                     <div className="flex">
-                        <p className=" w-36 ">From:</p>
+                        <p className=" md-max:w-24 w-32 ">From:</p>
                         <p className="text-white">
                             {current_location &&
                                 capitalizeFirstLetter(current_location)}
                         </p>
                     </div>
                     <div className="flex">
-                        <p className=" w-36 ">To:</p>
+                        <p className=" md-max:w-24 w-32 ">To:</p>
                         <p className="text-white">
                             {" "}
                             {ship_to && capitalizeFirstLetter(ship_to)}
@@ -107,30 +146,30 @@ const ParcelInfoPage = () => {
                     </div>
                     {pickup_pin ? (
                         <div className="flex">
-                            <p className=" w-36 ">Pickup pin:</p>
+                            <p className=" md-max:w-24 w-32 ">Pickup pin:</p>
                             <p className="text-white">{pickup_pin}</p>
                         </div>
                     ) : null}
                     {delivery_pin ? (
                         <div className="flex">
-                            <p className=" w-36 ">Delivery pin:</p>
+                            <p className=" md-max:w-24 w-32 ">Delivery pin:</p>
                             <p className="text-white">{delivery_pin}</p>
                         </div>
                     ) : null}
                     <div className="flex">
-                        <p className=" w-36 ">Weight:</p>
+                        <p className=" md-max:w-24 w-32 ">Weight:</p>
                         <p className="text-white">{weight} kg</p>
                     </div>{" "}
                     <div className="flex">
-                        <p className=" w-36 ">Height:</p>
+                        <p className=" md-max:w-24 w-32 ">Height:</p>
                         <p className="text-white">{height} m</p>
                     </div>{" "}
                     <div className="flex">
-                        <p className=" w-36 ">Width:</p>
+                        <p className=" md-max:w-24 w-32 ">Width:</p>
                         <p className="text-white">{width} m</p>
                     </div>{" "}
                     <div className="flex">
-                        <p className=" w-36 ">Length:</p>
+                        <p className=" md-max:w-24 w-32 ">Length:</p>
                         <p className="text-white">{length} m</p>
                     </div>
                 </div>
