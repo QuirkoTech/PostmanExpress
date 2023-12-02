@@ -10,7 +10,7 @@ const FooterArray = [
 const Footer = () => {
     return (
         <footer className="padding-x">
-            <div className="max-container relative flex w-full justify-between py-8 sm-max:py-5 text-sm">
+            <div className="max-container relative flex w-full justify-between py-8 sm-max:py-5 text-sm leading-4">
                 <div className="absolute left-1/2 top-0 w-[95%] -translate-x-1/2 border-t border-solid border-[#494844]"></div>
                 <div className="">
                     {FooterArray.map((item, index) => (
@@ -28,7 +28,7 @@ const Footer = () => {
                 <div className=" flex flex-col justify-center">
                     <a
                         href="https://github.com/QuirkoTech/PostmanExpress"
-                        className="mb-1 transition-all duration-300 hover:text-white"
+                        className="mb-3 transition-all duration-300 hover:text-white"
                     >
                         {/*  eslint-disable-next-line react/no-unescaped-entities */}
                         Project's Github
