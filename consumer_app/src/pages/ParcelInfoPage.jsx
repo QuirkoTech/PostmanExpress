@@ -113,7 +113,7 @@ const ParcelInfoPage = () => {
                 Parcel Info
             </h1>
 
-            <div
+            {/* <div
                 className="bg-dark-secondary border-slate-blue md-max:mx-2 sm-max:mx-0 md-max:p-7 sm-max:p-4 
                       sm-max:text-base relative mx-10 rounded-2xl border-2 border-solid p-8 text-lg "
             >
@@ -223,8 +223,8 @@ const ParcelInfoPage = () => {
                             )}
                         </div>
                         {isTableVisible && (
-                            <div className="mt-4 flex flex-col gap-4">
-                                {parcelInfo.status_timestamps &&
+                            <div className="mt-4 flex flex-col gap-4"> */}
+            {/* {parcelInfo.status_timestamps &&
                                     parcelInfo.status_timestamps.map(
                                         (status, index) => (
                                             <div
@@ -233,9 +233,9 @@ const ParcelInfoPage = () => {
                                             >
                                                 {index === 0 && (
                                                     <div className="absolute bottom-[24px] left-1 -ml-[1px] h-[52px] w-[2px] border-l-2 border-[#494844]"></div>
-                                                )}
+                                                )} */}
 
-                                                <div className="relative flex">
+            {/* <div className="relative flex">
                                                     <div
                                                         className={`mr-2 mt-3 h-2 w-2 rounded-full bg-${statusColorMap[defaultStatus]}`}
                                                     ></div>
@@ -252,10 +252,10 @@ const ParcelInfoPage = () => {
                                                             {status.date}
                                                         </p>
                                                     </div>
-                                                </div>
+                                                </div> */}
 
-                                                {/* Additional status if the parcel status changes */}
-                                                {index <
+            {/* Additional status if the parcel status changes */}
+            {/* {index <
                                                     parcelInfo.status_timestamps
                                                         .length -
                                                         0 &&
@@ -283,15 +283,15 @@ const ParcelInfoPage = () => {
                                                                 </p>
                                                             </div>
                                                         </div>
-                                                    )}
-                                            </div>
+                                                    )} */}
+            {/* </div>
                                         ),
-                                    )}
-                            </div>
+                                    )} */}
+            {/* </div>
                         )}
                     </div>
                 </div>
-            </div>
+            </div> */}
         </Layout>
     );
 };
