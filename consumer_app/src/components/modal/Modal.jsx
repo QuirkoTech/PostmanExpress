@@ -123,7 +123,7 @@ function Modal({ isOpen, closeModal, name, menuLinks }) {
                     <button
                         onClick={openDeleteModal}
                         className="text-danger-main hover:text-danger-secondary mb-6 mr-auto mt-auto cursor-pointer border-none bg-transparent font-medium
-                        transition-all duration-300 hover:border-none"
+                        transition-all duration-300 hover:border-none whitespace-nowrap"
                     >
                         Delete Account
                     </button>
