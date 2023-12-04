@@ -125,7 +125,7 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
 
     try {
         const parcel = await pool.query(
-            "SELECT current_location, ship_to, ship_from, parcel_sender_id, parcel_receiver_email, driver_accepted FROM parcels WHERE parcel_id = $1",
+            "SELECT current_location, ship_to, ship_from, parcel_sender_id, parcel_receiver_email, driver_accepted, parcel_status FROM parcels WHERE parcel_id = $1",
             [parcel_id],
         );
 
@@ -193,29 +193,87 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
                 parcelObj.parcel_sender_id === user.rows[0].user_id ||
                 parcelObj.parcel_receiver_email === user.rows[0].user_email
             ) {
-                parcelSearchQuery = `
-                                    SELECT 
-                                        p.parcel_id,
-                                        COALESCE(sender.user_name, p.parcel_sender_id::varchar) AS sender_name,
-                                        COALESCE(receiver.user_name, p.parcel_receiver_email) AS receiver_name,
-                                        p.parcel_status,
-                                        p.status_timestamps,
-                                        p.width,
-                                        p.height,
-                                        p.length,
-                                        p.weight,
-                                        p.parcel_name,
-                                        p.ship_to,
-                                        p.ship_from
-                                    FROM 
-                                        parcels p
-                                    LEFT JOIN 
-                                        users sender ON p.parcel_sender_id = sender.user_id
-                                    LEFT JOIN 
-                                        users receiver ON p.parcel_receiver_email = receiver.user_email
-                                    WHERE 
-                                        p.parcel_id = $1;
-                                `;
+                if (
+                    parcelObj.parcel_status === "awaiting drop-off" &&
+                    parcelObj.parcel_sender_id === user.rows[0].user_id
+                ) {
+                    parcelSearchQuery = `
+                                        SELECT
+                                            p.parcel_id,
+                                            COALESCE(sender.user_name, p.parcel_sender_id::varchar) AS sender_name,
+                                            COALESCE(receiver.user_name, p.parcel_receiver_email) AS receiver_name,
+                                            p.parcel_status,
+                                            p.status_timestamps,
+                                            p.width,
+                                            p.height,
+                                            p.length,
+                                            p.weight,
+                                            p.parcel_name,
+                                            p.ship_to,
+                                            p.ship_from,
+                                            p.delivery_pin
+                                        FROM
+                                            parcels p
+                                        LEFT JOIN
+                                            users sender ON p.parcel_sender_id = sender.user_id
+                                        LEFT JOIN
+                                            users receiver ON p.parcel_receiver_email = receiver.user_email
+                                        WHERE
+                                            p.parcel_id = $1;
+                                    `;
+                } else if (
+                    parcelObj.parcel_status === "ready for pickup" &&
+                    parcelObj.parcel_receiver_email === user.rows[0].user_email
+                ) {
+                    parcelSearchQuery = `
+                                        SELECT
+                                            p.parcel_id,
+                                            COALESCE(sender.user_name, p.parcel_sender_id::varchar) AS sender_name,
+                                            COALESCE(receiver.user_name, p.parcel_receiver_email) AS receiver_name,
+                                            p.parcel_status,
+                                            p.status_timestamps,
+                                            p.width,
+                                            p.height,
+                                            p.length,
+                                            p.weight,
+                                            p.parcel_name,
+                                            p.ship_to,
+                                            p.ship_from,
+                                            p.pickup_pin
+                                        FROM
+                                            parcels p
+                                        LEFT JOIN
+                                            users sender ON p.parcel_sender_id = sender.user_id
+                                        LEFT JOIN
+                                            users receiver ON p.parcel_receiver_email = receiver.user_email
+                                        WHERE
+                                            p.parcel_id = $1;
+                                    `;
+                } else {
+                    parcelSearchQuery = `
+                                        SELECT
+                                            p.parcel_id,
+                                            COALESCE(sender.user_name, p.parcel_sender_id::varchar) AS sender_name,
+                                            COALESCE(receiver.user_name, p.parcel_receiver_email) AS receiver_name,
+                                            p.parcel_status,
+                                            p.status_timestamps,
+                                            p.width,
+                                            p.height,
+                                            p.length,
+                                            p.weight,
+                                            p.parcel_name,
+                                            p.ship_to,
+                                            p.ship_from
+                                        FROM
+                                            parcels p
+                                        LEFT JOIN
+                                            users sender ON p.parcel_sender_id = sender.user_id
+                                        LEFT JOIN
+                                            users receiver ON p.parcel_receiver_email = receiver.user_email
+                                        WHERE
+                                            p.parcel_id = $1;
+                                    `;
+                }
             } else {
                 parcelSearchQuery = `SELECT parcel_id, parcel_status, status_timestamps, ship_to, ship_from FROM parcels WHERE parcel_id = $1`;
             }
