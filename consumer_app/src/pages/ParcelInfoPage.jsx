@@ -5,6 +5,8 @@ import { ChevronDown, ChevronUp, Eye, EyeOff } from "lucide-react";
 import axios from "axios";
 import { statusColorMap, statusMap } from "../constants/index";
 import { NotFoundPage } from "../pages";
+import Timestamps from "../components/Timestamps";
+
 const ParcelInfoPage = () => {
     const { parcel_id } = useParams();
 
@@ -62,7 +64,6 @@ const ParcelInfoPage = () => {
 
     const statusColor = statusColorMap[parcelInfo.parcel_status];
 
-    console.log(statusColor);
     const {
         height,
 
@@ -85,9 +86,12 @@ const ParcelInfoPage = () => {
         weight,
 
         width,
+
         delivery_pin,
+
+        pickup_pin,
     } = parcelInfo;
-    console.log(parcelInfo);
+
     const [isSmallScreen, setIsSmallScreen] = useState(false);
     const [isLongText, setIsLongText] = useState(false);
     useEffect(() => {
@@ -117,7 +121,7 @@ const ParcelInfoPage = () => {
                 className="bg-dark-secondary border-slate-blue md-max:mx-2 sm-max:mx-0 md-max:p-7 sm-max:p-4 
                       sm-max:text-base relative mx-10 rounded-2xl border-2 border-solid p-8 text-lg "
             >
-                <div className="lg-max:h-auto flex h-[13rem] flex-col gap-3 lg:flex-wrap">
+                <div className="lg-max:h-auto flex  flex-col gap-3 lg:flex-wrap">
                     <div className="relative flex">
                         <p className="md-max:w-24 w-32">ID:</p>
                         <p
@@ -175,6 +179,12 @@ const ParcelInfoPage = () => {
                             <p className="text-white">{delivery_pin}</p>
                         </div>
                     ) : null}
+                    {pickup_pin ? (
+                        <div className="flex">
+                            <p className=" md-max:w-24 w-32 ">Pick up pin:</p>
+                            <p className="text-white">{pickup_pin}</p>
+                        </div>
+                    ) : null}
                     <div className="flex">
                         <p className=" md-max:w-24 w-32 ">Weight:</p>
                         <p className="text-white">{weight} kg</p>
@@ -222,72 +232,8 @@ const ParcelInfoPage = () => {
                                 />
                             )}
                         </div>
-                        {isTableVisible && (
-                            <div className="mt-4 flex flex-col gap-4">
-                                {parcelInfo.status_timestamps &&
-                                    parcelInfo.status_timestamps.map(
-                                        (status, index) => (
-                                            <div
-                                                key={index}
-                                                className="relative ml-4 flex flex-col"
-                                            >
-                                                {index === 0 && (
-                                                    <div className="absolute bottom-[24px] left-1 -ml-[1px] h-[52px] w-[2px] border-l-2 border-[#494844]"></div>
-                                                )}
-
-                                                <div className="relative flex">
-                                                    <div
-                                                        className={`mr-2 mt-3 h-2 w-2 rounded-full bg-${statusColorMap[defaultStatus]}`}
-                                                    ></div>
-                                                    <div className="ml-4 flex flex-col">
-                                                        <h1>
-                                                            {
-                                                                statusMap[
-                                                                    defaultStatus
-                                                                ]
-                                                            }
-                                                        </h1>
-                                                        <p className="text-xs opacity-75">
-                                                            at {status.time} on{" "}
-                                                            {status.date}
-                                                        </p>
-                                                    </div>
-                                                </div>
-
-                                                {/* Additional status if the parcel status changes */}
-                                                {index <
-                                                    parcelInfo.status_timestamps
-                                                        .length -
-                                                        0 &&
-                                                    parcelInfo.parcel_status !==
-                                                        defaultStatus && (
-                                                        <div className="relative mt-2 flex">
-                                                            <div
-                                                                className={`mr-2 mt-3 h-2 w-2 rounded-full bg-${statusColor}`}
-                                                            ></div>
-                                                            <div className="ml-4 flex flex-col">
-                                                                <h1>
-                                                                    {capitalizeFirstLetter(
-                                                                        parcelInfo.parcel_status,
-                                                                    )}
-                                                                </h1>
-                                                                <p className="text-xs opacity-75">
-                                                                    at{" "}
-                                                                    {
-                                                                        status.time
-                                                                    }{" "}
-                                                                    on{" "}
-                                                                    {
-                                                                        status.date
-                                                                    }
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                            </div>
-                                        ),
-                                    )}
-                            </div>
+                        {isTableVisible && status_timestamps && (
+                            <Timestamps status_timestamps={status_timestamps} />
                         )}
                     </div>
                 </div>
