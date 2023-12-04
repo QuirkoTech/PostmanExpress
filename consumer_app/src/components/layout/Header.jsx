@@ -1,5 +1,5 @@
 import Modal from "../modal/Modal";
-import { useRef, useState, useContext } from "react";
+import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { Notifications } from "../";
 import { AuthContext } from "../auth";
@@ -57,7 +57,6 @@ const menuLinks = [
 const Header = () => {
     const { userName, notifications } = useContext(AuthContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const modalRef = useRef();
 
     const openModal = () => {
         setIsModalOpen(true);
@@ -65,12 +64,6 @@ const Header = () => {
 
     const closeModal = () => {
         setIsModalOpen(false);
-    };
-
-    const handleModalClick = (e) => {
-        if (modalRef.current && !modalRef.current.contains(e.target)) {
-            closeModal();
-        }
     };
 
     return (
@@ -91,8 +84,6 @@ const Header = () => {
                 closeModal={closeModal}
                 name={userName}
                 menuLinks={menuLinks}
-                handleModalClick={handleModalClick}
-                modalRef={modalRef}
             />
 
             <Notifications notifications={notifications} />
