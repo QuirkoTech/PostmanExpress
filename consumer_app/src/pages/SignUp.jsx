@@ -133,7 +133,7 @@ const SignUp = () => {
     return (
         <section className="padding">
             <div className="max-container">
-                <h1 className="mt-14 text-center text-5xl text-white ">
+                <h1 className=" mt-14 text-center text-5xl text-white ">
                     PostmanExpress
                 </h1>
                 <div className="mx-auto w-64">
@@ -200,7 +200,11 @@ const SignUp = () => {
                                 {errors.location?.message}
                             </p>
                         </div>
-                        <Button type="submit" disabled={isSubmitting} />
+                        <Button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="sm-max:w-full"
+                        />
                     </form>
                     <p className="mt-9 text-lg">
                         Already have an account?{" "}

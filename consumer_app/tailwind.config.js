@@ -62,6 +62,8 @@ export default {
                 "lg-max": { max: "1023px" },
                 "md-max": { max: "767px" },
                 "sm-max": { max: "639px" },
+                "mb-max": { max: "524x" },
+                mb: "320px",
             },
         },
     },

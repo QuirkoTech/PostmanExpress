@@ -125,7 +125,11 @@ const Login = () => {
                             errorMessage={errors.password?.message}
                         />
 
-                        <Button type="submit" disabled={isSubmitting} />
+                        <Button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="sm-max:w-full"
+                        />
                     </form>
                     <p className="mt-9 whitespace-nowrap text-lg">
                         {/* eslint-disable-next-line react/no-unescaped-entities */}

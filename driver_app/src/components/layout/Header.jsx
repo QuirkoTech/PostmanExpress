@@ -35,7 +35,7 @@ const Header = () => {
     };
 
     return (
-        <header className="bg-dark-secondary sm-max:px-2 sm-max:py-4 sm-max:text-xl  relative z-50 flex h-[72px] w-full items-center px-10 py-5 text-2xl shadow-lg">
+        <header className="bg-dark-secondary sm-max:px-8 sm-max:py-4 sm-max:text-xl relative z-50 flex h-[72px] w-full items-center px-10 py-5 text-2xl shadow-lg">
             <Link to="/" className=" text-white">
                 PostmanExpress
             </Link>

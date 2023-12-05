@@ -124,7 +124,11 @@ const Login = () => {
                             errorMessage={errors.password?.message}
                         />
 
-                        <Button type="submit" disabled={isSubmitting} />
+                        <Button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="sm-max:w-full"
+                        />
                     </form>
                 </div>
             </div>
