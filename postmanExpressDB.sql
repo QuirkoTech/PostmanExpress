@@ -243,6 +243,7 @@ SET status_timestamps = status_timestamps || jsonb_build_object('date', TO_CHAR(
 status = 'prepared for delivery'
 WHERE id = 5;
 
+--Bot parcel generator
 
 SELECT status_timestamps FROM test;
 
