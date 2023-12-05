@@ -246,6 +246,19 @@ WHERE id = 5;
 
 SELECT status_timestamps FROM test;
 
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255),
+    email VARCHAR(255)
+);
+
+CREATE TABLE parcels (
+    id SERIAL PRIMARY KEY,
+    sender_id INTEGER REFERENCES users(id),
+    status VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 
 -- SOME QUERIES
 
