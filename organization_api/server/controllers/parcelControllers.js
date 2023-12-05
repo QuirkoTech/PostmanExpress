@@ -300,7 +300,7 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
                                     SELECT
                                         parcel_id,
                                         ship_to,
-                                        current_location,
+                                        ship_from,
                                         pickup_pin,
                                         delivery_pin,
                                         length,
@@ -318,7 +318,7 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
                     SELECT
                         parcel_id,
                         ship_to,
-                        current_location,
+                        ship_from,
                         length,
                         height,
                         width,
@@ -342,11 +342,19 @@ export const singleParcelInfo = catchAsync(async (req, res, next) => {
 
         if (
             appType === process.env.DRIVER_APP_HEADER &&
-            req.headers["x-driver-location"] &&
-            parcelObj.current_location !== "warehouse" &&
-            parcelObj.current_location !== null
+            req.headers["x-driver-location"]
         ) {
-            parcelInfo.rows[0].ship_to = "warehouse";
+            if (
+                parcelObj.parcel_status === "en route to the warehouse" ||
+                parcelObj.parcel_status === "prepared for delivery"
+            ) {
+                parcelInfo.rows[0].ship_to = "warehouse";
+            } else if (
+                parcelObj.parcel_status === "at warehouse" ||
+                parcelObj.parcel_status === "en route to the pickup location"
+            ) {
+                parcelInfo.rows[0].ship_from = "warehouse";
+            }
         }
 
         let data = { parcel_info: parcelInfo.rows[0] };
