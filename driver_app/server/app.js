@@ -44,12 +44,8 @@ app.use(
 );
 app.use(cookieParser());
 app.use(express.json());
-
 if (process.env.ENV === "dev") app.use(morgan("dev"));
-
 app.use(checkContentType);
-
-console.log("hello");
 
 app.use("/auth", authRoutes);
 app.use("/parcels", parcelRoutes);

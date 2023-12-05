@@ -10,7 +10,7 @@ import { AuthProvider, PrivateRoute, AuthRoute } from "./components/auth";
 
 function App() {
     return (
-        <div className="bg-dark-main text-slate-gray relative min-h-screen">
+        <div className="bg-dark-main text-slate-gray relative flex min-h-screen flex-col">
             <AuthProvider>
                 <Routes>
                     <Route

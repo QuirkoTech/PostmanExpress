@@ -27,10 +27,10 @@ const Authprovider = ({ children }) => {
         } catch (error) {
             const message = error.response.data.status;
             if (message) {
-                console.log(message);
+                // console.log(message);
             }
             setIsAuthenticated(false);
-            console.log(error);
+            // console.log(error);
         }
         setIsLoading(false);
     };

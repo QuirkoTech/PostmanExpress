@@ -6,12 +6,13 @@ import {
     NotFoundPage,
     NewParcelPage,
     ParcelInFoPage,
+    ParcelHistoryPage,
 } from "./pages";
 import { AuthRoute, Authprovider, PrivateRoute } from "./components/auth";
 
 function App() {
     return (
-        <div className="bg-dark-main text-slate-gray relative min-h-screen">
+        <div className="bg-dark-main text-slate-gray relative flex min-h-screen flex-col">
             <Authprovider>
                 <Routes>
                     {/* Private routes */}
@@ -29,6 +30,23 @@ function App() {
                         element={
                             <PrivateRoute>
                                 <NewParcelPage />
+                            </PrivateRoute>
+                        }
+                    />
+
+                    <Route
+                        path="/parcels/:parcel_id"
+                        element={
+                            <PrivateRoute>
+                                <ParcelInFoPage />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/history"
+                        element={
+                            <PrivateRoute>
+                                <ParcelHistoryPage />
                             </PrivateRoute>
                         }
                     />
@@ -53,10 +71,6 @@ function App() {
 
                     {/* 404 */}
                     <Route path="*" element={<NotFoundPage />} />
-                    <Route
-                        path="/parcels/:parcel_id"
-                        element={<ParcelInFoPage />}
-                    />
                 </Routes>
             </Authprovider>
         </div>

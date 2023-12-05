@@ -85,10 +85,10 @@ CREATE TABLE parcels (
   ship_to LOCATION NOT NULL,
   current_location LOCATION,
   ship_from LOCATION NOT NULL,
-  height integer NOT NULL,
-  length integer NOT NULL,
-  width integer NOT NULL,
-  weight integer NOT NULL,
+  height numeric(10,1) NOT NULL,
+  length numeric(10,1) NOT NULL,
+  width numeric(10,1) NOT NULL,
+  weight numeric(10,1) NOT NULL,
   pickup_pin integer UNIQUE,
   delivery_pin integer UNIQUE,
   driver_accepted BOOLEAN DEFAULT FALSE,
@@ -128,7 +128,7 @@ VALUES (
   11111,
   22222,
   ARRAY[
-  jsonb_build_object('status', 'delivered', 'date', TO_CHAR( now(), 'DD.MM.YY'), 'time', TO_CHAR(now(), 'HH24:MI') )
+  jsonb_build_object('status', 'prepared for delivery', 'date', TO_CHAR( now(), 'DD.MM.YY'), 'time', TO_CHAR(now(), 'HH24:MI') )
   ],
   'helsinki',
   'oulu',
@@ -136,9 +136,9 @@ VALUES (
   'Nike shoes'
 );
 
-INSERT INTO parcels (parcel_status, parcel_sender_id, parcel_receiver_email, height, length, width, weight, pickup_pin, delivery_pin, status_timestamps, ship_to, ship_from, notify, parcel_name)
+INSERT INTO parcels (parcel_status, parcel_sender_id, parcel_receiver_email, height, length, width, weight, pickup_pin, delivery_pin, status_timestamps, ship_to, ship_from, notify, parcel_name, current_location)
 VALUES (
-  'delivered',
+  'prepared for delivery',
   (SELECT user_id FROM users WHERE user_email = 'usertest@gmail.com'),
   'test@gmail.com',
   13,
@@ -148,17 +148,18 @@ VALUES (
   22222,
   33333,
   ARRAY[
-    jsonb_build_object('status', 'delivered', 'date', TO_CHAR( now() - interval '1 day', 'DD.MM.YY'), 'time', TO_CHAR(now() - interval '1 day', 'HH24:MI') )
+    jsonb_build_object('status', 'prepared for delivery', 'date', TO_CHAR( now() - interval '1 day', 'DD.MM.YY'), 'time', TO_CHAR(now() - interval '1 day', 'HH24:MI') )
   ],
   'turku',
   'oulu',
   true,
-  'Adidas jacket'
+  'Adidas jacket',
+  'oulu'
 );
 
-INSERT INTO parcels (parcel_status, parcel_sender_id, parcel_receiver_email, height, length, width, weight, pickup_pin, delivery_pin, status_timestamps, ship_to, ship_from, notify, parcel_name)
+INSERT INTO parcels (parcel_status, parcel_sender_id, parcel_receiver_email, height, length, width, weight, pickup_pin, delivery_pin, status_timestamps, ship_to, ship_from, notify, parcel_name, current_location)
 VALUES (
-  'delivered',
+  'prepared for delivery',
   (SELECT user_id FROM users WHERE user_email = 'usertest@gmail.com'),
   'test@gmail.com',
   13,
@@ -168,17 +169,18 @@ VALUES (
   33333,
   44444,
   ARRAY[
-    jsonb_build_object('status', 'delivered', 'date', TO_CHAR( now() - interval '2 days', 'DD.MM.YY'), 'time', TO_CHAR(now() - interval '2 days', 'HH24:MI') )
+    jsonb_build_object('status', 'prepared for delivery', 'date', TO_CHAR( now() - interval '2 days', 'DD.MM.YY'), 'time', TO_CHAR(now() - interval '2 days', 'HH24:MI') )
   ],
   'turku',
   'oulu',
   true,
-  'Shiny cup'
+  'Shiny cup',
+  'oulu'
 );
 
-INSERT INTO parcels (parcel_status, parcel_sender_id, parcel_receiver_email, height, length, width, weight, pickup_pin, delivery_pin, status_timestamps, ship_to, ship_from, notify, parcel_name)
+INSERT INTO parcels (parcel_status, parcel_sender_id, parcel_receiver_email, height, length, width, weight, pickup_pin, delivery_pin, status_timestamps, ship_to, ship_from, notify, parcel_name, current_location)
 VALUES (
-  'delivered',
+  'prepared for delivery',
   (SELECT user_id FROM users WHERE user_email = 'usertest@gmail.com'),
   'test@gmail.com',
   13,
@@ -188,18 +190,19 @@ VALUES (
   44444,
   55555,
   ARRAY[
-    jsonb_build_object('status', 'delivered', 'date', TO_CHAR( now() - interval '3 days', 'DD.MM.YY'), 'time', TO_CHAR(now() - interval '3 days', 'HH24:MI') )
+    jsonb_build_object('status', 'prepared for delivery', 'date', TO_CHAR( now() - interval '3 days', 'DD.MM.YY'), 'time', TO_CHAR(now() - interval '3 days', 'HH24:MI') )
   ],
   'espoo',
   'helsinki',
   true,
-  'Book collection'
+  'Book collection',
+  'helsinki'
 );
 
 
 INSERT INTO parcels (parcel_status, parcel_sender_id, parcel_receiver_email, height, length, width, weight, pickup_pin, delivery_pin, status_timestamps, ship_to, ship_from, notify, parcel_name)
 VALUES (
-  'delivered',
+  'prepared for delivery',
   (SELECT user_id FROM users WHERE user_email = 'usertest@gmail.com'),
   'test@gmail.com',
   13,
@@ -209,7 +212,7 @@ VALUES (
   55555,
   66666,
   ARRAY[
-    jsonb_build_object('status', 'delivered', 'date', TO_CHAR( now() - interval '4 days', 'DD.MM.YY'), 'time', TO_CHAR(now() - interval '4 days', 'HH24:MI') )
+    jsonb_build_object('status', 'prepared for delivery', 'date', TO_CHAR( now() - interval '4 days', 'DD.MM.YY'), 'time', TO_CHAR(now() - interval '4 days', 'HH24:MI') )
   ],
   'tampere',
   'helsinki',

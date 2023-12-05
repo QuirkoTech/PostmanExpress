@@ -23,9 +23,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-
 if (process.env.ENV === "dev") app.use(morgan("dev"));
-
 app.use(checkContentType);
 
 app.use("/cabinet", cabinetRoutes);

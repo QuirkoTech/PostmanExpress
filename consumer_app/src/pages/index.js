@@ -6,8 +6,8 @@ import HomePage from "./HomePage";
 import NotFoundPage from "./NotFoundPage";
 import NewParcelPage from "./NewParcelPage";
 import ActiveParcelPage from "./ActiveParcelPage";
-
 import ParcelInFoPage from "./ParcelInfoPage";
+import ParcelHistoryPage from "./ParcelHistoryPage";
 export {
     SignUp,
     Login,
@@ -16,4 +16,5 @@ export {
     NewParcelPage,
     ActiveParcelPage,
     ParcelInFoPage,
+    ParcelHistoryPage,
 };

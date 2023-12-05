@@ -29,12 +29,17 @@ export const logIn = catchAsync(async (req, res, next) => {
             [driver_email],
         );
 
-        if (driver.rowCount === 0)
+        if (driver.rowCount === 0) {
+            await client.query("ROLLBACK");
+            client.release();
             return next(new APIError("No driver found with this email.", 404));
+        }
 
         const isMatch = await bcrypt.compare(password, driver.rows[0].password);
 
         if (isMatch === false) {
+            await client.query("ROLLBACK");
+            client.release();
             return next(new APIError("Invalid credentials.", 403));
         }
 

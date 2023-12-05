@@ -63,18 +63,15 @@ export const consumerLogin = catchAsync(async (req, res, next) => {
     if (!password || !user_email)
         return next(new APIError("Some required fields missing.", 400));
 
-    const client = await pool.connect();
-
     try {
-        await client.query("BEGIN");
-
-        const user = await client.query(
+        const user = await pool.query(
             "SELECT * FROM users WHERE user_email = $1",
             [user_email],
         );
 
-        if (user.rowCount === 0)
+        if (user.rowCount === 0) {
             return next(new APIError("No user found with this email.", 404));
+        }
 
         const isMatch = await bcrypt.compare(password, user.rows[0].password);
 
@@ -87,24 +84,14 @@ export const consumerLogin = catchAsync(async (req, res, next) => {
             user.rows[0].user_id,
         );
 
-        await client.query(
+        await pool.query(
             "UPDATE users SET refresh_token = $1 WHERE user_id = $2",
             [refreshToken, user.rows[0].user_id],
         );
 
-        await client.query("COMMIT");
-        client.release();
-
         res.status(201).json({ status: "success", access_token: accessToken });
     } catch (error) {
-        try {
-            await client.query("ROLLBACK");
-        } catch (rollbackError) {
-            console.error("User log in rollback failed: ", rollbackError);
-        }
-
         console.error(error);
-        client.release();
         return next(
             new APIError("Couldn't perform log in, try again later.", 500),
         );
@@ -217,7 +204,7 @@ export const consumerDelete = catchAsync(async (req, res, next) => {
         } catch (rollbackError) {
             console.error("User delete rollback failed: ", rollbackError);
         }
-        console.log(error);
+        console.error(error);
 
         client.release();
         return next(
