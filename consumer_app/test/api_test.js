@@ -66,7 +66,6 @@ describe("Account actions", () => {
         );
     });
 
-    // Блядь, заебало
     it("Should log in the user with correct credentials:", async () => {
         const response = await request
             .post("/auth/login")
