@@ -127,7 +127,7 @@ const Login = () => {
                         <Button
                             type="submit"
                             disabled={isSubmitting}
-                            className="sm-max:w-full"
+                            className="w-full"
                         />
                     </form>
                 </div>

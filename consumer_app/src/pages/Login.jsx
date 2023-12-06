@@ -128,7 +128,7 @@ const Login = () => {
                         <Button
                             type="submit"
                             disabled={isSubmitting}
-                            className="sm-max:w-full"
+                            className="w-full"
                         />
                     </form>
                     <p className="mt-9 whitespace-nowrap text-lg">

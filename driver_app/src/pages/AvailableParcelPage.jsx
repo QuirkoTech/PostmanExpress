@@ -102,7 +102,7 @@ const NewParcelPage = () => {
 
     return (
         <Layout>
-            <h1 className="sm-max:text-2xl sm-max:mb-6 sm-max:text-center mb-9 text-4xl font-normal text-white">
+            <h1 className="sm-max:text-2xl sm-max:mb-6 sm-max:ml-4 mb-9 text-4xl font-normal text-white">
                 Available Parcels
             </h1>
             {availableParcels.length === 0 ? (

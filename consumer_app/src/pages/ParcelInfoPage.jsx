@@ -217,9 +217,9 @@ const ParcelInfoPage = () => {
                     </div>
                     <div className="flex">
                         <p className=" md-max:w-24 w-32 ">Status:</p>
-                        <div className="flex flex-row">
+                        <div className="flex flex-row item-center">
                             <div
-                                className={`mb:mt-[10px]  mr-2 h-2 w-2 rounded-full bg-${statusColor}`}
+                                className={`sm-max:mt-2 mt-[10px] lw-max:mt-2 mr-2 h-2 w-2 rounded-full bg-${statusColor}`}
                             ></div>
                             <p className="text-white">
                                 {capitalizeFirstLetter(parcel_status)}

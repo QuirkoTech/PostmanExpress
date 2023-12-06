@@ -155,7 +155,7 @@ const NewParcelPage = () => {
     //Some issues when RD at < 520px, so I didn't make it, just ignored it :))
     return (
         <Layout>
-            <h1 className="sm-max:text-center sm-max:text-2xl mb-9 text-4xl font-normal  text-white">
+            <h1 className=" sm-max:text-2xl sm-max:ml-4 mb-9 text-4xl font-normal  text-white">
                 New Parcel
             </h1>
 
