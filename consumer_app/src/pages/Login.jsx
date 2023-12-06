@@ -97,17 +97,17 @@ const Login = () => {
     return (
         <section className="padding">
             <div className="max-container">
-                <h1 className="mt-14 text-center text-5xl text-white ">
+                <h1 className="lw-max:text-3xl xxs-max:text-xl lw-max:mt-8 mt-14 text-center text-5xl text-white ">
                     PostmanExpress
                 </h1>
                 <div className="mx-auto w-64">
                     <form
                         onSubmit={handleSubmit(submitHandler)}
                         action=""
-                        className="flex flex-col items-center text-lg"
+                        className="lw-max:w-3/4 xxs-max:text-sm xxs-max:w-2/4 lw-max:mx-auto flex flex-col items-center text-lg"
                         noValidate
                     >
-                        <h2 className=" pb-5 pt-20 text-lg text-white ">
+                        <h2 className=" lw-max:pt-10 xxs-max:text-sm pb-5 pt-20 text-lg text-white ">
                             Customer Log In
                         </h2>
                         <Input
@@ -131,7 +131,7 @@ const Login = () => {
                             className="w-full"
                         />
                     </form>
-                    <p className="mt-9 whitespace-nowrap text-lg">
+                    <p className="xxs-max:text-sm xxs-max:text-center mt-9 whitespace-nowrap text-lg">
                         {/* eslint-disable-next-line react/no-unescaped-entities */}
                         Don't have an account yet?{" "}
                         <Link to="/signup" className="text-white">

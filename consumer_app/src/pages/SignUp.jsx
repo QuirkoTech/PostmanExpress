@@ -133,17 +133,17 @@ const SignUp = () => {
     return (
         <section className="padding">
             <div className="max-container">
-                <h1 className=" mt-14 text-center text-5xl text-white ">
+                <h1 className=" lw-max:text-3xl lw-max:mt-8 xxs-max:text-xl xxs-max:mt-4 mt-14 text-center text-5xl text-white ">
                     PostmanExpress
                 </h1>
                 <div className="mx-auto w-64">
                     <form
                         onSubmit={handleSubmit(submitHandler)}
                         action=""
-                        className="gap flex flex-col items-center text-lg"
+                        className="gap lw-max:w-3/4 xxs-max:w-2/3 xxs-max:text-sm lw-max:mx-auto lw-max:text-base flex flex-col items-center text-lg"
                         noValidate
                     >
-                        <h2 className=" pb-5 pt-20 text-lg text-white ">
+                        <h2 className=" lw-max:pt-10 xxs-max:text-sm xxs-max:pt-8 pb-5 pt-20 text-lg text-white ">
                             Customer Sign Up
                         </h2>
                         <Input
@@ -195,7 +195,7 @@ const SignUp = () => {
                                 <option value="tampere">Tampere</option>
                                 <option value="espoo">Espoo</option>
                             </select>
-                            <ChevronsUpDown className="stroke-slate-blue absolute right-2 top-2 " />
+                            <ChevronsUpDown className="stroke-slate-blue lw-max:top-1 absolute right-2 top-2" />
                             <p className="text-danger-main mb-9 self-start text-sm">
                                 {errors.location?.message}
                             </p>
@@ -206,7 +206,7 @@ const SignUp = () => {
                             className="w-full"
                         />
                     </form>
-                    <p className="mt-9 text-lg">
+                    <p className="xxs-max:text-sm xxs-max:text-center mt-9 text-lg">
                         Already have an account?{" "}
                         <Link to="/login" className="text-white">
                             Log in

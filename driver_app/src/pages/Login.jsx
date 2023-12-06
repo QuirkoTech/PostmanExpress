@@ -97,16 +97,16 @@ const Login = () => {
     return (
         <section className="padding">
             <div className="max-container">
-                <h1 className="mt-14 text-center text-5xl text-white ">
+                <h1 className="lw-max:mt-10 lw-max:text-3xl xxs-max:text-xl xxs-max:mt-4 mt-14 text-center text-5xl text-white ">
                     PostmanExpress
                 </h1>
                 <div className="mx-auto w-64">
                     <form
-                        className="flex flex-col items-center text-lg"
+                        className="lw-max:w-3/4 lw-max:mx-auto xxs-max:text-sm xxs-max:w-2/3 flex flex-col items-center text-lg"
                         onSubmit={handleSubmit(submitHandler)}
                         noValidate
                     >
-                        <h2 className=" pb-5 pt-20 text-lg text-white ">
+                        <h2 className=" lw-max:pt-10 xxs-max:pt-8 xxs-max:text-sm pb-5 pt-20 text-lg text-white ">
                             Driver Log In
                         </h2>
                         <Input
@@ -127,7 +127,7 @@ const Login = () => {
                         <Button
                             type="submit"
                             disabled={isSubmitting}
-                            className="w-full"
+                            className="xxs-max:h-8 w-full"
                         />
                     </form>
                 </div>
