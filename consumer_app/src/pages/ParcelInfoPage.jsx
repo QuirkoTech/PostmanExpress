@@ -113,7 +113,7 @@ const ParcelInfoPage = () => {
 
     return (
         <Layout>
-            <h1 className="sm-max:text-center mb-9 text-4xl font-normal  text-white">
+            <h1 className="sm-max:ml-4 mb-9 text-4xl font-normal  text-white">
                 Parcel Info
             </h1>
 
