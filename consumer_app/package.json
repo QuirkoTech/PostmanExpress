@@ -6,6 +6,7 @@
     "scripts": {
         "dev": "vite --host",
         "build": "vite build",
+        "vitest": "vitest",
         "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
         "preview": "vite preview",
         "dev-api": "nodemon server/server.js",
@@ -39,6 +40,8 @@
     },
     "devDependencies": {
         "@hookform/devtools": "^4.3.1",
+        "@testing-library/jest-dom": "^6.1.5",
+        "@testing-library/react": "^14.1.2",
         "@types/react": "^18.2.15",
         "@types/react-dom": "^18.2.7",
         "@vitejs/plugin-react": "^4.0.3",
@@ -48,12 +51,14 @@
         "eslint-plugin-react": "^7.32.2",
         "eslint-plugin-react-hooks": "^4.6.0",
         "eslint-plugin-react-refresh": "^0.4.3",
+        "jsdom": "^23.0.1",
         "mocha": "^10.2.0",
         "nodemon": "^3.0.1",
         "npm-run-all": "^4.1.5",
         "postcss": "^8.4.31",
         "supertest": "^6.3.3",
         "tailwindcss": "^3.3.5",
-        "vite": "^4.4.5"
+        "vite": "^4.4.5",
+        "vitest": "^1.0.1"
     }
 }
