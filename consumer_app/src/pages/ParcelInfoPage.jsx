@@ -113,7 +113,7 @@ const ParcelInfoPage = () => {
 
     return (
         <Layout>
-            <h1 className="mb-9 text-4xl font-normal text-white">
+            <h1 className="sm-max:ml-4 mb-9 text-4xl font-normal  text-white">
                 Parcel Info
             </h1>
 
@@ -149,11 +149,25 @@ const ParcelInfoPage = () => {
                     </div>
                     <div className="flex">
                         <p className=" md-max:w-24 w-32 ">Content:</p>
-                        <p className="text-white"> {parcel_name}</p>
+                        <p
+                            className={`md-max:whitespace-nowrap sm-max:w-2/4 relative overflow-hidden text-ellipsis text-white ${
+                                isLongText ? "sm-max:whitespace-normal" : ""
+                            }`}
+                            title={parcel_name}
+                        >
+                            {parcel_name}
+                        </p>
                     </div>
                     <div className="flex">
                         <p className=" md-max:w-24 w-32 ">Receiver:</p>
-                        <p className="text-white"> {receiver_name}</p>
+                        <p
+                            className={`md-max:whitespace-nowrap sm-max:w-2/4 relative overflow-hidden text-ellipsis text-white ${
+                                isLongText ? "sm-max:whitespace-normal" : ""
+                            }`}
+                            title={receiver_name}
+                        >
+                            {receiver_name}
+                        </p>
                     </div>
                     <div className="flex">
                         <p className=" md-max:w-24 w-32 ">Sender:</p>
@@ -203,12 +217,12 @@ const ParcelInfoPage = () => {
                     </div>
                     <div className="flex">
                         <p className=" md-max:w-24 w-32 ">Status:</p>
-                        <div className="flex flex-row">
+                        <div className="flex flex-row item-center">
                             <div
-                                className={`mr-2 mt-3 h-2 w-2 rounded-full bg-${statusColor}`}
+                                className={`sm-max:mt-2 mt-[10px] lw-max:mt-2 mr-2 h-2 w-2 rounded-full bg-${statusColor}`}
                             ></div>
                             <p className="text-white">
-                                {statusMap[parcel_status]}
+                                {capitalizeFirstLetter(parcel_status)}
                             </p>
                         </div>
                     </div>

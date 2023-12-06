@@ -78,7 +78,10 @@ function Modal({ isOpen, closeModal, name, menuLinks }) {
                 >
                     <ul className="border-b-2 border-solid border-[#494844]">
                         <li className="mb-4 w-full border-b-2 border-solid border-[#494844] pb-5 font-medium text-white">
-                            <div className="w-[70%] overflow-hidden overflow-ellipsis whitespace-nowrap">
+                            <div
+                                className="w-4/5 overflow-hidden overflow-ellipsis whitespace-nowrap"
+                                title={name}
+                            >
                                 {name}
                             </div>
                             <button
@@ -122,8 +125,8 @@ function Modal({ isOpen, closeModal, name, menuLinks }) {
                     </button>
                     <button
                         onClick={openDeleteModal}
-                        className="text-danger-main hover:text-danger-secondary mb-6 mr-auto mt-auto cursor-pointer border-none bg-transparent font-medium
-                        transition-all duration-300 hover:border-none whitespace-nowrap"
+                        className="text-danger-main hover:text-danger-secondary mb-6 mr-auto mt-auto cursor-pointer whitespace-nowrap border-none bg-transparent
+                        font-medium transition-all duration-300 hover:border-none"
                     >
                         Delete Account
                     </button>

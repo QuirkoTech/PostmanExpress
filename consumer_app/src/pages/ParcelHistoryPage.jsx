@@ -56,8 +56,8 @@ const ParcelHistoryPage = () => {
 
     return (
         <Layout>
-            <div className="container mx-auto">
-                <h1 className="sm-max:text-2xl sm-max:mb-6 mb-9 text-4xl font-normal text-white">
+            <div className=" mx-auto">
+                <h1 className="sm-max:text-2xl sm-max:ml-4 sm-max:mb-6 mb-9 text-4xl font-normal  text-white">
                     Parcels History
                 </h1>
 
