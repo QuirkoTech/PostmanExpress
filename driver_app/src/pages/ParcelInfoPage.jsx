@@ -40,7 +40,7 @@ const ParcelInfoPage = () => {
 
     const {
         ship_to,
-        current_location,
+        ship_from,
         length,
         height,
         width,
@@ -117,7 +117,7 @@ const ParcelInfoPage = () => {
                         </p>
                         {isSmallScreen && (
                             <button
-                                className="ml-2 text-white border-none"
+                                className="ml-2 border-none text-white"
                                 onClick={() =>
                                     setIsLongText((prevState) => !prevState)
                                 }
@@ -133,8 +133,7 @@ const ParcelInfoPage = () => {
                     <div className="flex">
                         <p className=" md-max:w-24 w-32 ">From:</p>
                         <p className="text-white">
-                            {current_location &&
-                                capitalizeFirstLetter(current_location)}
+                            {ship_from && capitalizeFirstLetter(ship_from)}
                         </p>
                     </div>
                     <div className="flex">
