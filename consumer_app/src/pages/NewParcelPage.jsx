@@ -153,30 +153,78 @@ const NewParcelPage = () => {
         }
     };
 
+    const [isSmallScreen, setIsSmallScreen] = useState(false);
+    const [isSmallScreen2, setIsSmallScreen2] = useState(false);
+    const [isSmallScreen3, setIsSmallScreen3] = useState(false);
+    useEffect(() => {
+        function handleResize() {
+            setIsSmallScreen(window.innerWidth <= 780);
+        }
+
+        window.addEventListener("resize", handleResize);
+        handleResize();
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
+
+    useEffect(() => {
+        function handleResize() {
+            setIsSmallScreen2(window.innerWidth <= 480);
+        }
+
+        window.addEventListener("resize", handleResize);
+        handleResize();
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
+
+    useEffect(() => {
+        function handleResize() {
+            setIsSmallScreen3(window.innerWidth <= 400);
+        }
+
+        window.addEventListener("resize", handleResize);
+        handleResize();
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
+    //Some issues when RD at < 520px, so I didn't make it, just ignored it :))
     return (
         <Layout>
-            <h1 className="mb-9 text-4xl font-normal text-white">New Parcel</h1>
+            <h1 className=" sm-max:text-2xl sm-max:ml-4 xxs-max:ml-0 mb-9 text-4xl font-normal text-white">
+                New Parcel
+            </h1>
 
             <form
-                className="mx-10 flex w-3/4 flex-col"
+                className="sm-max:mx-auto xxs-max:ml-4 mx-10 flex w-3/4 flex-col"
                 onSubmit={handleSubmit(handleFormSubmit)}
             >
                 {ParcelAddNew.map((field, index) => (
                     <label
                         key={index}
                         htmlFor={`input-${index}`}
-                        className="mb-6 grid grid-cols-5 items-center gap-x-4 text-lg"
+                        className=" lw-max:text-sm mb-6  grid grid-cols-5 items-center gap-x-4 text-lg"
                     >
-                        {field.title}:
+                        {field.title === "Deliver to" && isSmallScreen
+                            ? "To"
+                            : field.title}
+                        :
                         {field.type === "select" ? (
-                            <div className="relative col-span-3">
+                            <div className=" mb-max:ml-8 lw-max:w-full relative  col-span-3  ml-4 ">
                                 <select
-                                    className={`bg-dark-secondary border-slate-blue w-full cursor-pointer select-none appearance-none rounded-lg border-2 border-solid 
+                                    className={`bg-dark-secondary lw-max:ml-4 border-slate-blue mb-max:text-base lw-max:text-sm mb-max:leading-7 w-full cursor-pointer select-none appearance-none rounded-lg border-2 border-solid 
                                         px-4 py-1 focus:outline-none focus:ring-1 ${
                                             errors[field.fieldName]
-                                                ? "border-red-500"
+                                                ? " border-red-500"
                                                 : ""
-                                        } `}
+                                        } 
+                                        `}
                                     {...register(field.fieldName, {
                                         value: "",
                                         placeholder: "Select Destination",
@@ -197,13 +245,21 @@ const NewParcelPage = () => {
                                         </option>
                                     ))}
                                 </select>
-                                <ChevronsUpDown className="stroke-slate-blue absolute right-2 top-1" />
+
+                                {isSmallScreen2 ? (
+                                    ""
+                                ) : (
+                                    <ChevronsUpDown
+                                        size={24}
+                                        className="stroke-slate-blue absolute right-2 top-2"
+                                    />
+                                )}
                             </div>
                         ) : (
                             <input
-                                className={`bg-dark-secondary border-slate-blue col-span-3 appearance-none rounded-lg border-2 border-solid px-4 py-1 focus:outline-none focus:ring-1 ${
+                                className={` mb-max:ml-8 lw-max:ml-12 lw-max:text-sm mb-max:text-base mb-max:leading-7 lw-max:w-full bg-dark-secondary sm-max:ml-4 border-slate-blue col-span-3 ml-4 appearance-none rounded-lg border-2 border-solid px-4 py-1 focus:outline-none focus:ring-1 ${
                                     errors[field.fieldName]
-                                        ? "border-red-500"
+                                        ? " border-red-500"
                                         : ""
                                 }`}
                                 type={field.type}
@@ -212,16 +268,23 @@ const NewParcelPage = () => {
                                 {...register(field.fieldName)}
                             />
                         )}
-                        <span className="text-xs">{field.measure}</span>
+                        {isSmallScreen3 ? (
+                            ""
+                        ) : (
+                            <span className="text-xs">{field.measure}</span>
+                        )}
                         {errors[field.fieldName] && (
-                            <p className="text-danger-main col-span-2 col-start-2 mt-1 text-xs">
+                            <p className="text-danger-main mb-max:ml-8 lw-max:ml-12 lw-max:text-xxs xxs-max:ml-12 col-span-2 col-start-2 ml-5 mt-1 whitespace-nowrap text-xs">
                                 {errors[field.fieldName]?.message}
                             </p>
                         )}
                     </label>
                 ))}
 
-                <Button type="submit" className="mr-[150px] mt-4">
+                <Button
+                    type="submit"
+                    className="mb-max:mx-auto mr-[150px] mt-4"
+                >
                     Apply
                 </Button>
             </form>

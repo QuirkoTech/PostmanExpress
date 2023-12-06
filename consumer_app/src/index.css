@@ -141,3 +141,12 @@
 .timestamps .timestamp-box .timestamp {
     font-size: 12px;
 }
+
+@media (min-width: 300px) and (max-width: 639px) {
+    .timestamps {
+        padding: 12px 0 0 48px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+}

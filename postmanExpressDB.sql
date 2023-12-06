@@ -247,7 +247,6 @@ status = 'prepared for delivery'
 WHERE id = 5;
 
 
-SELECT status_timestamps FROM test;
 
 
 -- SOME QUERIES

@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
@@ -16,7 +16,7 @@ function Modal({
     const DRIVER_URL = import.meta.env.VITE_DRIVER_BACKEND_URL;
 
     const { fetchDriver } = useContext(AuthContext);
-
+    const navigate = useNavigate();
     //Signout function
     const handleSignOut = async () => {
         try {
@@ -35,6 +35,7 @@ function Modal({
 
             if (message === "success") {
                 fetchDriver();
+                navigate("/login");
             }
         } catch (error) {
             console.log(error);
