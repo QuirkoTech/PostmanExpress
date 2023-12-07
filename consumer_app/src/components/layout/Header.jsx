@@ -41,6 +41,7 @@ const Header = () => {
                     id={notification.parcel_id}
                     title={notification.title}
                     name={notification.parcel_name}
+                    status={notification.parcel_status}
                 />,
                 {
                     autoClose: false,

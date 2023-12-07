@@ -3,11 +3,8 @@ import { AuthContext } from "./";
 import { Navigate } from "react-router-dom";
 
 const AuthRoute = ({ children }) => {
-    const { isAuthenticated, isLoading } = useContext(AuthContext);
+    const { isAuthenticated } = useContext(AuthContext);
 
-    if (isLoading) {
-        return;
-    }
     return !isAuthenticated ? children : <Navigate to="/" replace />;
 };
 
