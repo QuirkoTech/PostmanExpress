@@ -92,7 +92,7 @@ CREATE TABLE parcels (
   pickup_pin integer UNIQUE,
   delivery_pin integer UNIQUE,
   driver_accepted BOOLEAN DEFAULT FALSE,
-  notify BOOLEAN DEFAULT TRUE,
+  notify BOOLEAN DEFAULT FALSE,
   status_timestamps jsonb[]
 );
 
