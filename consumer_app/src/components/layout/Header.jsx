@@ -1,8 +1,9 @@
 import Modal from "../modal/Modal";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Notifications } from "../";
+import { CustomNotification } from "../";
 import { AuthContext } from "../auth";
+import { toast } from "react-toastify";
 
 const menuLinks = [
     {
@@ -19,41 +20,6 @@ const menuLinks = [
     },
 ];
 
-// const notifdata = [
-//     {
-//         "title": "Status update",
-//         "parcel_id": "495c17e3-e6e0-403c-93a1-5b79c09d4d13",
-//         "parcel_status": "delivered",
-//         "parcel_name": "Nike shoes"
-//     },
-//     {
-//         "title": "Status update",
-//         "parcel_id": "10552409-02fe-4749-ba02-dff2b6837766",
-//         "parcel_status": "delivered",
-//         "parcel_name": "Adidas jacket"
-//     },
-//     {
-//         "title": "Status update",
-//         "parcel_id": "415bd7a6-d2df-4a12-8e86-ae1887715ac2",
-//         "parcel_status": "delivered",
-//         "parcel_name": "Book collection"
-//     },
-//     {
-//         "title": "Status update",
-//         "parcel_id": "c007d841-df33-421e-abd5-b0a1e341b9ae",
-//         "parcel_status": "delivered",
-//         "parcel_name": "Shiny cup"
-//     },
-//     {
-//         "title": "Status update",
-//         "parcel_id": "22c445ca-af04-478e-82d6-4ab6fe84fc5b",
-//         "parcel_status": "delivered",
-//         "parcel_name": "Tech gadgets"
-//     }
-// ]
-
-// {title: 'Status update', parcel_id: '22c445ca-af04-478e-82d6-4ab6fe84fc5b', parcel_status: 'delivered', parcel_name: 'Tech gadgets'}
-
 const Header = () => {
     const { userName, notifications } = useContext(AuthContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -65,6 +31,25 @@ const Header = () => {
     const closeModal = () => {
         setIsModalOpen(false);
     };
+
+    // Display notifications
+    useEffect(() => {
+        notifications.map((notification) => {
+            toast(
+                <CustomNotification
+                    key={notification.parcel_id}
+                    id={notification.parcel_id}
+                    title={notification.title}
+                    name={notification.parcel_name}
+                />,
+                {
+                    autoClose: false,
+                    position: "top-left",
+                    closeOnClick: false,
+                },
+            );
+        });
+    }, [notifications]);
 
     return (
         <header className="bg-dark-secondary sm-max:px-8 sm-max:py-4 sm-max:text-xl xxs-max:px-4 relative z-50 flex h-[72px] w-full items-center px-10 py-5 text-2xl shadow-lg">
@@ -85,8 +70,6 @@ const Header = () => {
                 name={userName}
                 menuLinks={menuLinks}
             />
-
-            <Notifications notifications={notifications} />
         </header>
     );
 };

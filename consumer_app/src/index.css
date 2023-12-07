@@ -59,7 +59,7 @@
     }
 }
 
-.Toastify__toast {
+/* .Toastify__toast {
     background-color: #373637;
     border: 2px solid #373637;
     border-radius: 8px;
@@ -71,15 +71,11 @@
     color: white;
     background-color: #373637;
     border: none;
-}
-
-/* .Toastify__toast--success {
-    background-color: #07bc0c;
-}
-
-.Toastify__toast--success .Toastify__toast-body::before {
-    color: red;
 } */
+
+.Toastify__close-button {
+    @apply hover:text-danger-secondary transition-all duration-300 active:scale-90;
+}
 
 /* Timestamps styling */
 

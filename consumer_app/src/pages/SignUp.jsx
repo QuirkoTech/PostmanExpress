@@ -54,6 +54,7 @@ const SignUp = () => {
             .min(7, "Password must be at least 7 characters"),
         password_confirm: yup
             .string()
+            .required("This field is required")
             .oneOf([yup.ref("password"), null], "Passwords must match"),
         location: yup.string().required("This field is required"),
     });
@@ -185,6 +186,7 @@ const SignUp = () => {
                                     locationValue === "" ? "opacity-70" : ""
                                 }`}
                                 autoComplete="off"
+                                data-testid="locationInput"
                             >
                                 <option value="" hidden disabled>
                                     Choose a location
