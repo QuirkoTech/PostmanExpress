@@ -272,7 +272,8 @@ export const pasteDeliveryPin = catchAsync(async (req, res, next) => {
                             current_location = $1,
                             delivery_pin = null,
                             pickup_pin = $2,
-                            driver_accepted = false
+                            driver_accepted = false,
+                            notify = true
                         WHERE
                             parcel_id = $3
                         RETURNING
