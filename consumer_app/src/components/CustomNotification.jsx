@@ -14,7 +14,7 @@ const CustomNotification = ({ title, id, name, status }) => {
     };
     return (
         <div
-            className="w-52 cursor-pointer"
+            className="cursor-pointer"
             onClick={() => handleNotificationClick(id)}
         >
             <h2 className="mb-2">{title}</h2>
