@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 // import AuthContext from "./AuthContext";
 import axios from "axios";
 import { AuthContext } from "./";
+import { useLocation } from "react-router-dom";
 
 const Authprovider = ({ children }) => {
     const CONSUMER_URL = import.meta.env.VITE_CONSUMER_BACKEND_URL;
@@ -9,8 +10,9 @@ const Authprovider = ({ children }) => {
     const [userName, setUserName] = useState("");
     const [notifications, setNotifications] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const location = useLocation();
 
-    const fetchUser = async () => {
+    const fetchUser = useCallback(async () => {
         setIsLoading(true);
         try {
             const response = await axios.get(`${CONSUMER_URL}/me`, {
@@ -33,10 +35,15 @@ const Authprovider = ({ children }) => {
             // console.log(error);
         }
         setIsLoading(false);
+    }, [CONSUMER_URL]);
+
+    const setLoading = () => {
+        setIsLoading(true);
     };
+
     useEffect(() => {
         fetchUser();
-    }, []);
+    }, [location.pathname, fetchUser]);
 
     const value = {
         isAuthenticated,
@@ -44,6 +51,7 @@ const Authprovider = ({ children }) => {
         notifications,
         isLoading,
         fetchUser,
+        setLoading,
     };
     return (
         <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

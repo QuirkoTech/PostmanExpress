@@ -28,7 +28,7 @@ const Layout = ({ children }) => {
                     {children}
 
                     <ToastContainer
-                        toastClassName="text-white bg-dark-secondary rounded-mid border-2 border-slate-blue"
+                        toastClassName="text-white bg-dark-secondary rounded-mid border-2 border-slate-blue sm-max:mb-4"
                         position="top-right"
                         autoClose={5000}
                         hideProgressBar
