@@ -36,6 +36,7 @@ import {
     protectConsumer,
     protectLocker,
 } from "./helpers/protectAppFocusedRoutes.js";
+import botRoutes from "./routes/botRoutes.js";
 
 const app = express();
 
@@ -61,6 +62,7 @@ app.use(
 app.use(`/consumer`, protectConsumer, consumerRoutes);
 app.use(`/parcels`, parcelRoutes);
 app.use("/cabinet", protectLocker, cabinetRoutes);
+app.use("/bot", botRoutes);
 
 app.all("*", (req, res, next) => {
     next(new APIError(`Can't find ${req.originalUrl} on this server!`, 404));

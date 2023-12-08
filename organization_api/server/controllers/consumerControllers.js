@@ -104,12 +104,22 @@ export const consumerLoad = catchAsync(async (req, res, next) => {
     try {
         await client.query("BEGIN");
 
-        const parcelsToNotify = await client.query(
-            "SELECT parcel_id, parcel_status, parcel_name FROM parcels WHERE (parcel_sender_id = $1 OR parcel_receiver_email = $2) AND notify = 'true' AND parcel_status = 'delivered'",
-            [req.user.user_id, req.user.user_email],
+        const deliveredParcels = await client.query(
+            "SELECT parcel_id, parcel_status, parcel_name FROM parcels WHERE parcel_sender_id = $1 AND notify = true AND parcel_status = 'delivered'",
+            [req.user.user_id],
         );
 
-        const parcelIds = parcelsToNotify.rows.map((parcel) => {
+        const parcelsReadyForPickup = await client.query(
+            "SELECT parcel_id, parcel_status, parcel_name FROM parcels WHERE parcel_receiver_email = $1 AND notify = true AND parcel_status = 'ready for pickup'",
+            [req.user.user_email],
+        );
+
+        const parcelsToNotify = [
+            ...deliveredParcels.rows,
+            ...parcelsReadyForPickup.rows,
+        ];
+
+        const parcelIds = parcelsToNotify.map((parcel) => {
             return parcel.parcel_id;
         });
 
@@ -118,7 +128,7 @@ export const consumerLoad = catchAsync(async (req, res, next) => {
             [parcelIds],
         );
 
-        const notifications = parcelsToNotify.rows.map((parcel) => {
+        const notifications = parcelsToNotify.map((parcel) => {
             return {
                 title: "Status update",
                 ...parcel,

@@ -23,3 +23,11 @@ export const protectLocker = catchAsync(async (req, res, next) => {
 
     next();
 });
+
+export const protectBot = catchAsync(async (req, res, next) => {
+    const orgType = req.headers["x-application-type"];
+    if (orgType !== process.env.BOT_APP_HEADER)
+        return next(new APIError("Invalid Organization header.", 400));
+
+    next();
+});
