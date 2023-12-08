@@ -1,14 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { AuthContext } from "./";
+import { useLocation } from "react-router-dom";
 
 const AuthProvider = ({ children }) => {
     const DRIVER_URL = import.meta.env.VITE_DRIVER_BACKEND_URL;
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [driverName, setDriverName] = useState("");
     const [isLoading, setIsLoading] = useState(true);
-
-    const fetchDriver = async () => {
+    const location = useLocation();
+    const fetchDriver = useCallback(async () => {
         setIsLoading(true);
         try {
             const response = await axios.get(`${DRIVER_URL}/me`, {
@@ -31,11 +32,11 @@ const AuthProvider = ({ children }) => {
             console.log(error);
         }
         setIsLoading(false);
-    };
+    }, [DRIVER_URL]);
 
     useEffect(() => {
         fetchDriver();
-    }, [DRIVER_URL]);
+    }, [fetchDriver, location.pathname]);
 
     const value = {
         isAuthenticated,
