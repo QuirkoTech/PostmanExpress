@@ -104,15 +104,16 @@ export const consumerLoad = catchAsync(async (req, res, next) => {
     try {
         await client.query("BEGIN");
 
-        const deliveredParcels = await client.query(
-            "SELECT parcel_id, parcel_status, parcel_name FROM parcels WHERE parcel_sender_id = $1 AND notify = true AND parcel_status = 'delivered'",
-            [req.user.user_id],
-        );
-
-        const parcelsReadyForPickup = await client.query(
-            "SELECT parcel_id, parcel_status, parcel_name FROM parcels WHERE parcel_receiver_email = $1 AND notify = true AND parcel_status = 'ready for pickup'",
-            [req.user.user_email],
-        );
+        const [deliveredParcels, parcelsReadyForPickup] = await Promise.all([
+            client.query(
+                "SELECT parcel_id, parcel_status, parcel_name FROM parcels WHERE (parcel_sender_id = $1 OR parcel_receiver_email = $1) AND notify = true AND parcel_status = 'delivered'",
+                [req.user.user_id],
+            ),
+            client.query(
+                "SELECT parcel_id, parcel_status, parcel_name FROM parcels WHERE parcel_receiver_email = $1 AND notify = true AND parcel_status = 'ready for pickup'",
+                [req.user.user_email],
+            ),
+        ]);
 
         const parcelsToNotify = [
             ...deliveredParcels.rows,
@@ -200,10 +201,16 @@ export const consumerDelete = catchAsync(async (req, res, next) => {
     const client = await pool.connect();
 
     try {
-        await client.query(
-            "UPDATE users SET user_name = 'Deleted', user_email = 'Deleted', refresh_token = 'Deleted', password = 'Deleted', user_location = 'Deleted' WHERE user_id = $1",
-            [req.user.user_id],
-        );
+        await Promise.all([
+            client.query(
+                "UPDATE users SET user_name = 'Deleted', user_email = 'Deleted', refresh_token = 'Deleted', password = 'Deleted', user_location = 'Deleted' WHERE user_id = $1",
+                [req.user.user_id],
+            ),
+            client.query(
+                "UPDATE parcels SET parcel_receiver_email = 'Deleted' WHERE parcel_receiver_email = $1",
+                [req.user.user_email],
+            ),
+        ]);
 
         await client.query("COMMIT");
         client.release();
