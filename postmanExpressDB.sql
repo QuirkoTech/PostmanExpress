@@ -103,3 +103,9 @@ CREATE TABLE cabinets (
   parcel_id UUID REFERENCES parcels(parcel_id)
 );
 
+INSERT INTO cabinets (cabinet_location, cabinet_status) SELECT 'oulu', 'empty' FROM generate_series(1, 15);
+INSERT INTO cabinets (cabinet_location, cabinet_status) SELECT 'espoo', 'empty' FROM generate_series(1, 15);
+INSERT INTO cabinets (cabinet_location, cabinet_status) SELECT 'turku', 'empty' FROM generate_series(1, 15);
+INSERT INTO cabinets (cabinet_location, cabinet_status) SELECT 'tampere', 'empty' FROM generate_series(1, 15);
+INSERT INTO cabinets (cabinet_location, cabinet_status) SELECT 'helsinki', 'empty' FROM generate_series(1, 15);
+INSERT INTO cabinets (cabinet_location, cabinet_status) SELECT 'warehouse', 'empty' FROM generate_series(1, 100);
