@@ -56,7 +56,3 @@ CREATE TABLE driver_parcels (
 );
 
 
--- TEST DATA  
-
-
-INSERT INTO drivers (driver_name, driver_email, password, driver_location) VALUES ('test', 'drivertest@gmail.com', 'test', 'helsinki');
