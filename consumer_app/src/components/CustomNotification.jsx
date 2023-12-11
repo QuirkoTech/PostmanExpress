@@ -22,7 +22,7 @@ const CustomNotification = ({ title, id, name, status }) => {
                 <p className="text-slate-gray max-w-[6rem] overflow-hidden text-ellipsis whitespace-nowrap">
                     {name}
                 </p>
-                <div className="ml-4 flex flex-row items-center gap-2">
+                <div className="flex flex-row items-center gap-2">
                     <div className="bg-status-green h-2 w-2 rounded-full "></div>
                     <p className="text-slate-gray">
                         {capitalizeFirstLetter(status)}
