@@ -106,8 +106,8 @@ export const consumerLoad = catchAsync(async (req, res, next) => {
 
         const [deliveredParcels, parcelsReadyForPickup] = await Promise.all([
             client.query(
-                "SELECT parcel_id, parcel_status, parcel_name FROM parcels WHERE (parcel_sender_id = $1 OR parcel_receiver_email = $1) AND notify = true AND parcel_status = 'delivered'",
-                [req.user.user_id],
+                "SELECT parcel_id, parcel_status, parcel_name FROM parcels WHERE (parcel_sender_id = $1 OR parcel_receiver_email = $2) AND notify = true AND parcel_status = 'delivered'",
+                [req.user.user_id, req.user.user_email],
             ),
             client.query(
                 "SELECT parcel_id, parcel_status, parcel_name FROM parcels WHERE parcel_receiver_email = $1 AND notify = true AND parcel_status = 'ready for pickup'",
