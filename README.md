@@ -88,6 +88,10 @@ npm install
 npm run dev
 ```
 
+```bash
+npm run dev-api
+```
+
 ## Contributors
 
 -   [Iurii Gaitrov](https://github.com/RepoRover)
